@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/*
+  Heftin Academy design tokens (placeholder).
+  Finalize palette in the design-system task.
+*/
+
+@theme {
+  --font-sans: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
+  --color-primary: #0f766e;
+  --color-primary-foreground: #ffffff;
+
+  --color-foreground: #27272a;
+  --color-foreground-strong: #0a0a0a;
+  --color-muted: #71717a;
+
+  --color-surface: #f7f8fa;
+  --color-surface-elevated: #ffffff;
+  --color-border: #e4e4e7;
+  --color-card: #ffffff;
+  --color-ring: #0f766e;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-surface);
+  color: var(--color-foreground);
+}
