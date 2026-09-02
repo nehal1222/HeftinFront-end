@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"c:\\\\Users\\\\acer\\\\Downloads\\\\LETSGO\" && rm -rf .gitignore .oxlintrc.json README.md index.html node_modules package-lock.json package.json public src tsconfig.app.json tsconfig.json tsconfig.node.json vite.config.ts && ls -la 2>&1)",
+      "Bash(npm run *)",
+      "Bash(node -e ' *)"
+    ]
+  }
+}

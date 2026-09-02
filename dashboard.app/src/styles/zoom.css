@@ -1,0 +1,78 @@
+/* Click-to-zoom on the chart panels — new file, additive only. */
+
+.zoom-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(20, 24, 22, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.zoom-stage {
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
+    cursor: default;
+}
+
+.zoom-close {
+    position: fixed;
+    top: 24px;
+    right: 28px;
+    z-index: 51;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--navy);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+}
+
+.dash-panel.zoomed {
+    cursor: default;
+    padding: 40px 48px;
+    min-width: 420px;
+    box-shadow: 0 30px 70px -20px rgba(0, 128, 140, 0.5);
+}
+
+/* Bar chart, enlarged */
+.dashboard-mock-chart.zoomed {
+    height: 340px;
+    gap: 16px;
+}
+
+.dashboard-mock-chart.zoomed .bar {
+    width: 34px;
+}
+
+/* Accuracy ring, enlarged */
+.score-ring.zoomed {
+    width: 260px;
+    height: 260px;
+}
+
+.score-ring.zoomed strong {
+    font-size: 44px;
+}
+
+/* Pie chart, enlarged */
+.pie-chart.zoomed {
+    width: 260px;
+    height: 260px;
+}
+
+.dash-panel.zoomed .pie-legend {
+    font-size: 15px;
+}

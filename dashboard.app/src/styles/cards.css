@@ -1,0 +1,55 @@
+/* New file — drag/reset/empty-state styles for the React stat cards.
+   Additive only: never overrides selectors from styles.css/dashboard.css. */
+
+.dash-stat-card {
+    cursor: grab;
+    touch-action: none; /* required so Framer Motion's pointer drag works on touch */
+    will-change: transform;
+}
+
+.dash-stat-card:active {
+    cursor: grabbing;
+}
+
+.dash-stats-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.dash-stats-hint {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+}
+
+.dash-reset-btn {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--card-bg);
+    color: var(--teal);
+    font-weight: 700;
+    font-size: 12px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.dash-reset-btn:hover {
+    background: rgba(0, 128, 140, 0.08);
+    box-shadow: 0 10px 20px -10px rgba(0, 128, 140, 0.5);
+}
+
+.dash-reset-btn:active {
+    transform: translateY(1px);
+}
+
+.dash-empty-cards {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 13px;
+    padding: 28px 0;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+}

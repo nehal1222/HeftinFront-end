@@ -1,0 +1,21 @@
+
+
+
+.image-container{
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    outline: 8px solid rgba(255, 255, 255, 0.5);
+}
+
+.start-button{
+    background-color: var(--gold);
+    color: var(--navy);
+    font-size: 13px;
+    font-weight: 800;
+    padding: 14px 30px;
+    border: none;
+    
+    border-radius: 999px;
+    cursor: pointer;
+}

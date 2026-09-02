@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard — Heftin Academy</title>
+    <meta name="description" content="Heftin Academy — your performance dashboard." />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="dashboard.legacy.css" />
+  </head>
+  <body>
+    <header class="dash-header">
+        <h1>Dashboard</h1>
+    </header>
+    <div class="dash-shell">
+        <aside class="dash-sidebar">
+            <nav class="dash-nav">
+                <a href="dashboard.html" class="active">Overview</a>
+                <a href="#">Test Series</a>
+                <a href="#">Practice</a>
+                <a href="#">Results</a>
+                <a href="#">Settings</a>
+            </nav>
+
+            <a href="index.html" class="dash-back">← Back to site</a>
+        </aside>
+
+        <div class="dash-main">
+            <header class="dash-topbar">
+                <div>
+                    <h1>Welcome back, Ananya</h1>
+                    <p>Here's how your prep is going.</p>
+                </div>
+                <div class="dash-user">
+                    <span class="dash-avatar">AR</span>
+                    <span>Ananya R.</span>
+                </div>
+            </header>
+
+            <section class="dash-stats">
+                <div class="dash-stat-card">
+                    <span class="dash-stat-label">Tests Attempted</span>
+                    <strong>128</strong>
+                    <span class="dash-stat-delta up">↑ 8 this week</span>
+                </div>
+                <div class="dash-stat-card">
+                    <span class="dash-stat-label">Overall Accuracy</span>
+                    <strong>84%</strong>
+                    <span class="dash-stat-delta up">↑ 12% from last test</span>
+                </div>
+                <div class="dash-stat-card">
+                    <span class="dash-stat-label">Current Rank</span>
+                    <strong>#214</strong>
+                    <span class="dash-stat-delta up">↑ 36 ranks</span>
+                </div>
+                <div class="dash-stat-card">
+                    <span class="dash-stat-label">Study Streak</span>
+                    <strong>9 days</strong>
+                    <span class="dash-stat-delta">Keep it going</span>
+                </div>
+            </section>
+
+            <section class="dash-panels">
+                <div class="dash-panel dash-panel-chart">
+                    <div class="dash-panel-head">
+                        <h2>Performance trend</h2>
+                        <span class="dash-panel-sub">Last 6 mock tests</span>
+                    </div>
+                    <div class="dashboard-mock-chart big">
+                        <div class="bar" style="--h: 40%"></div>
+                        <div class="bar" style="--h: 55%"></div>
+                        <div class="bar" style="--h: 48%"></div>
+                        <div class="bar" style="--h: 70%"></div>
+                        <div class="bar" style="--h: 62%"></div>
+                        <div class="bar bar-current" style="--h: 84%"></div>
+                    </div>
+                </div>
+
+                <div class="dash-panel dash-panel-score">
+                    <div class="dash-panel-head">
+                        <h2>Overall accuracy</h2>
+                    </div>
+                    <div class="score-ring big"><strong>84%</strong></div>
+                    <p>You're scoring higher than 76% of aspirants in Banking exams.</p>
+                </div>
+            </section>
+            <section class="dash-panel piechart">
+                <div class="dash-panel-head">
+                    <h2>Subject-wise accuracy</h2>
+                    <span class="dash-panel-sub">This month</span>
+                </div>
+                <div class="piechart-body">
+                    <div class="pie-chart" style="--p1: 32; --p2: 58; --p3: 82;"></div>
+                    <ul class="pie-legend">
+                        <li><span class="pie-dot" style="background: var(--teal);"></span>Quant <strong>32%</strong></li>
+                        <li><span class="pie-dot" style="background: var(--teal-light);"></span>Reasoning <strong>26%</strong></li>
+                        <li><span class="pie-dot" style="background: #c9a227;"></span>English <strong>24%</strong></li>
+                        <li><span class="pie-dot" style="background: #a8d2c7;"></span>General Knowledge <strong>18%</strong></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="dash-panel dash-table-panel">
+                <div class="dash-panel-head">
+                    <h2>Recent test attempts</h2>
+                </div>
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>Test</th>
+                            <th>Date</th>
+                            <th>Score</th>
+                            <th>Accuracy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SBI PO Mock 12</td>
+                            <td>Aug 21, 2026</td>
+                            <td>78/100</td>
+                            <td><span class="dash-pill good">84%</span></td>
+                        </tr>
+                        <tr>
+                            <td>SSC CGL Tier 1</td>
+                            <td>Aug 18, 2026</td>
+                            <td>65/100</td>
+                            <td><span class="dash-pill mid">71%</span></td>
+                        </tr>
+                        <tr>
+                            <td>RRB NTPC Full Test</td>
+                            <td>Aug 14, 2026</td>
+                            <td>82/100</td>
+                            <td><span class="dash-pill good">88%</span></td>
+                        </tr>
+                        <tr>
+                            <td>IBPS Clerk Mock 5</td>
+                            <td>Aug 10, 2026</td>
+                            <td>58/100</td>
+                            <td><span class="dash-pill low">62%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+  </body>
+</html>
