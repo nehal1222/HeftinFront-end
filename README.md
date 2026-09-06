@@ -56,4 +56,10 @@ Port **5174** so it does not clash with other Heftin apps on 5173.
 
 Prelims (objective), mains (descriptive + evaluation), exam catalog, question bank, batches, students, faculty. Students only take prelims. Mains: answer sheet required; answer key optional; difficulty required.
 
+## Org entitlements (Heftin Admin pack)
+
+Heftin Admin assigns **roles and rights to the organization**. Org Admin then uses those rights fully inside the org and may assign them to users. They cannot add a right that is not in the pack.
+
+Read the **Org entitlements** section in `AGENTS.md`. Taiga tasks: `HAC02-FE-*` (after Sprint 1 `HAC01-*`).
+
 Read `docs/PROJECT_STRUCTURE.md` before adding screens.

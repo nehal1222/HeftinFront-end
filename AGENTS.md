@@ -11,6 +11,8 @@ Also read:
 
 This repo is **Heftin Academy only** (e-examination). Do not mix NexGen Athlete or Heftin IAS code here.
 
+Tasks live in Taiga: project **Heftin Academy**, Sprint 1 `HAC01-FE-*`, entitlements `HAC02-FE-*`.
+
 ---
 
 ## How to run (review with README)
@@ -67,6 +69,7 @@ Need Node.js 20+. Full notes: `README.md`.
 9. **Keep pages thin** — layout + wiring only; business/API logic in services/hooks.
 10. Authorize UI by **permission codes**, not hardcoded role names.
 11. **Prelims:** students only take exams. **Mains:** answer sheet required for validate; answer key optional; difficulty required.
+12. **Org pack:** Heftin Admin assigns roles/rights to the organization. Org Admin may use and assign **only** those rights. Hide nav for modules not in the pack. Tasks: `HAC02-FE-*`.
 
 ---
 
@@ -126,3 +129,23 @@ export const featureService = {
 | `404` | Not-found / empty state |
 | `422` / `400` | Map field errors to the form |
 | `500` / network | `getErrorMessage(err, '...')` |
+
+---
+
+## Org entitlements (read this)
+
+Heftin Admin does **not** day-to-day assign each student’s job. Heftin Admin gives the **organization a pack** of roles and rights (permission codes). Organization Admin then runs that org using **only** what is in the pack.
+
+Same idea as NexGen Athlete. This product’s pack is exam features (catalog, prelims, mains, evaluation, batches). Do not copy NexGen sports/payments codes here.
+
+| Who | What they do |
+|---|---|
+| Heftin Admin | Create/suspend orgs. Attach a pack (which modules / permission codes this org may use). Platform-only rights stay here (`orgs.manage`, plans). |
+| Org Admin | Create users and org roles. Assign rights **from the pack only**. Cannot invent a permission Heftin Admin did not grant. |
+| Faculty / Student | Get a role inside the org. Effective access = role **and** org pack. |
+
+`/auth/me` must return `permissions` (user) and `entitlements` (org pack) so nav can hide unsold modules.
+
+Taiga: **HAC02-FE-01** Heftin Admin pack screen, **HAC02-FE-02** Org Admin roles (filtered), **HAC02-FE-03** nav/routes, **HAC02-FE-04** me payload.
+
+Do not start HAC02 until Sprint 1 auth/RBAC (`HAC01-*`) can log in. Seed a full pack on the demo org so Sprint 1 still works.
