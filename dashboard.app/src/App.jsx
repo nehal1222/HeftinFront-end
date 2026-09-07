@@ -19,7 +19,6 @@ import StreakCalendar from './components/StreakCalendar.jsx'
 import WelcomeBanner from './components/WelcomeBanner.jsx'
 import TeacherSubmissionsPage from './components/TeacherSubmissionsPage.jsx'
 import PaperReviewOverlay from './components/PaperReviewOverlay.jsx'
-import DesignSystemPage from './components/DesignSystemPage.jsx'
 import { SUBMISSIONS } from './data/teacherData.js'
 
 function storedFirstName() {
@@ -40,7 +39,6 @@ const VIEW_COPY = {
   leaderboard: { title: 'Leaderboard', subtitle: 'See where you rank against everyone else.' },
   settings: { title: 'Settings', subtitle: 'Your profile and notification preferences.' },
   submissions: { title: 'Paper Submissions', subtitle: 'Review prelims scores and grade mains answer sheets.' },
-  'design-system': { title: 'Design System', subtitle: 'Tailwind + CSS tokens — Sprint 1 (FE-01).' },
 }
 
 function initialRole() {
@@ -110,7 +108,6 @@ export default function App() {
           {view === 'submissions' && (
             <TeacherSubmissionsPage submissions={submissions} onReview={setReviewing} />
           )}
-          {view === 'design-system' && <DesignSystemPage />}
         </div>
       </div>
 
