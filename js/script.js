@@ -176,6 +176,12 @@ loginForm.addEventListener("submit", function (event) {
 
         formMessage.classList.add("success");
 
+        try {
+
+            localStorage.setItem("heftinLoggedIn", "true");
+
+        } catch (e) {}
+
 
         /* No real backend here — this demos a successful login by
            sending the user into the dashboard app after a short pause
