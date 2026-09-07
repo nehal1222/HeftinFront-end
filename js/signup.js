@@ -268,8 +268,6 @@ signupForm.addEventListener("submit", function (event) {
 
             localStorage.setItem("heftinName", fullName);
 
-            localStorage.setItem("heftinLoggedIn", "true");
-
         } catch (e) {}
 
         successMessage.textContent = role === "admin"
