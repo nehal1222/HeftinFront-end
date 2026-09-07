@@ -22,8 +22,17 @@ import PaperReviewOverlay from './components/PaperReviewOverlay.jsx'
 import DesignSystemPage from './components/DesignSystemPage.jsx'
 import { SUBMISSIONS } from './data/teacherData.js'
 
+function storedFirstName() {
+  try {
+    const name = localStorage.getItem('heftinName')
+    return name ? name.trim().split(' ')[0] : 'Ananya'
+  } catch (e) {
+    return 'Ananya'
+  }
+}
+
 const VIEW_COPY = {
-  overview: { title: 'Welcome back, Ananya', subtitle: "Here's how your prep is going." },
+  overview: { title: `Welcome back, ${storedFirstName()}`, subtitle: "Here's how your prep is going." },
   assignments: { title: 'Your Assignments', subtitle: 'Tasks picked for you based on your weak areas.' },
   'test-series': { title: 'Test Series', subtitle: 'Pick a series and keep the streak going.' },
   practice: { title: 'Practice', subtitle: 'Chapter-wise drills, or a quick speed test.' },
@@ -34,9 +43,18 @@ const VIEW_COPY = {
   'design-system': { title: 'Design System', subtitle: 'Tailwind + CSS tokens — Sprint 1 (FE-01).' },
 }
 
+function initialRole() {
+  try {
+    const stored = localStorage.getItem('heftinRole')
+    return stored === 'teacher' ? 'teacher' : 'student'
+  } catch (e) {
+    return 'student'
+  }
+}
+
 export default function App() {
-  const [role, setRole] = useState('student')
-  const [view, setView] = useState('overview')
+  const [role, setRole] = useState(initialRole)
+  const [view, setView] = useState(() => (initialRole() === 'teacher' ? 'submissions' : 'overview'))
   const [zoomedPanel, setZoomedPanel] = useState(null)
   const [activeQuiz, setActiveQuiz] = useState(null)
   const [submissions, setSubmissions] = useState(SUBMISSIONS)

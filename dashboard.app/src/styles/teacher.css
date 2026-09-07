@@ -51,7 +51,7 @@
     width: 26px;
     height: 26px;
     border-radius: 50%;
-    background: linear-gradient(155deg, var(--teal-light), var(--ink));
+    background: var(--teal);
     color: #fff;
     font-size: 10.5px;
     font-weight: 800;
@@ -209,7 +209,7 @@
 }
 
 .review-option.wrong {
-    background: rgba(0, 26, 28, 0.1);
+    background: rgba(0, 130, 142, 0.26);
     border-color: #001a1c;
     color: #001a1c;
 }

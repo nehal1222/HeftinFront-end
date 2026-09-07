@@ -647,6 +647,127 @@ body {
 
 
 /* =========================================
+   ROLE SELECT (signup)
+========================================= */
+
+.auth-card-wide {
+
+    max-width: 480px;
+
+}
+
+
+.role-select {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 8px;
+
+}
+
+
+.role-option input {
+
+    position: absolute;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+}
+
+
+.role-option-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 13px 6px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 11px;
+
+    background: rgba(255, 255, 255, 0.75);
+
+    color: var(--muted);
+
+    font-size: 11.5px;
+
+    font-weight: 600;
+
+    text-align: center;
+
+    line-height: 1.3;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+
+}
+
+
+.role-option-card:hover {
+
+    border-color: var(--primary);
+
+    transform: translateY(-1px);
+
+}
+
+
+.role-option-icon {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #66b4bb;
+
+    transition: color 0.2s ease;
+
+}
+
+
+.role-option input:checked + .role-option-card {
+
+    border-color: var(--primary);
+
+    background: rgba(0, 130, 142, 0.1);
+
+    color: var(--text);
+
+}
+
+
+.role-option input:checked + .role-option-card .role-option-icon {
+
+    color: var(--primary);
+
+}
+
+
+.role-option input:focus-visible + .role-option-card {
+
+    box-shadow: 0 0 0 4px rgba(0, 130, 142, 0.15);
+
+}
+
+
+/* =========================================
    INPUT ICON
 ========================================= */
 

@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Explore Exams — Heftin Academy</title>
+    <meta name="description" content="Every competitive and government exam Heftin Academy covers — Banking, SSC, Railways, Defence, Teaching, UPSC and State PSC." />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  </head>
+  <body>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('heftin-theme');
+          if (t !== 'light' && t !== 'dark') {
+            t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.body.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
+
+    <div class="cursor-dot" aria-hidden="true"></div>
+    <div class="cursor-ring" aria-hidden="true"></div>
+
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="index.html" class="brand">
+                <img src="images/logo.jpeg" alt="Heftin Academy" class="brand-logo">
+                <span class="brand-name">Heftin Academy</span>
+            </a>
+            <ul>
+                <li><a href="explore.html">Explore</a></li>
+                <li><a href="index.html#">Test Series</a></li>
+                <li><a href="index.html#">Practice</a></li>
+                <li><a href="index.html#">Results</a></li>
+            </ul>
+            <div class="nav-actions-inner">
+                <a href="premium.html" class="go-premium">Go Premium</a>
+                <a href="login.html" class="login">Login</a>
+                <a href="dashboard/index.html" class="start-button">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+
+        <section class="exam-explore-hero">
+            <div class="exam-explore-hero-inner reveal">
+                <p class="eyebrow">ALL EXAMS · ONE PLATFORM</p>
+                <h1 class="split-heading"><span class="split-heading-lead">Every exam,</span><span class="split-heading-bold">One Rank to Chase.</span></h1>
+                <p class="exams-competitive-line"><span class="live-dot" aria-hidden="true"></span>2.4M+ aspirants across 18+ exam categories are racing for Rank One.</p>
+            </div>
+        </section>
+
+        <section class="exam-categories">
+            <div class="exam-categories-inner">
+
+                <div class="exam-category reveal">
+                    <div class="exam-category-head">
+                        <h2>Banking &amp; Insurance</h2>
+                        <span class="exam-category-count">7 exams</span>
+                    </div>
+                    <div class="exam-chip-grid">
+                        <a class="exam-chip" href="dashboard/index.html">SBI PO</a>
+                        <a class="exam-chip" href="dashboard/index.html">SBI Clerk</a>
+                        <a class="exam-chip" href="dashboard/index.html">IBPS PO</a>
+                        <a class="exam-chip" href="dashboard/index.html">IBPS Clerk</a>
+                        <a class="exam-chip" href="dashboard/index.html">IBPS RRB</a>
+                        <a class="exam-chip" href="dashboard/index.html">RBI Grade B</a>
+                        <a class="exam-chip" href="dashboard/index.html">LIC AAO</a>
+                    </div>
+                </div>
+
+                <div class="exam-category reveal">
+                    <div class="exam-category-head">
+                        <h2>SSC</h2>
+                        <span class="exam-category-count">5 exams</span>
+                    </div>
+                    <div class="exam-chip-grid">
+                        <a class="exam-chip" href="dashboard/index.html">SSC CGL</a>
+                        <a class="exam-chip" href="dashboard/index.html">SSC CHSL</a>
+                        <a class="exam-chip" href="dashboard/index.html">SSC CPO</a>
+                        <a class="exam-chip" href="dashboard/index.html">SSC MTS</a>
+                        <a class="exam-chip" href="dashboard/index.html">SSC GD Constable</a>
+                    </div>
+                </div>
+
+                <div class="exam-category reveal">
+                    <div class="exam-category-head">
+                        <h2>Railways</h2>
+                        <span class="exam-category-count">4 exams</span>
+                    </div>
+                    <div class="exam-chip-grid">
+                        <a class="exam-chip" href="dashboard/index.html">RRB NTPC</a>
+                        <a class="exam-chip" href="dashboard/index.html">RRB Group D</a>
+                        <a class="exam-chip" href="dashboard/index.html">RRB ALP</a>
+                        <a class="exam-chip" href="dashboard/index.html">RRB JE</a>
+                    </div>
+                </div>
+
+                <div class="exam-category reveal">
+                    <div class="exam-category-head">
+                        <h2>Defence</h2>
+                        <span class="exam-category-count">4 exams</span>
+                    </div>
+                    <div class="exam-chip-grid">
+                        <a class="exam-chip" href="dashboard/index.html">NDA</a>
+                        <a class="exam-chip" href="dashboard/index.html">CDS</a>
+                        <a class="exam-chip" href="dashboard/index.html">AFCAT</a>
+                        <a class="exam-chip" href="dashboard/index.html">CAPF AC</a>
+                    </div>
+                </div>
+
+                <div class="exam-category reveal">
+                    <div class="exam-category-head">
+                        <h2>Teaching</h2>
+                        <span class="exam-category-count">4 exams</span>
+                    </div>
+                    <div class="exam-chip-grid">
+                        <a class="exam-chip" href="dashboard/index.html">CTET</a>
+                        <a class="exam-chip" href="dashboard/index.html">UPTET</a>
+                        <a class="exam-chip" href="dashboard/index.html">KVS</a>
+                        <a class="exam-chip" href="dashboard/index.html">DSSSB</a>
+                    </div>
+                </div>
+
+                <div class="exam-category reveal">
+                    <div class="exam-category-head">
+                        <h2>UPSC &amp; State PSC</h2>
+                        <span class="exam-category-count">4 exams</span>
+                    </div>
+                    <div class="exam-chip-grid">
+                        <a class="exam-chip" href="dashboard/index.html">UPSC CSE</a>
+                        <a class="exam-chip" href="dashboard/index.html">UPSC CAPF</a>
+                        <a class="exam-chip" href="dashboard/index.html">UPSC ESE</a>
+                        <a class="exam-chip" href="dashboard/index.html">State PSC</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="exam-explore-cta">
+            <div class="exam-explore-cta-inner reveal">
+                <h2 class="split-heading"><span class="split-heading-lead">Don't see your exam?</span><span class="split-heading-bold">We're adding more.</span></h2>
+                <a href="dashboard/index.html" class="start-button">Get Started &rarr;</a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <img src="images/logo.jpeg" alt="Heftin Academy" class="brand-logo">
+                    <span>Heftin Academy</span>
+                </div>
+                <p>Every mock test brings you closer to rank one.</p>
+                <p class="footer-contact">Contact: <a href="mailto:hello@example.com">hello@example.com</a></p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html#">Test Series</a></li>
+                    <li><a href="index.html#">Performance</a></li>
+                    <li><a href="index.html#">Study Material</a></li>
+                    <li><a href="index.html#">Pricing</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="index.html#">About Us</a></li>
+                    <li><a href="index.html#">Careers</a></li>
+                    <li><a href="index.html#">Blog</a></li>
+                    <li><a href="index.html#">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="index.html#">Help Center</a></li>
+                    <li><a href="index.html#">FAQs</a></li>
+                    <li><a href="index.html#">Community</a></li>
+                    <li><a href="index.html#">Guides</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="index.html#">Privacy Policy</a></li>
+                    <li><a href="index.html#">Terms of Service</a></li>
+                    <li><a href="index.html#">Refund Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Heftin Academy. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+      (function () {
+        var targets = document.querySelectorAll('.reveal');
+        if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            targets.forEach(function (el) { el.classList.add('is-visible'); });
+            return;
+        }
+
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+        targets.forEach(function (el) { observer.observe(el); });
+      })();
+    </script>
+
+    <script>
+      (function () {
+        if (window.matchMedia('(pointer: coarse)').matches) return;
+
+        var dot = document.querySelector('.cursor-dot');
+        var ring = document.querySelector('.cursor-ring');
+        if (!dot || !ring) return;
+
+        document.addEventListener('mousemove', function (event) {
+            dot.style.transform = 'translate(' + event.clientX + 'px,' + event.clientY + 'px)';
+            ring.style.transform = 'translate(' + event.clientX + 'px,' + event.clientY + 'px)';
+        });
+      })();
+    </script>
+
+    <script>
+      (function () {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (typeof Lenis === 'undefined') return;
+
+        var lenis = new Lenis({
+            duration: 1.1,
+            smoothWheel: true,
+            easing: function (t) { return 1 - Math.pow(1 - t, 3); }
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+      })();
+    </script>
+
+  </body>
+</html>

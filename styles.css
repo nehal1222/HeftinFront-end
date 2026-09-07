@@ -138,7 +138,7 @@ html.preloading body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--navy);
+    background: var(--teal);
     transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
@@ -344,7 +344,7 @@ header h1 {
     font-size: 12.5px;
     font-weight: 700;
     color: #fff;
-    background: linear-gradient(135deg, #006f79, #006f79);
+    background: var(--teal);
     padding: 8px 16px;
     border-radius: 999px;
     box-shadow: 0 8px 18px -8px rgba(0, 52, 57, 0.6);
@@ -372,9 +372,7 @@ header h1 {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(90deg, #006f79, #003439, #006f79);
-    background-size: 200% 100%;
-    background-position: 0% 0%;
+    background: var(--teal);
     color: #fff;
     font-size: 13px;
     font-weight: 800;
@@ -382,11 +380,10 @@ header h1 {
     border: none;
     border-radius: 999px;
     cursor: pointer;
-    transition: background-position 0.5s ease, transform 0.18s ease, box-shadow 0.18s ease;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .start-button:hover {
-    background-position: 100% 0%;
     transform: translateY(-2px);
     box-shadow: 0 14px 26px -12px rgba(0, 130, 142, 0.45);
 }
@@ -562,7 +559,7 @@ header h1 {
 .hero::before {
     width: 320px;
     height: 320px;
-    background: var(--teal-light);
+    background: rgba(255, 255, 255, 0.4);
     top: -100px;
     left: 50%;
     transform: translateX(-50%);
@@ -571,7 +568,7 @@ header h1 {
 .hero::after {
     width: 200px;
     height: 200px;
-    background: var(--teal-light);
+    background: rgba(255, 255, 255, 0.4);
     bottom: -60px;
     right: 8%;
     opacity: 0.18;
@@ -585,7 +582,7 @@ header h1 {
     opacity: 0.22;
     width: 240px;
     height: 240px;
-    background: #99cdd2;
+    background: #fff;
     top: 10%;
     left: 6%;
     pointer-events: none;
@@ -691,7 +688,7 @@ header h1 {
 .marquee {
     display: flex;
     overflow: hidden;
-    background: linear-gradient(90deg, #003439, #001a1c);
+    background: var(--teal);
     padding: 16px 0;
     border-bottom: 1px solid rgba(0, 111, 121, 0.25);
 }
@@ -853,16 +850,10 @@ header h1 {
     height: 26px;
 }
 
-.icon-1 {
-    background: linear-gradient(155deg, var(--teal-light), var(--teal));
-}
-
-.icon-2 {
-    background: linear-gradient(155deg, #00828e, #006f79);
-}
-
+.icon-1,
+.icon-2,
 .icon-3 {
-    background: linear-gradient(155deg, var(--ink), #001a1c);
+    background: var(--teal);
 }
 
 .process-step-num {
@@ -969,7 +960,7 @@ header h1 {
 
 .dashboard-card {
     position: absolute;
-    background: var(--navy);
+    background: var(--teal);
     color: var(--on-navy);
     border-radius: var(--radius);
     padding: 32px 38px;
@@ -994,7 +985,6 @@ header h1 {
     left: 38%;
     z-index: 2;
     transform: rotate(3deg);
-    background: var(--ink);
 }
 
 .dashboard-card.card-3 {
@@ -1002,7 +992,6 @@ header h1 {
     left: 2%;
     z-index: 1;
     transform: rotate(-2deg);
-    background: linear-gradient(155deg, var(--teal), var(--navy));
 }
 
 .dashboard-card:hover {
@@ -1037,9 +1026,9 @@ header h1 {
     position: relative;
     overflow: hidden;
     background:
-        radial-gradient(circle at 75% 25%, rgba(153, 205, 210, 0.25), transparent 45%),
-        radial-gradient(circle at 15% 80%, rgba(0, 52, 57, 0.4), transparent 50%),
-        var(--navy);
+        radial-gradient(circle at 75% 25%, rgba(255, 255, 255, 0.12), transparent 45%),
+        radial-gradient(circle at 15% 80%, rgba(255, 255, 255, 0.08), transparent 50%),
+        var(--teal);
     background-attachment: fixed;
     color: var(--on-navy);
     padding: 160px 24px;
@@ -1376,16 +1365,168 @@ header h1 {
 
 .exam-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 24px;
     text-align: left;
+}
+
+.exams-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 36px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2px;
+    transition: gap 0.2s ease, border-color 0.2s ease;
+}
+
+.exams-view-all:hover {
+    gap: 10px;
+    border-color: var(--teal);
+}
+
+/* ---------- Explore page ---------- */
+.exam-explore-hero {
+    padding: 190px 24px 80px;
+    text-align: center;
+    background: var(--cream);
+}
+
+.exam-explore-hero-inner {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.exam-explore-hero .split-heading {
+    justify-content: center;
+    margin: 14px 0 20px;
+}
+
+.exam-explore-hero .exams-competitive-line {
+    margin: 0 auto;
+}
+
+.exam-categories {
+    padding: 20px 24px 100px;
+    background: var(--cream);
+}
+
+.exam-categories-inner {
+    max-width: 1020px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+}
+
+.exam-category {
+    padding-top: 36px;
+    border-top: 1px solid var(--line);
+}
+
+.exam-category:first-child {
+    padding-top: 0;
+    border-top: none;
+}
+
+.exam-category-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.exam-category-head h2 {
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-size: clamp(19px, 2.2vw, 24px);
+    letter-spacing: 0.005em;
+    color: var(--ink);
+}
+
+.exam-category-count {
+    flex-shrink: 0;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.exam-chip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.exam-chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 14px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--card-bg, #fff);
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 600;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.exam-chip:hover {
+    transform: translateY(-3px);
+    border-color: var(--teal);
+    background: rgba(0, 130, 142, 0.08);
+    box-shadow: 0 14px 26px -16px rgba(0, 130, 142, 0.4);
+}
+
+.exam-explore-cta {
+    padding: 90px 24px 140px;
+    text-align: center;
+    background: var(--cream);
+}
+
+.exam-explore-cta-inner {
+    max-width: 620px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.exam-explore-cta .split-heading {
+    justify-content: center;
+}
+
+@media (max-width: 640px) {
+    .exam-explore-hero {
+        padding: 140px 20px 60px;
+    }
+
+    .exam-categories {
+        padding: 10px 20px 70px;
+    }
+
+    .exam-explore-cta {
+        padding: 60px 20px 100px;
+    }
+
+    .exam-category-head {
+        flex-wrap: wrap;
+    }
 }
 
 .exam-card {
     position: relative;
     display: flex;
     flex-direction: column;
-    background: var(--navy);
+    background: var(--teal);
     color: var(--on-navy);
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -1490,12 +1631,12 @@ header h1 {
 
 /* ---------- Features ---------- */
 .features {
-    background: var(--teal);
-    color: #fff;
+    background: var(--cream);
+    color: var(--ink);
     padding: 160px 24px;
     text-align: center;
-    --ink: #fff;
-    --ink-soft: rgba(255, 255, 255, 0.7);
+    --ink: #003439;
+    --ink-soft: rgba(0, 52, 57, 0.62);
 }
 
 .features-inner {
@@ -1556,7 +1697,7 @@ header h1 {
     font-family: 'Source Serif 4', serif;
     font-size: 34px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.22);
+    color: rgba(0, 52, 57, 0.15);
 }
 
 .feature-icon {
@@ -1568,13 +1709,16 @@ header h1 {
     border-radius: 12px;
     background: #fff;
     color: var(--teal);
+    border: 1px solid var(--line);
+    box-shadow: 0 6px 16px -10px rgba(0, 72, 78, 0.4);
     margin-bottom: 20px;
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .feature:hover .feature-icon {
     transform: scale(1.12) rotate(-6deg);
-    background: #fff;
+    background: var(--teal);
+    color: #fff;
     box-shadow: 0 10px 24px -8px rgba(0, 130, 142, 0.55);
 }
 
@@ -1666,8 +1810,7 @@ header h1 {
     height: 260px;
     border-radius: 50%;
     filter: blur(8px);
-    opacity: 0.14;
-    background: #99cdd2;
+    background: rgba(0, 130, 142, 0.14);
     bottom: -100px;
     right: 6%;
     pointer-events: none;

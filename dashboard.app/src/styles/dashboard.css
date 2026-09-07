@@ -87,7 +87,7 @@
 .dash-sidebar {
     width: 220px;
     flex-shrink: 0;
-    background: var(--navy);
+    background: var(--teal);
     color: var(--on-navy);
     display: flex;
     flex-direction: column;
@@ -99,7 +99,7 @@
     height: 32px;
     flex-shrink: 0;
     border-radius: 9px;
-    background: linear-gradient(155deg, var(--teal-light), var(--ink));
+    background: var(--teal);
     color: #fff;
     font-family: 'Inter', sans-serif;
     font-weight: 800;
@@ -133,7 +133,7 @@
 
 .upgrade-card {
     position: relative;
-    background: linear-gradient(155deg, #006f79 0%, #00828e 45%, #003439 100%);
+    background: var(--teal);
     border-radius: 14px;
     padding: 18px 18px 20px;
     box-shadow: 0 14px 28px -12px rgba(0, 26, 28, 0.55);
@@ -173,8 +173,8 @@
     text-align: center;
     border: none;
     border-radius: 8px;
-    background: linear-gradient(135deg, #006f79, #00828e);
-    color: #fff;
+    background: #fff;
+    color: var(--teal);
     font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 12px;
@@ -300,8 +300,8 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--teal-light);
-    color: var(--navy);
+    background: var(--teal);
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -322,16 +322,16 @@
 .dash-stat-card {
     position: relative;
     overflow: hidden;
-    border: none;
+    border: 1px solid var(--line);
     border-radius: 28px;
     padding: 26px 26px 24px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     gap: 6px;
-    color: #fff;
-    background: var(--primary-shade-5);
-    box-shadow: 0 18px 38px -20px rgba(0, 0, 0, 0.55);
+    color: var(--ink);
+    background: #fff;
+    box-shadow: 0 14px 30px -20px rgba(0, 72, 78, 0.35);
     transition: box-shadow 0.25s ease, transform 0.15s ease;
 }
 
@@ -341,8 +341,8 @@
     inset: 0;
     background: repeating-linear-gradient(
         115deg,
-        rgba(255, 255, 255, 0.05) 0px,
-        rgba(255, 255, 255, 0.05) 1px,
+        rgba(0, 130, 142, 0.05) 0px,
+        rgba(0, 130, 142, 0.05) 1px,
         transparent 1px,
         transparent 14px
     );
@@ -351,15 +351,27 @@
 
 .dash-stat-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 26px 48px -18px rgba(0, 0, 0, 0.62);
+    box-shadow: 0 22px 42px -18px rgba(0, 72, 78, 0.45);
 }
 
 /* Card 1 — the big bold hero tile (2x2), echoing the reference's featured square */
 .dash-stats > .dash-stat-card:nth-child(1) {
     grid-column: 1 / 3;
     grid-row: 1 / 3;
-    background: var(--primary);
+    background: var(--teal);
+    border-color: transparent;
+    color: #fff;
     padding: 32px;
+}
+
+.dash-stats > .dash-stat-card:nth-child(1)::before {
+    background: repeating-linear-gradient(
+        115deg,
+        rgba(255, 255, 255, 0.06) 0px,
+        rgba(255, 255, 255, 0.06) 1px,
+        transparent 1px,
+        transparent 14px
+    );
 }
 
 .dash-stats > .dash-stat-card:nth-child(2) {
@@ -383,7 +395,7 @@
     font-family: 'Inter', sans-serif;
     font-size: 12.5px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.62);
+    color: var(--ink-soft);
 }
 
 .dash-stat-card strong {
@@ -394,12 +406,17 @@
     font-size: clamp(30px, 2.6vw, 40px);
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
-    color: #fff;
+    color: var(--ink);
     line-height: 1;
 }
 
 .dash-stats > .dash-stat-card:nth-child(1) strong {
     font-size: clamp(44px, 4.4vw, 64px);
+    color: #fff;
+}
+
+.dash-stats > .dash-stat-card:nth-child(1) .dash-stat-label {
+    color: rgba(255, 255, 255, 0.68);
 }
 
 .dash-stat-delta {
@@ -407,11 +424,19 @@
     z-index: 1;
     font-size: 12px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--ink-soft);
 }
 
 .dash-stat-delta.up {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--teal);
+}
+
+.dash-stats > .dash-stat-card:nth-child(1) .dash-stat-delta {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.dash-stats > .dash-stat-card:nth-child(1) .dash-stat-delta.up {
+    color: #fff;
 }
 
 @media (max-width: 900px) {
@@ -675,12 +700,12 @@
 }
 
 .dash-pill.mid {
-    background: rgba(153, 205, 210, 0.25);
+    background: rgba(0, 130, 142, 0.22);
     color: var(--navy);
 }
 
 .dash-pill.low {
-    background: rgba(0, 26, 28, 0.08);
+    background: rgba(0, 130, 142, 0.08);
     color: var(--ink-soft);
 }
 

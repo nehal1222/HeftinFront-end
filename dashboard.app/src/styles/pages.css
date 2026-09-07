@@ -36,7 +36,7 @@
 }
 
 .exam-type-btn.active {
-    background: linear-gradient(135deg, var(--navy), var(--ink));
+    background: var(--teal);
     color: var(--on-navy);
     box-shadow: 0 10px 22px -10px rgba(0, 52, 57, 0.55);
 }
@@ -132,7 +132,6 @@
 }
 
 .series-btn:hover {
-    background: var(--navy);
     transform: translateY(-1px);
     box-shadow: 0 12px 24px -10px rgba(0, 130, 142, 0.55);
 }
@@ -283,7 +282,7 @@
 }
 
 .speed-hard {
-    background: rgba(0, 26, 28, 0.08);
+    background: rgba(0, 130, 142, 0.24);
     color: var(--ink-soft);
 }
 
@@ -469,8 +468,8 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--teal-light);
-    color: var(--navy);
+    background: var(--teal);
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -577,7 +576,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    background: var(--navy);
+    background: var(--teal);
     border-radius: 12px 12px 0 0;
     padding: 11px 18px;
     width: 74%;
@@ -650,7 +649,7 @@
 }
 
 .assignment-status.status-overdue {
-    background: #001a1c;
+    background: var(--teal);
     color: #fff;
 }
 
