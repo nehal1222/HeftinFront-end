@@ -73,6 +73,10 @@ function clearErrors() {
 
     passwordError.textContent = "";
 
+    emailInput.closest(".input-wrapper").classList.remove("has-error");
+
+    passwordInput.closest(".input-wrapper").classList.remove("has-error");
+
     formMessage.textContent = "";
 
     formMessage.className = "form-message";
@@ -104,12 +108,16 @@ loginForm.addEventListener("submit", function (event) {
         emailError.textContent =
             "Please enter your email address.";
 
+        emailInput.closest(".input-wrapper").classList.add("has-error");
+
         valid = false;
 
     } else if (!isValidEmail(email)) {
 
         emailError.textContent =
             "Please enter a valid email address.";
+
+        emailInput.closest(".input-wrapper").classList.add("has-error");
 
         valid = false;
 
@@ -123,12 +131,16 @@ loginForm.addEventListener("submit", function (event) {
         passwordError.textContent =
             "Please enter your password.";
 
+        passwordInput.closest(".input-wrapper").classList.add("has-error");
+
         valid = false;
 
     } else if (password.length < 6) {
 
         passwordError.textContent =
             "Password must contain at least 6 characters.";
+
+        passwordInput.closest(".input-wrapper").classList.add("has-error");
 
         valid = false;
 
@@ -189,6 +201,8 @@ emailInput.addEventListener("input", function () {
 
     emailError.textContent = "";
 
+    emailInput.closest(".input-wrapper").classList.remove("has-error");
+
     formMessage.textContent = "";
 
     formMessage.className = "form-message";
@@ -203,6 +217,8 @@ emailInput.addEventListener("input", function () {
 passwordInput.addEventListener("input", function () {
 
     passwordError.textContent = "";
+
+    passwordInput.closest(".input-wrapper").classList.remove("has-error");
 
     formMessage.textContent = "";
 

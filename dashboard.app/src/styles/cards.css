@@ -36,8 +36,8 @@
 }
 
 .dash-reset-btn:hover {
-    background: rgba(0, 128, 140, 0.08);
-    box-shadow: 0 10px 20px -10px rgba(0, 128, 140, 0.5);
+    background: rgba(0, 130, 142, 0.08);
+    box-shadow: 0 10px 20px -10px rgba(0, 130, 142, 0.5);
 }
 
 .dash-reset-btn:active {

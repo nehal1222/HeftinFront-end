@@ -20,9 +20,9 @@ body {
 
     font-family: "Inter", sans-serif;
 
-    background: #080808;
+    background: #001a1c;
 
-    color: #f5f5f5;
+    color: #ffffff;
 
     overflow-x: hidden;
 
@@ -63,7 +63,7 @@ a {
 
     overflow: hidden;
 
-    background: #080808;
+    background: #001a1c;
 
 }
 
@@ -91,7 +91,7 @@ a {
 
     left: -200px;
 
-    background: #0F766E;
+    background: #006f79;
 
     animation:
         orbMove1
@@ -112,7 +112,7 @@ a {
 
     top: 25%;
 
-    background: #00808c;
+    background: #00828e;
 
     animation:
         orbMove2
@@ -133,7 +133,7 @@ a {
 
     left: 35%;
 
-    background: #073B3A;
+    background: #00484e;
 
     animation:
         orbMove3
@@ -299,7 +299,7 @@ a {
         rgba(255,255,255,.08);
 
     background:
-        rgba(8,8,8,.65);
+        rgba(0, 26, 28,.65);
 
     backdrop-filter:
         blur(20px);
@@ -342,7 +342,7 @@ a {
 
     background: white;
 
-    color: #080808;
+    color: #001a1c;
 
     font-weight: 900;
 
@@ -372,7 +372,7 @@ nav {
 
 nav a {
 
-    color: #999;
+    color: #66b4bb;
 
     font-size: 11px;
 
@@ -398,7 +398,7 @@ nav a:hover {
 
     border:
         1px solid
-        rgba(0, 102, 112,.4);
+        rgba(0, 111, 121,.4);
 
     border-radius: 50px;
 
@@ -407,8 +407,8 @@ nav a:hover {
     background:
         linear-gradient(
             135deg,
-            #006670,
-            #013a40
+            #006f79,
+            #003439
         );
 
     font-size: 10px;
@@ -436,7 +436,7 @@ nav a:hover {
 
     box-shadow:
         0 8px 20px
-        rgba(1, 58, 64,.5);
+        rgba(0, 52, 57,.5);
 
 }
 
@@ -473,7 +473,7 @@ nav a:hover {
 
     gap: 9px;
 
-    color: #888;
+    color: #40a1aa;
 
     font-size: 10px;
 
@@ -492,10 +492,10 @@ nav a:hover {
 
     border-radius: 50%;
 
-    background: #00808c;
+    background: #00828e;
 
     box-shadow:
-        0 0 15px #00808c;
+        0 0 15px #00828e;
 
     animation:
         pulse
@@ -602,8 +602,8 @@ nav a:hover {
         linear-gradient(
             100deg,
             #ffffff,
-            #00808c,
-            #00808c
+            #00828e,
+            #00828e
         );
 
     -webkit-background-clip:
@@ -652,7 +652,7 @@ nav a:hover {
 
     max-width: 430px;
 
-    color: #999;
+    color: #66b4bb;
 
     font-size: 14px;
 
@@ -696,8 +696,8 @@ nav a:hover {
     background:
         linear-gradient(
             135deg,
-            #006670,
-            #013a40
+            #006f79,
+            #003439
         );
 
     font-size: 10px;
@@ -708,7 +708,7 @@ nav a:hover {
 
     box-shadow:
         0 12px 30px
-        rgba(1, 58, 64,.45);
+        rgba(0, 52, 57,.45);
 
     transition:
         transform .25s ease,
@@ -750,7 +750,7 @@ nav a:hover {
 
     box-shadow:
         0 16px 38px
-        rgba(1, 58, 64,.6);
+        rgba(0, 52, 57,.6);
 
 }
 
@@ -777,7 +777,7 @@ nav a:hover {
 
     align-items: center;
 
-    color: #888;
+    color: #40a1aa;
 
     font-size: 9px;
 
@@ -803,7 +803,7 @@ nav a:hover {
 
     bottom: 70px;
 
-    color: #333;
+    color: #003439;
 
     font-size: 13px;
 
@@ -869,7 +869,7 @@ nav a:hover {
 
     font-size: 22px;
 
-    color: #0F766E;
+    color: #006f79;
 
 }
 
@@ -891,7 +891,7 @@ nav a:hover {
 
     margin-top: 3px;
 
-    color: #777;
+    color: #00828e;
 
     font-size: 8px;
 
@@ -977,7 +977,7 @@ nav a:hover {
 
 .marquee i {
 
-    color: #00808c;
+    color: #00828e;
 
     font-style: normal;
 
@@ -1021,7 +1021,7 @@ nav a:hover {
 
 .section-number {
 
-    color: #666;
+    color: #006f79;
 
     font-size: 9px;
 
@@ -1048,7 +1048,7 @@ nav a:hover {
 
 .intro h2 span {
 
-    color: #666;
+    color: #006f79;
 
 }
 
@@ -1066,7 +1066,7 @@ nav a:hover {
 
     margin-top: 35px;
 
-    color: #888;
+    color: #40a1aa;
 
     font-size: 13px;
 
@@ -1120,7 +1120,7 @@ nav a:hover {
 
 .section-heading h2 span {
 
-    color: #777;
+    color: #00828e;
 
 }
 
@@ -1167,7 +1167,7 @@ nav a:hover {
 
 .feature-number {
 
-    color: #555;
+    color: #005b63;
 
     font-size: 11px;
 
@@ -1201,7 +1201,7 @@ nav a:hover {
 
     border-radius: 50%;
 
-    color: #0F766E;
+    color: #006f79;
 
 }
 
@@ -1221,7 +1221,7 @@ nav a:hover {
 
     max-width: 430px;
 
-    color: #777;
+    color: #00828e;
 
     font-size: 12px;
 
@@ -1234,7 +1234,7 @@ nav a:hover {
 
     justify-self: end;
 
-    color: #1d1d1d;
+    color: #001a1c;
 
     font-size:
         clamp(35px, 5vw, 70px);
@@ -1252,7 +1252,7 @@ nav a:hover {
 .feature-row:hover
 .feature-word {
 
-    color: #444;
+    color: #00484e;
 
 }
 
@@ -1280,7 +1280,7 @@ nav a:hover {
     background:
         radial-gradient(
             circle at 70% 50%,
-            rgba(0,128,140,.12),
+            rgba(0, 130, 142,.12),
             transparent 45%
         );
 
@@ -1305,7 +1305,7 @@ nav a:hover {
 
 .pricing-intro h2 span {
 
-    color: #00808c;
+    color: #00828e;
 
 }
 
@@ -1339,7 +1339,7 @@ nav a:hover {
 
     border-radius: 50px;
 
-    color: #777;
+    color: #00828e;
 
     background: transparent;
 
@@ -1352,7 +1352,7 @@ nav a:hover {
 
 .billing.active {
 
-    color: #080808;
+    color: #001a1c;
 
     background: white;
 
@@ -1363,7 +1363,7 @@ nav a:hover {
 
     margin-left: 5px;
 
-    color: #00808c;
+    color: #00828e;
 
 }
 
@@ -1410,7 +1410,7 @@ nav a:hover {
 
     margin-left: 10px;
 
-    color: #666;
+    color: #006f79;
 
     font-size: 10px;
 
@@ -1423,7 +1423,7 @@ nav a:hover {
 
     margin-top: 12px;
 
-    color: #777;
+    color: #00828e;
 
     font-size: 10px;
 
@@ -1460,7 +1460,7 @@ nav a:hover {
 
     box-shadow:
         0 30px 100px
-        rgba(0,0,0,.35);
+        rgba(0, 26, 28,.35);
 
     transition:
         transform .35s ease,
@@ -1488,7 +1488,7 @@ nav a:hover {
     background:
         radial-gradient(
             circle,
-            rgba(0,128,140,.35),
+            rgba(0, 130, 142,.35),
             transparent 65%
         );
 
@@ -1507,7 +1507,7 @@ nav a:hover {
         translateY(-8px);
 
     border-color:
-        rgba(0, 128, 140,.5);
+        rgba(0, 130, 142,.5);
 
 }
 
@@ -1540,7 +1540,7 @@ nav a:hover {
 
     justify-content: space-between;
 
-    color: #999;
+    color: #66b4bb;
 
     font-size: 9px;
 
@@ -1553,7 +1553,7 @@ nav a:hover {
 
 .product-top span:last-child {
 
-    color: #00808c;
+    color: #00828e;
 
     font-size: 20px;
 
@@ -1604,7 +1604,7 @@ nav a:hover {
 
     border-radius: 50px;
 
-    color: #999;
+    color: #66b4bb;
 
     font-size: 8px;
 
@@ -1636,8 +1636,8 @@ nav a:hover {
     background:
         linear-gradient(
             135deg,
-            #006670,
-            #013a40
+            #006f79,
+            #003439
         );
 
     font-size: 10px;
@@ -1648,7 +1648,7 @@ nav a:hover {
 
     box-shadow:
         0 14px 32px
-        rgba(1, 58, 64,.5);
+        rgba(0, 52, 57,.5);
 
     transition:
         transform .25s ease,
@@ -1664,7 +1664,7 @@ nav a:hover {
 
     box-shadow:
         0 18px 40px
-        rgba(1, 58, 64,.65);
+        rgba(0, 52, 57,.65);
 
 }
 
@@ -1682,7 +1682,7 @@ nav a:hover {
 
     text-align: center;
 
-    color: #555;
+    color: #005b63;
 
     font-size: 9px;
 
@@ -1724,7 +1724,7 @@ nav a:hover {
 
 .comparison h2 span {
 
-    color: #666;
+    color: #006f79;
 
 }
 
@@ -1752,7 +1752,7 @@ nav a:hover {
         1px solid
         rgba(255,255,255,.1);
 
-    color: #777;
+    color: #00828e;
 
     font-size: 11px;
 
@@ -1775,7 +1775,7 @@ nav a:hover {
 .premium-head,
 .premium-value {
 
-    color: #00808c !important;
+    color: #00828e !important;
 
 }
 
@@ -1848,7 +1848,7 @@ nav a:hover {
 
 .faq-question span:last-child {
 
-    color: #777;
+    color: #00828e;
 
     font-size: 22px;
 
@@ -1873,7 +1873,7 @@ nav a:hover {
 
     overflow: hidden;
 
-    color: #777;
+    color: #00828e;
 
     font-size: 12px;
 
@@ -1940,7 +1940,7 @@ nav a:hover {
     background:
         radial-gradient(
             circle,
-            rgba(0,128,140,.18),
+            rgba(0, 130, 142,.18),
             transparent 65%
         );
 
@@ -2001,7 +2001,7 @@ nav a:hover {
 
 .final-cta h2 span {
 
-    color: #00808c;
+    color: #00828e;
 
 }
 
@@ -2024,8 +2024,8 @@ nav a:hover {
     background:
         linear-gradient(
             135deg,
-            #006670,
-            #013a40
+            #006f79,
+            #003439
         );
 
     font-size: 10px;
@@ -2036,7 +2036,7 @@ nav a:hover {
 
     box-shadow:
         0 14px 34px
-        rgba(1, 58, 64,.5);
+        rgba(0, 52, 57,.5);
 
     transition:
         transform .3s ease,
@@ -2060,7 +2060,7 @@ nav a:hover {
 
     box-shadow:
         0 18px 55px
-        rgba(1, 58, 64,.65);
+        rgba(0, 52, 57,.65);
 
 }
 
@@ -2086,7 +2086,7 @@ nav a:hover {
     padding: 20px;
 
     background:
-        rgba(0,0,0,.75);
+        rgba(0, 26, 28,.75);
 
     backdrop-filter:
         blur(15px);
@@ -2125,7 +2125,7 @@ nav a:hover {
     border-radius: 22px;
 
     background:
-        #121212;
+        #001a1c;
 
     text-align: center;
 
@@ -2162,9 +2162,9 @@ nav a:hover {
 
     border-radius: 50%;
 
-    color: #888;
+    color: #40a1aa;
 
-    background: #222;
+    background: #001a1c;
 
     font-size: 20px;
 
@@ -2188,10 +2188,10 @@ nav a:hover {
 
     border-radius: 50%;
 
-    color: #00808c;
+    color: #00828e;
 
     background:
-        rgba(0, 128, 140,.12);
+        rgba(0, 130, 142,.12);
 
     font-size: 25px;
 
@@ -2200,7 +2200,7 @@ nav a:hover {
 
 .modal-label {
 
-    color: #777;
+    color: #00828e;
 
     font-size: 9px;
 
@@ -2223,7 +2223,7 @@ nav a:hover {
 
 .modal-box > p:not(.modal-label) {
 
-    color: #777;
+    color: #00828e;
 
     font-size: 12px;
 
@@ -2247,8 +2247,8 @@ nav a:hover {
     background:
         linear-gradient(
             135deg,
-            #006670,
-            #013a40
+            #006f79,
+            #003439
         );
 
     font-size: 10px;

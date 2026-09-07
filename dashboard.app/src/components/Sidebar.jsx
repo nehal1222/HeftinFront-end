@@ -54,6 +54,17 @@ export default function Sidebar({ view, onNavigate, role, onToggleRole }) {
         </div>
       )}
 
+      <a
+        href="#"
+        className="dash-back"
+        onClick={(event) => {
+          event.preventDefault()
+          onNavigate('design-system')
+        }}
+      >
+        Design tokens (Sprint 1)
+      </a>
+
       <a href="../index.html" className="dash-back">&larr; Back to site</a>
     </motion.aside>
   )

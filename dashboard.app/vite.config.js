@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import { viteSingleFile } from 'vite-plugin-singlefile'
 import { resolve } from 'path'
 import { fileURLToPath } from 'url'
@@ -13,7 +14,7 @@ export default defineConfig({
   // a separate assets/*.js file would silently fail to load if this page is
   // opened by double-clicking it, with `base: './'` alone not being enough
   // to fix that. Inlining sidesteps the restriction entirely.
-  plugins: [react(), viteSingleFile()],
+  plugins: [react(), tailwindcss(), viteSingleFile()],
   base: './',
   build: {
     outDir: resolve(__dirname, '../dashboard'),

@@ -21,7 +21,7 @@
     border: none;
     background: transparent;
     color: var(--ink-soft);
-    font-family: 'Source Serif 4', serif;
+    font-family: 'Bahnschrift', sans-serif;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.01em;
@@ -38,7 +38,7 @@
 .exam-type-btn.active {
     background: linear-gradient(135deg, var(--navy), var(--ink));
     color: var(--on-navy);
-    box-shadow: 0 10px 22px -10px rgba(30, 86, 49, 0.55);
+    box-shadow: 0 10px 22px -10px rgba(0, 52, 57, 0.55);
 }
 
 .series-mains-note {
@@ -49,9 +49,9 @@
     font-weight: 800;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: #013a40;
-    background: rgba(0, 128, 140, 0.14);
-    border: 1px solid rgba(0, 128, 140, 0.35);
+    color: #003439;
+    background: rgba(0, 130, 142, 0.14);
+    border: 1px solid rgba(0, 130, 142, 0.35);
     padding: 5px 12px;
     border-radius: 999px;
     width: fit-content;
@@ -70,7 +70,7 @@
 }
 
 .series-card:hover {
-    box-shadow: 0 18px 34px -16px rgba(0, 128, 140, 0.4);
+    box-shadow: 0 18px 34px -16px rgba(0, 130, 142, 0.4);
 }
 
 .series-category {
@@ -96,7 +96,7 @@
 .series-progress {
     height: 6px;
     border-radius: 999px;
-    background: rgba(0, 128, 140, 0.14);
+    background: rgba(0, 130, 142, 0.14);
     overflow: hidden;
 }
 
@@ -134,7 +134,7 @@
 .series-btn:hover {
     background: var(--navy);
     transform: translateY(-1px);
-    box-shadow: 0 12px 24px -10px rgba(0, 128, 140, 0.55);
+    box-shadow: 0 12px 24px -10px rgba(0, 130, 142, 0.55);
 }
 
 /* ---------- Practice ---------- */
@@ -200,7 +200,7 @@
 }
 
 .chapter-row:hover {
-    box-shadow: 0 14px 28px -14px rgba(0, 128, 140, 0.4);
+    box-shadow: 0 14px 28px -14px rgba(0, 130, 142, 0.4);
 }
 
 .chapter-name {
@@ -232,7 +232,7 @@
 .chapter-btn:hover {
     background: var(--teal);
     color: #fff;
-    box-shadow: 0 10px 20px -8px rgba(0, 128, 140, 0.5);
+    box-shadow: 0 10px 20px -8px rgba(0, 130, 142, 0.5);
 }
 
 .speed-card {
@@ -247,7 +247,7 @@
 }
 
 .speed-card:hover {
-    box-shadow: 0 18px 34px -16px rgba(0, 128, 140, 0.4);
+    box-shadow: 0 18px 34px -16px rgba(0, 130, 142, 0.4);
 }
 
 .speed-card h3 {
@@ -273,17 +273,17 @@
 }
 
 .speed-easy {
-    background: rgba(0, 128, 140, 0.14);
+    background: rgba(0, 130, 142, 0.14);
     color: var(--teal);
 }
 
 .speed-medium {
-    background: rgba(0, 128, 140, 0.18);
-    color: #013a40;
+    background: rgba(0, 130, 142, 0.18);
+    color: #003439;
 }
 
 .speed-hard {
-    background: rgba(0, 0, 0, 0.08);
+    background: rgba(0, 26, 28, 0.08);
     color: var(--ink-soft);
 }
 
@@ -364,7 +364,7 @@
     width: 44px;
     height: 24px;
     border-radius: 999px;
-    background: rgba(0, 128, 140, 0.25);
+    background: rgba(0, 130, 142, 0.25);
     border: none;
     position: relative;
     cursor: pointer;
@@ -385,7 +385,7 @@
     height: 18px;
     border-radius: 50%;
     background: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 1px 3px rgba(0, 26, 28, 0.25);
     transition: transform 0.25s ease;
 }
 
@@ -425,16 +425,16 @@
 }
 
 .leaderboard-row:hover {
-    box-shadow: 0 14px 28px -14px rgba(0, 128, 140, 0.4);
+    box-shadow: 0 14px 28px -14px rgba(0, 130, 142, 0.4);
 }
 
 .leaderboard-row.self {
-    background: linear-gradient(90deg, rgba(0, 128, 140, 0.1), rgba(0, 128, 140, 0.02));
-    border-color: #00808c;
+    background: linear-gradient(90deg, rgba(0, 130, 142, 0.1), rgba(0, 130, 142, 0.02));
+    border-color: #00828e;
 }
 
 .leaderboard-rank {
-    font-family: 'Source Serif 4', serif;
+    font-family: 'Bahnschrift', sans-serif;
     font-weight: 700;
     font-size: 14px;
     color: var(--ink-soft);
@@ -454,15 +454,15 @@
 }
 
 .leaderboard-rank.rank-gold {
-    background: linear-gradient(155deg, #00808c, #006670);
+    background: linear-gradient(155deg, #00828e, #006f79);
 }
 
 .leaderboard-rank.rank-silver {
-    background: linear-gradient(155deg, #d9d9d9, #9b9b9b);
+    background: linear-gradient(155deg, #cce6e8, #99cdd2);
 }
 
 .leaderboard-rank.rank-bronze {
-    background: linear-gradient(155deg, #006670, #013a40);
+    background: linear-gradient(155deg, #006f79, #003439);
 }
 
 .leaderboard-avatar {
@@ -510,7 +510,7 @@
 }
 
 .leaderboard-score {
-    font-family: 'Source Serif 4', serif;
+    font-family: 'Bahnschrift', sans-serif;
     font-weight: 700;
     font-size: 15px;
     text-align: right;
@@ -529,7 +529,7 @@
 }
 
 .leaderboard-trend.down {
-    color: #b23b3b;
+    color: #001a1c;
 }
 
 @media (max-width: 560px) {
@@ -606,7 +606,7 @@
 }
 
 .locker-file:hover .locker-body {
-    box-shadow: 0 26px 46px -16px rgba(0, 128, 140, 0.5);
+    box-shadow: 0 26px 46px -16px rgba(0, 130, 142, 0.5);
 }
 
 .locker-body h3 {
@@ -650,7 +650,7 @@
 }
 
 .assignment-status.status-overdue {
-    background: #ff5c5c;
+    background: #001a1c;
     color: #fff;
 }
 
@@ -700,7 +700,7 @@
     width: 100%;
     aspect-ratio: 1;
     border-radius: 5px;
-    background: rgba(0, 128, 140, 0.1);
+    background: rgba(0, 130, 142, 0.1);
     border: 1px solid var(--line);
 }
 

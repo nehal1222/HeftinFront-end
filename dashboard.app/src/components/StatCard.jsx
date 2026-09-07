@@ -39,8 +39,8 @@ export default function StatCard({ card, onDismiss }) {
       animate={{ scale: 1 }}
       transition={{ duration: 0.25 }}
     >
-      <span className="dash-stat-label">{card.label}</span>
       <strong>{card.value}</strong>
+      <span className="dash-stat-label">{card.label}</span>
       <span className={`dash-stat-delta${card.deltaClass ? ` ${card.deltaClass}` : ''}`}>
         {card.delta}
       </span>

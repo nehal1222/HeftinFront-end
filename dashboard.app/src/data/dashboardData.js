@@ -12,8 +12,8 @@ export const OVERALL_ACCURACY = 84
 export const PIE_SLICES = [
   { label: 'Quant', pct: 32, color: 'var(--teal)' },
   { label: 'Reasoning', pct: 26, color: 'var(--teal-light)' },
-  { label: 'English', pct: 24, color: '#006670' },
-  { label: 'General Knowledge', pct: 18, color: '#5fb8c4' },
+  { label: 'English', pct: 24, color: '#006f79' },
+  { label: 'General Knowledge', pct: 18, color: '#40a1aa' },
 ]
 
 export const RECENT_ATTEMPTS = [
@@ -61,7 +61,7 @@ export const CHAPTER_SUBJECTS = [
   },
   {
     subject: 'English',
-    color: '#006670',
+    color: '#006f79',
     chapters: [
       { name: 'Reading Comprehension', questions: 32, accuracy: 76 },
       { name: 'Cloze Test', questions: 22, accuracy: 80 },
@@ -70,7 +70,7 @@ export const CHAPTER_SUBJECTS = [
   },
   {
     subject: 'General Knowledge',
-    color: '#5fb8c4',
+    color: '#40a1aa',
     chapters: [
       { name: 'Current Affairs', questions: 50, accuracy: 73 },
       { name: 'Banking Awareness', questions: 30, accuracy: 77 },
@@ -102,11 +102,11 @@ export const ALL_RESULTS = [
 
 /* ---------- Rank tiers ---------- */
 export const RANK_TIERS = [
-  { name: 'Elite', max: 50, color: '#00808c' },
-  { name: 'Platinum', max: 200, color: '#8cc6cb' },
-  { name: 'Gold', max: 1000, color: '#006670' },
-  { name: 'Silver', max: 5000, color: '#5fb8c4' },
-  { name: 'Bronze', max: Infinity, color: '#013a40' },
+  { name: 'Elite', max: 50, color: '#00828e' },
+  { name: 'Platinum', max: 200, color: '#99cdd2' },
+  { name: 'Gold', max: 1000, color: '#006f79' },
+  { name: 'Silver', max: 5000, color: '#40a1aa' },
+  { name: 'Bronze', max: Infinity, color: '#003439' },
 ]
 
 export function tierForRank(rank) {
