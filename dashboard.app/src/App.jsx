@@ -81,33 +81,35 @@ export default function App() {
         <Sidebar view={view} onNavigate={setView} role={role} onToggleRole={toggleRole} />
 
         <div className="dash-main">
-          <TopBar title={copy.title} subtitle={copy.subtitle} role={role} />
+          <div className="dash-main-inner">
+            <TopBar title={copy.title} subtitle={copy.subtitle} role={role} />
 
-          {role === 'student' && view === 'overview' && (
-            <>
-              <WelcomeBanner />
-              <StatCardGrid />
-              <StreakCalendar />
+            {role === 'student' && view === 'overview' && (
+              <>
+                <WelcomeBanner />
+                <StatCardGrid />
+                <StreakCalendar />
 
-              <section className="dash-panels">
-                <PerformanceChartPanel onZoomIn={() => setZoomedPanel('trend')} />
-                <AccuracyRingPanel onZoomIn={() => setZoomedPanel('accuracy')} />
-              </section>
+                <section className="dash-panels">
+                  <PerformanceChartPanel onZoomIn={() => setZoomedPanel('trend')} />
+                  <AccuracyRingPanel onZoomIn={() => setZoomedPanel('accuracy')} />
+                </section>
 
-              <PieChartPanel onZoomIn={() => setZoomedPanel('subjects')} />
-              <AttemptsTable />
-            </>
-          )}
+                <PieChartPanel onZoomIn={() => setZoomedPanel('subjects')} />
+                <AttemptsTable />
+              </>
+            )}
 
-          {view === 'assignments' && <AssignmentsPage onStartQuiz={setActiveQuiz} />}
-          {view === 'test-series' && <TestSeriesPage onStartQuiz={setActiveQuiz} />}
-          {view === 'practice' && <PracticePage onStartQuiz={setActiveQuiz} />}
-          {view === 'results' && <ResultsPage />}
-          {view === 'leaderboard' && <LeaderboardPage />}
-          {view === 'settings' && <SettingsPage />}
-          {view === 'submissions' && (
-            <TeacherSubmissionsPage submissions={submissions} onReview={setReviewing} />
-          )}
+            {view === 'assignments' && <AssignmentsPage onStartQuiz={setActiveQuiz} />}
+            {view === 'test-series' && <TestSeriesPage onStartQuiz={setActiveQuiz} />}
+            {view === 'practice' && <PracticePage onStartQuiz={setActiveQuiz} />}
+            {view === 'results' && <ResultsPage />}
+            {view === 'leaderboard' && <LeaderboardPage />}
+            {view === 'settings' && <SettingsPage />}
+            {view === 'submissions' && (
+              <TeacherSubmissionsPage submissions={submissions} onReview={setReviewing} />
+            )}
+          </div>
         </div>
       </div>
 
