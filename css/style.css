@@ -1537,6 +1537,26 @@ a:hover {
     }
 
 
+    .role-option-card {
+
+        padding: 11px 4px;
+
+        font-size: 10.5px;
+
+        gap: 4px;
+
+    }
+
+
+    .role-option-icon svg {
+
+        width: 17px;
+
+        height: 17px;
+
+    }
+
+
     .circle-one {
 
         width: 280px;
