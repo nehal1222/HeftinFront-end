@@ -837,24 +837,24 @@ header h1 {
 
 .process-steps {
     position: relative;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
-    max-width: 1040px;
+    display: flex;
+    flex-direction: column;
+    max-width: 620px;
     margin: 0 auto;
-    text-align: center;
+    text-align: left;
 }
 
 .process-steps::before {
     content: '';
     position: absolute;
     top: 45px;
-    left: 20%;
-    right: 20%;
-    height: 6px;
+    bottom: 45px;
+    left: 45px;
+    width: 6px;
+    margin-left: -3px;
     background-image: radial-gradient(circle, var(--line) 2px, transparent 2.2px);
-    background-size: 14px 6px;
-    background-repeat: repeat-x;
+    background-size: 6px 14px;
+    background-repeat: repeat-y;
     background-position: center;
     z-index: 0;
 }
@@ -862,6 +862,10 @@ header h1 {
 .process-step {
     position: relative;
     z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 28px;
+    padding: 28px 0;
     transition: transform 0.25s ease;
 }
 
@@ -870,14 +874,19 @@ header h1 {
 .process-steps .process-step:nth-child(3) { transition-delay: 0.24s; }
 
 .process-step:hover {
-    transform: translateY(-4px);
+    transform: translateX(4px);
+}
+
+.process-step-body {
+    flex: 1;
+    padding-top: 10px;
 }
 
 .process-bubble-cluster {
     position: relative;
     width: 90px;
     height: 90px;
-    margin: 0 auto 18px;
+    flex-shrink: 0;
 }
 
 .process-bubble-cluster::before {
@@ -958,14 +967,13 @@ header h1 {
 .process-step p {
     font-size: 13.5px;
     color: var(--ink-soft);
-    max-width: 260px;
-    margin: 0 auto;
+    max-width: 380px;
 }
 
 .process-step-stat {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 6px;
     margin-top: 14px;
     padding-top: 12px;
@@ -1006,13 +1014,28 @@ header h1 {
 }
 
 @media (max-width: 640px) {
-    .process-steps {
-        grid-template-columns: 1fr;
-        gap: 36px;
+    .process-bubble-cluster {
+        width: 66px;
+        height: 66px;
+    }
+
+    .process-icon {
+        width: 66px;
+        height: 66px;
+    }
+
+    .process-icon svg {
+        width: 24px;
+        height: 24px;
     }
 
     .process-steps::before {
-        display: none;
+        left: 33px;
+    }
+
+    .process-step {
+        gap: 18px;
+        padding: 20px 0;
     }
 }
 
