@@ -850,12 +850,10 @@ header h1 {
     top: 45px;
     bottom: 45px;
     left: 45px;
-    width: 6px;
-    margin-left: -3px;
-    background-image: radial-gradient(circle, var(--line) 2px, transparent 2.2px);
-    background-size: 6px 14px;
-    background-repeat: repeat-y;
-    background-position: center;
+    width: 3px;
+    margin-left: -1.5px;
+    border-radius: 999px;
+    background: linear-gradient(to bottom, var(--teal), rgba(0, 130, 142, 0.15));
     z-index: 0;
 }
 
