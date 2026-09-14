@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>For Institutes &amp; Coaching Centers — Heftin Academy</title>
+    <meta name="description" content="Bring Heftin Academy's mock tests, analytics, and dashboards to your school, college, or coaching institute — with your own branded exam universe." />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  </head>
+  <body>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('heftin-theme');
+          if (t !== 'light' && t !== 'dark') {
+            t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.body.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
+
+    <div class="cursor-dot" aria-hidden="true"></div>
+    <div class="cursor-ring" aria-hidden="true"></div>
+
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="index.html" class="brand">
+                <img src="images/logo.jpeg" alt="Heftin Academy" class="brand-logo">
+                <span class="brand-name">Heftin Academy</span>
+            </a>
+
+            <button type="button" class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navCollapse">
+                <span></span><span></span><span></span>
+            </button>
+
+            <div class="navbar-collapse" id="navCollapse">
+                <ul>
+                    <li><a href="explore.html">Explore</a></li>
+                    <li><a href="b2b.html">For Institutes</a></li>
+                    <li><a href="index.html#">Test Series</a></li>
+                    <li><a href="index.html#">Practice</a></li>
+                </ul>
+                <div class="nav-actions-inner">
+                    <a href="premium.html" class="go-premium">Go Premium</a>
+                    <a href="login.html" class="login">Login</a>
+                    <a href="#contact" class="start-button">Request a Demo</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+
+        <section class="exam-explore-hero">
+            <div class="exam-explore-hero-inner reveal">
+                <p class="eyebrow">FOR SCHOOLS, COLLEGES &amp; COACHING INSTITUTES</p>
+                <h1 class="split-heading"><span class="split-heading-lead">Your Institute,</span><span class="split-heading-bold">Building Rank Ones.</span></h1>
+                <p class="exams-competitive-line">Give every student, batch, and campus real exam-condition mock tests, instant analytics, and a dashboard built for institutes — not just individuals.</p>
+
+                <div class="b2b-hero-actions">
+                    <a href="#contact" class="start-button">Request a Demo</a>
+                    <a href="#exam-universe" class="btn-outline">See what's included</a>
+                </div>
+
+                <div class="hero-stats b2b-hero-stats">
+                    <div class="hero-stat"><strong>300+</strong><span>Partner institutes</span></div>
+                    <div class="hero-stat"><strong>1.2L+</strong><span>Students on institute batches</span></div>
+                    <div class="hero-stat"><strong>48 hrs</strong><span>Average onboarding time</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="exam-categories" id="exam-universe">
+            <div class="exam-categories-inner">
+
+                <div style="text-align:center; margin-bottom: 8px;" class="reveal">
+                    <p class="eyebrow">YOUR OWN EXAM UNIVERSE</p>
+                    <h2 class="split-heading" style="justify-content:center;"><span class="split-heading-lead">Every batch,</span><span class="split-heading-bold">Its Own Test Series.</span></h2>
+                    <p class="exams-competitive-line" style="margin: 0 auto 8px;">Configure a dedicated set of exams for your institute — separate from the public catalog, branded and scheduled your way.</p>
+                    <a href="create-exam.html" class="btn-outline">Create your own exam &rarr;</a>
+                </div>
+
+                <div class="exam-category reveal">
+                    <div class="exam-category-head">
+                        <h2>Campus Recruitment &amp; Placement</h2>
+                        <span class="exam-category-count">6 exams</span>
+                    </div>
+                    <div class="exam-chip-grid">
+                        <a class="exam-chip" href="#contact">Aptitude &amp; Reasoning</a>
+                        <a class="exam-chip" href="#contact">Verbal Ability</a>
+                        <a class="exam-chip" href="#contact">Coding Rounds</a>
+                        <a class="exam-chip" href="#contact">Group Discussion Prep</a>
+                        <a class="exam-chip" href="#contact">HR Interview Prep</a>
+                        <a class="exam-chip" href="#contact">Company-Specific Drives</a>
+                    </div>
+                </div>
+
+                <div class="exam-category reveal">
+                    <div class="exam-category-head">
+                        <h2>College &amp; University Assessments</h2>
+                        <span class="exam-category-count">4 exams</span>
+                    </div>
+                    <div class="exam-chip-grid">
+                        <a class="exam-chip" href="#contact">Semester Mock Tests</a>
+                        <a class="exam-chip" href="#contact">Internal Assessments</a>
+                        <a class="exam-chip" href="#contact">Entrance Test Prep</a>
+                        <a class="exam-chip" href="#contact">Scholarship Exams</a>
+                    </div>
+                </div>
+
+                <div class="exam-category reveal">
+                    <div class="exam-category-head">
+                        <h2>Coaching Batch Programs</h2>
+                        <span class="exam-category-count">5 exams</span>
+                    </div>
+                    <div class="exam-chip-grid">
+                        <a class="exam-chip" href="#contact">Banking Batch Series</a>
+                        <a class="exam-chip" href="#contact">SSC Batch Series</a>
+                        <a class="exam-chip" href="#contact">Railways Batch Series</a>
+                        <a class="exam-chip" href="#contact">UPSC Batch Series</a>
+                        <a class="exam-chip" href="#contact">State PSC Batch Series</a>
+                    </div>
+                </div>
+
+                <div class="exam-category reveal">
+                    <div class="exam-category-head">
+                        <h2>School Board Practice</h2>
+                        <span class="exam-category-count">4 exams</span>
+                    </div>
+                    <div class="exam-chip-grid">
+                        <a class="exam-chip" href="#contact">CBSE Mock Tests</a>
+                        <a class="exam-chip" href="#contact">ICSE Mock Tests</a>
+                        <a class="exam-chip" href="#contact">State Board Mock Tests</a>
+                        <a class="exam-chip" href="#contact">Olympiad Prep</a>
+                    </div>
+                </div>
+
+                <div class="exam-category reveal">
+                    <div class="exam-category-head">
+                        <h2>Corporate L&amp;D &amp; Certification</h2>
+                        <span class="exam-category-count">4 exams</span>
+                    </div>
+                    <div class="exam-chip-grid">
+                        <a class="exam-chip" href="#contact">Onboarding Assessments</a>
+                        <a class="exam-chip" href="#contact">Skill Certification</a>
+                        <a class="exam-chip" href="#contact">Compliance Quizzes</a>
+                        <a class="exam-chip" href="#contact">Role-Readiness Tests</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="features-inner reveal">
+                <div class="features-media corner-marks">
+                    <video class="features-video reveal" data-pool="random" autoplay muted loop playsinline aria-hidden="true">
+                        <source src="videos/GRPSTUDY.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="features-copy">
+                    <p class="eyebrow">WHY INSTITUTES CHOOSE HEFTIN</p>
+                    <h2 class="split-heading"><span class="split-heading-lead">Everything your institute needs,</span><span class="split-heading-bold">Nothing it doesn't.</span></h2>
+
+                    <div class="feature-grid">
+                        <div class="feature reveal">
+                            <span class="feature-num">01</span>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 4.5h9a2.5 2.5 0 012.5 2.5v12.5H7.5A2.5 2.5 0 015 16.9V4.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 16.5h11.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                            </div>
+                            <h3>White-labeled for your institute</h3>
+                            <p>Your logo, your colors, your domain — students see your brand, not ours.</p>
+                        </div>
+
+                        <div class="feature reveal">
+                            <span class="feature-num">02</span>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20V10M12 20V4M20 20v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
+                            <h3>One dashboard for every batch</h3>
+                            <p>Track cohort-wide accuracy, attendance, and rank movement from a single admin view.</p>
+                        </div>
+
+                        <div class="feature reveal">
+                            <span class="feature-num">03</span>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
+                            <h3>Dedicated onboarding &amp; support</h3>
+                            <p>A named account manager sets up your exam universe and trains your faculty.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="process">
+            <span class="section-texture texture-diamond reveal" aria-hidden="true"></span>
+            <div class="process-inner reveal">
+                <p class="eyebrow">HOW IT WORKS</p>
+                <h2 class="split-heading"><span class="split-heading-lead">Three steps to launch</span><span class="split-heading-bold">Your Institute</span></h2>
+                <span class="rule-accent" aria-hidden="true"></span>
+
+                <div class="process-steps">
+                    <div class="process-step reveal">
+                        <div class="process-bubble-cluster">
+                            <span class="process-bubble-mini mini-1" aria-hidden="true"></span>
+                            <span class="process-bubble-mini mini-2" aria-hidden="true"></span>
+                            <div class="process-icon icon-1">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20l1-4L15.5 5.5a1.5 1.5 0 0 1 2.12 0l.88.88a1.5 1.5 0 0 1 0 2.12L8 19l-4 1Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 7.5l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                            </div>
+                        </div>
+                        <div class="process-step-body">
+                            <span class="process-step-pill">STEP 01</span>
+                            <h3>Tell Us Your Batches</h3>
+                            <p>Share your student count, exam focus, and branding needs in a 15-minute call.</p>
+                            <span class="process-step-stat">Free discovery call</span>
+                        </div>
+                    </div>
+
+                    <div class="process-step reveal">
+                        <div class="process-bubble-cluster">
+                            <span class="process-bubble-mini mini-1" aria-hidden="true"></span>
+                            <span class="process-bubble-mini mini-2" aria-hidden="true"></span>
+                            <div class="process-icon icon-2">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20V10M12 20V4M20 20v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
+                        </div>
+                        <div class="process-step-body">
+                            <span class="process-step-pill">STEP 02</span>
+                            <h3>We Build Your Exam Universe</h3>
+                            <p>We configure your own test series, question banks, and dashboards within 48 hours.</p>
+                            <span class="process-step-stat">48-hour setup</span>
+                        </div>
+                    </div>
+
+                    <div class="process-step reveal">
+                        <div class="process-bubble-cluster">
+                            <span class="process-bubble-mini mini-1" aria-hidden="true"></span>
+                            <span class="process-bubble-mini mini-2" aria-hidden="true"></span>
+                            <div class="process-icon icon-3">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 17l5-5 4 4 7-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 7h6v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
+                        </div>
+                        <div class="process-step-body">
+                            <span class="process-step-pill">STEP 03</span>
+                            <h3>Your Students Start Competing</h3>
+                            <p>Batches go live with real exam-condition mocks and instant, cohort-wide analytics.</p>
+                            <span class="process-step-stat">Live in a week</span>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#contact" class="process-cta">Talk to our partnerships team &rarr;</a>
+            </div>
+        </section>
+
+        <section class="testimonial">
+            <div class="testimonial-inner reveal corner-marks on-dark">
+                <span class="quote-mark">&ldquo;</span>
+                <p class="quote">Heftin gave our placement cell a dedicated aptitude test series in under a week. Attendance in mock rounds went up because students could finally see where they stood against the whole batch.</p>
+                <div class="testimonial-author">
+                    <span class="name">Dr. Rina Kapoor</span>
+                    <span class="role">Training &amp; Placement Officer, Coaching Institute</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="b2b-contact" id="contact">
+            <div class="b2b-contact-inner reveal">
+                <div class="b2b-contact-intro">
+                    <p class="eyebrow">PARTNER WITH US</p>
+                    <h2 class="split-heading"><span class="split-heading-lead">Ready to bring Rank One</span><span class="split-heading-bold">To Your Campus?</span></h2>
+                    <p class="exams-competitive-line" style="margin: 0 0 8px;">Tell us about your institute and our partnerships team will get back within one business day.</p>
+                </div>
+
+                <div id="b2bFormView">
+                    <form class="b2b-form" id="b2bForm" novalidate>
+                        <div class="b2b-form-row">
+                            <div class="b2b-field">
+                                <label for="instituteName">Institute / organization name</label>
+                                <input type="text" id="instituteName" placeholder="e.g. Aravali Career Academy" required>
+                            </div>
+                            <div class="b2b-field">
+                                <label for="contactPerson">Contact person</label>
+                                <input type="text" id="contactPerson" placeholder="Your full name" required>
+                            </div>
+                        </div>
+
+                        <div class="b2b-form-row">
+                            <div class="b2b-field">
+                                <label for="workEmail">Work email</label>
+                                <input type="email" id="workEmail" placeholder="you@institute.com" required>
+                            </div>
+                            <div class="b2b-field">
+                                <label for="phone">Phone number</label>
+                                <input type="tel" id="phone" placeholder="+91 98765 43210" required>
+                            </div>
+                        </div>
+
+                        <div class="b2b-form-row">
+                            <div class="b2b-field">
+                                <label for="studentCount">Number of students</label>
+                                <select id="studentCount" required>
+                                    <option value="" disabled selected>Select a range</option>
+                                    <option value="<100">Under 100</option>
+                                    <option value="100-500">100 – 500</option>
+                                    <option value="500-2000">500 – 2,000</option>
+                                    <option value="2000+">2,000+</option>
+                                </select>
+                            </div>
+                            <div class="b2b-field">
+                                <label for="focusArea">Primary exam focus</label>
+                                <input type="text" id="focusArea" placeholder="e.g. Banking, SSC, Placements">
+                            </div>
+                        </div>
+
+                        <div class="b2b-field">
+                            <label for="message">Anything else we should know?</label>
+                            <textarea id="message" rows="4" placeholder="Tell us about your institute and what you're looking for"></textarea>
+                        </div>
+
+                        <button type="submit" class="start-button b2b-submit" id="b2bSubmit">Request a Demo</button>
+                    </form>
+
+                    <p class="b2b-contact-alt">Prefer email? Write to us directly at <a href="mailto:hello@example.com">hello@example.com</a></p>
+                </div>
+
+                <div id="b2bSuccessView" class="b2b-success hidden">
+                    <div class="b2b-success-icon">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 6 9 17l-5-5"></path>
+                        </svg>
+                    </div>
+                    <h3>Request received</h3>
+                    <p>Thanks — our partnerships team will reach out within one business day to set up your demo.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <img src="images/logo.jpeg" alt="Heftin Academy" class="brand-logo">
+                    <span>Heftin Academy</span>
+                </div>
+                <p>Every mock test brings you closer to rank one.</p>
+                <p class="footer-contact">Contact: <a href="mailto:hello@example.com">hello@example.com</a></p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html#">Test Series</a></li>
+                    <li><a href="index.html#">Performance</a></li>
+                    <li><a href="index.html#">Study Material</a></li>
+                    <li><a href="index.html#">Pricing</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="b2b.html">For Institutes</a></li>
+                    <li><a href="index.html#">About Us</a></li>
+                    <li><a href="index.html#">Careers</a></li>
+                    <li><a href="index.html#">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="index.html#">Help Center</a></li>
+                    <li><a href="index.html#">FAQs</a></li>
+                    <li><a href="index.html#">Community</a></li>
+                    <li><a href="index.html#">Guides</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="index.html#">Privacy Policy</a></li>
+                    <li><a href="index.html#">Terms of Service</a></li>
+                    <li><a href="index.html#">Refund Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Heftin Academy. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+      (function () {
+        var targets = document.querySelectorAll('.reveal');
+        if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            targets.forEach(function (el) { el.classList.add('is-visible'); });
+            return;
+        }
+
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+        targets.forEach(function (el) { observer.observe(el); });
+      })();
+    </script>
+
+    <script>
+      (function () {
+        if (window.matchMedia('(pointer: coarse)').matches) return;
+
+        var dot = document.querySelector('.cursor-dot');
+        var ring = document.querySelector('.cursor-ring');
+        if (!dot || !ring) return;
+
+        document.addEventListener('mousemove', function (event) {
+            dot.style.transform = 'translate(' + event.clientX + 'px,' + event.clientY + 'px)';
+            ring.style.transform = 'translate(' + event.clientX + 'px,' + event.clientY + 'px)';
+        });
+      })();
+    </script>
+
+    <script>
+      (function () {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (typeof Lenis === 'undefined') return;
+
+        var lenis = new Lenis({
+            duration: 1.1,
+            smoothWheel: true,
+            easing: function (t) { return 1 - Math.pow(1 - t, 3); }
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+      })();
+    </script>
+
+    <script>
+      (function () {
+        var form = document.getElementById('b2bForm');
+        if (!form) return;
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            document.getElementById('b2bFormView').classList.add('hidden');
+            document.getElementById('b2bSuccessView').classList.remove('hidden');
+        });
+      })();
+    </script>
+
+    <script src="js/nav-toggle.js"></script>
+
+  </body>
+</html>
