@@ -2,6 +2,8 @@
 
 The shared design system lives in `src/index.css` as Tailwind v4 `@theme` tokens. Use the tokens in new UI code; component CSS remains responsible for complex visuals and behavior.
 
+Tailwind v4 is configured through CSS, so this project intentionally has no `tailwind.config.js`. Add or update tokens in the `@theme` block in `src/index.css` instead.
+
 ## Conventions
 
 - Prefer semantic token classes such as `bg-primary`, `text-muted`, `p-card`, `rounded-card`, and `font-display` over raw hex values.
