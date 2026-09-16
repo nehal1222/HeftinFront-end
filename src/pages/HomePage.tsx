@@ -1,4 +1,5 @@
 import { APP_NAME } from '@/lib/constants'
+import { Link } from 'react-router-dom'
 
 export function HomePage() {
   return (
@@ -11,6 +12,12 @@ export function HomePage() {
         <code className="text-foreground">AGENTS.md</code>, then create a feature branch. This is an
         e-examination portal (prelims + mains). Full schema and AI add-ons are a team plan.
       </p>
+      <Link
+        to="/design-system"
+        className="w-fit rounded-control bg-primary px-control py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-dark"
+      >
+        View design tokens
+      </Link>
     </main>
   )
 }
