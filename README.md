@@ -63,3 +63,5 @@ Heftin Admin assigns **roles and rights to the organization**. Org Admin then us
 Read the **Org entitlements** section in `AGENTS.md`. Taiga tasks: `HAC02-FE-*` (after Sprint 1 `HAC01-*`).
 
 Read `docs/PROJECT_STRUCTURE.md` before adding screens.
+
+Read [`docs/design-system.md`](docs/design-system.md) before building shared UI or updating design tokens.
