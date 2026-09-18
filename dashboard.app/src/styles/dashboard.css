@@ -151,6 +151,137 @@
     gap: 18px;
 }
 
+.subscription-services-page {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.subscription-services-heading,
+.subscription-plan-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.subscription-services-heading,
+.subscription-rights {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    padding: 20px;
+}
+
+.subscription-services-heading h2,
+.subscription-rights h3 {
+    margin-top: 5px;
+    color: var(--ink);
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+}
+
+.subscription-services-heading p {
+    max-width: 680px;
+    margin-top: 7px;
+    color: var(--ink-soft);
+    font-size: 13px;
+}
+
+.subscription-services-heading button,
+.subscription-plan button {
+    border: 0;
+    border-radius: 999px;
+    background: var(--teal);
+    padding: 9px 13px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.subscription-plan-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.subscription-plan {
+    display: flex;
+    min-height: 154px;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    padding: 16px;
+}
+
+.subscription-plan strong {
+    color: var(--ink);
+    font-family: 'Jost', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.subscription-plan span,
+.subscription-plan p,
+.subscription-rights-grid span {
+    display: block;
+    color: var(--ink-soft);
+    font-size: 11px;
+}
+
+.subscription-plan-top b {
+    color: var(--teal);
+    font-size: 10px;
+}
+
+.subscription-plan p {
+    flex: 1;
+    margin: 0;
+}
+
+.subscription-plan button {
+    align-self: flex-start;
+    background: var(--teal-soft);
+    color: var(--teal);
+}
+
+.subscription-rights-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.subscription-rights-grid > div {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 13px;
+}
+
+.subscription-rights-grid strong {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--ink);
+    font-size: 12px;
+}
+
+@media (max-width: 900px) {
+    .subscription-plan-grid,
+    .subscription-rights-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .subscription-plan-grid,
+    .subscription-rights-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .role-landing-hero,
 .role-landing-grid {
     display: grid;

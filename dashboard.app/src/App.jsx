@@ -22,6 +22,7 @@ import PaperReviewOverlay from './components/PaperReviewOverlay.jsx'
 import DesignSystemPage from './components/DesignSystemPage.jsx'
 import B2BServicesPage from './components/B2BServicesPage.jsx'
 import RoleLandingPage from './components/RoleLandingPage.jsx'
+import SubscriptionServicesPage from './components/SubscriptionServicesPage.jsx'
 import { SUBMISSIONS } from './data/teacherData.js'
 
 function storedFirstName() {
@@ -44,6 +45,7 @@ const VIEW_COPY = {
   submissions: { title: 'Paper Submissions', subtitle: 'Review prelims scores and grade mains answer sheets.' },
   'design-system': { title: 'Design System', subtitle: 'Tailwind + CSS tokens - Sprint 1 (FE-01).' },
   organization: { title: 'Organization Services', subtitle: 'Manage UPSC batches, faculty, learners, and exam delivery.' },
+  subscriptions: { title: 'Subscriptions and Rights', subtitle: 'Define plan access and organization capability packs.' },
   landing: { title: 'Workspace', subtitle: 'Your role-based Heftin Academy home.' },
 }
 
@@ -123,6 +125,7 @@ export default function App() {
             )}
             {view === 'design-system' && <DesignSystemPage />}
             {view === 'organization' && <B2BServicesPage />}
+                      {view === 'subscriptions' && <SubscriptionServicesPage />}
           </div>
         </div>
       </div>

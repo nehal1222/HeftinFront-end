@@ -60,7 +60,7 @@ export default function RoleLandingPage({ role, onNavigate }) {
         <article className="role-landing-focus"><span className="dash-section-label">Focus now</span><strong>{landing.focus[0]}</strong><p>{landing.focus[1]}</p><button type="button" onClick={() => onNavigate(role === 'org_admin' ? 'organization' : role === 'faculty' ? 'submissions' : 'overview')}>Open focus -&gt;</button></article>
         <article className="role-landing-activity"><span className="dash-section-label">Recent activity</span>{landing.activity.map(([label, detail]) => <div key={label}><strong>{label}</strong><span>{detail}</span></div>)}</article>
       </div>
-      <div className="role-landing-actions">{landing.actions.map(([label, copy], index) => <button type="button" key={label} onClick={() => onNavigate(index === 0 && role === 'org_admin' ? 'organization' : index === 0 && role === 'faculty' ? 'submissions' : index === 1 && role === 'super_admin' ? 'organization' : 'overview')}><strong>{label}</strong><span>{copy}</span><b>Open →</b></button>)}</div>
+      <div className="role-landing-actions">{landing.actions.map(([label, copy], index) => <button type="button" key={label} onClick={() => onNavigate(index === 0 && role === 'org_admin' ? 'organization' : index === 0 && role === 'faculty' ? 'submissions' : index === 1 && role === 'super_admin' ? 'subscriptions' : 'overview')}><strong>{label}</strong><span>{copy}</span><b>Open →</b></button>)}</div>
     </section>
   )
 }
