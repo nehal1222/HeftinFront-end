@@ -50,6 +50,14 @@ const SUPER_ADMIN_NAV = [
 export default function Sidebar({ view, onNavigate, role, onToggleRole }) {
   const items = role === 'super_admin' ? SUPER_ADMIN_NAV : role === 'organization' || role === 'org_admin' ? ORGANIZATION_NAV : role === 'teacher' || role === 'faculty' ? TEACHER_NAV : STUDENT_NAV
 
+  function signOut() {
+    try {
+      localStorage.removeItem('heftinRole')
+      localStorage.removeItem('heftinName')
+    } catch (e) {}
+    window.location.href = '../index.html'
+  }
+
   return (
     <motion.aside
       className="dash-sidebar"
@@ -99,6 +107,9 @@ export default function Sidebar({ view, onNavigate, role, onToggleRole }) {
       </a>
 
       <a href="../index.html" className="dash-back">&larr; Back to site</a>
+      <button type="button" className="dash-sign-out" onClick={signOut}>
+        Sign out
+      </button>
     </motion.aside>
   )
 }
