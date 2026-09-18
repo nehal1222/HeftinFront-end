@@ -667,6 +667,187 @@ body {
 
 }
 
+.login-role-group {
+    margin-top: 18px;
+}
+
+.login-role-select {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    margin-top: 8px;
+}
+
+.login-role-option {
+    cursor: pointer;
+}
+
+.login-role-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.login-role-option span {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 10px 8px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: center;
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.login-role-option span:hover {
+    border-color: var(--primary);
+}
+
+.login-role-option input:checked + span {
+    border-color: var(--primary);
+    background: rgba(0, 130, 142, 0.1);
+    color: var(--text);
+}
+
+.login-role-option input:focus-visible + span {
+    box-shadow: 0 0 0 4px rgba(0, 130, 142, 0.15);
+}
+
+.workspace-welcome {
+    position: fixed;
+    z-index: 20;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(244, 251, 251, 0.96);
+    animation: workspace-welcome-fade 0.35s ease both;
+}
+
+.workspace-welcome.hidden {
+    display: none;
+}
+
+.workspace-welcome-card {
+    width: min(100%, 430px);
+    padding: 36px 30px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 24px 70px rgba(0, 72, 78, 0.16);
+    text-align: center;
+    animation: workspace-card-rise 0.55s 0.08s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes workspace-welcome-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes workspace-card-rise {
+    from { opacity: 0; transform: translateY(16px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.workspace-welcome-mark {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 16px;
+    place-items: center;
+    border-radius: 14px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 800;
+    animation: workspace-mark-pop 0.5s 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes workspace-mark-pop {
+    from { opacity: 0; transform: scale(0.5) rotate(-12deg); }
+    to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+.workspace-welcome-eyebrow {
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.workspace-welcome-card h2 {
+    margin-top: 8px;
+    color: var(--text);
+    font-family: 'Jost', sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+}
+
+.workspace-welcome-person {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.workspace-welcome-person strong {
+    color: var(--text);
+}
+
+.workspace-welcome-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 24px;
+    text-align: left;
+}
+
+.workspace-welcome-details span {
+    padding: 12px;
+    border-radius: 10px;
+    background: #f4fbfb;
+}
+
+.workspace-welcome-details small,
+.workspace-welcome-details strong {
+    display: block;
+}
+
+.workspace-welcome-details small {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.workspace-welcome-details strong {
+    margin-top: 4px;
+    color: var(--text);
+    font-size: 12px;
+}
+
+.workspace-welcome-loading {
+    margin-top: 22px;
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 600;
+    animation: workspace-loading-pulse 1.2s 0.45s ease-in-out infinite alternate;
+}
+
+@keyframes workspace-loading-pulse {
+    from { opacity: 0.45; }
+    to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .workspace-welcome,
+    .workspace-welcome-card,
+    .workspace-welcome-mark,
+    .workspace-welcome-loading {
+        animation: none;
+    }
+}
+
 
 .role-option input {
 

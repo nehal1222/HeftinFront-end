@@ -20,6 +20,9 @@ import WelcomeBanner from './components/WelcomeBanner.jsx'
 import TeacherSubmissionsPage from './components/TeacherSubmissionsPage.jsx'
 import PaperReviewOverlay from './components/PaperReviewOverlay.jsx'
 import DesignSystemPage from './components/DesignSystemPage.jsx'
+import B2BServicesPage from './components/B2BServicesPage.jsx'
+import RoleLandingPage from './components/RoleLandingPage.jsx'
+import SubscriptionServicesPage from './components/SubscriptionServicesPage.jsx'
 import { SUBMISSIONS } from './data/teacherData.js'
 
 function storedFirstName() {
@@ -41,11 +44,15 @@ const VIEW_COPY = {
   settings: { title: 'Settings', subtitle: 'Your profile and notification preferences.' },
   submissions: { title: 'Paper Submissions', subtitle: 'Review prelims scores and grade mains answer sheets.' },
   'design-system': { title: 'Design System', subtitle: 'Tailwind + CSS tokens - Sprint 1 (FE-01).' },
+  organization: { title: 'Organization Services', subtitle: 'Manage UPSC batches, faculty, learners, and exam delivery.' },
+  subscriptions: { title: 'Subscriptions and Rights', subtitle: 'Define plan access and organization capability packs.' },
+  landing: { title: 'Workspace', subtitle: 'Everything you need for your next step.' },
 }
 
 function initialRole() {
   try {
     const stored = localStorage.getItem('heftinRole')
+    if (['individual', 'faculty', 'org_admin', 'organization', 'super_admin', 'admin'].includes(stored)) return stored === 'admin' ? 'super_admin' : stored === 'organization' ? 'org_admin' : stored
     return stored === 'teacher' ? 'teacher' : 'student'
   } catch (e) {
     return 'student'
@@ -54,7 +61,7 @@ function initialRole() {
 
 export default function App() {
   const [role, setRole] = useState(initialRole)
-  const [view, setView] = useState(() => (initialRole() === 'teacher' ? 'submissions' : 'overview'))
+  const [view, setView] = useState('landing')
   const [zoomedPanel, setZoomedPanel] = useState(null)
   const [activeQuiz, setActiveQuiz] = useState(null)
   const [submissions, setSubmissions] = useState(SUBMISSIONS)
@@ -63,8 +70,11 @@ export default function App() {
 
   function toggleRole() {
     setRole((current) => {
-      const next = current === 'student' ? 'teacher' : 'student'
-      setView(next === 'teacher' ? 'submissions' : 'overview')
+      const order = ['student', 'individual', 'faculty', 'org_admin', 'super_admin']
+      const currentRole = current === 'teacher' ? 'faculty' : current === 'organization' ? 'org_admin' : current
+      const next = order[(order.indexOf(currentRole) + 1) % order.length]
+      setView('landing')
+      localStorage.setItem('heftinRole', next)
       return next
     })
   }
@@ -86,7 +96,9 @@ export default function App() {
           <div className="dash-main-inner text-muted">
             <TopBar title={copy.title} subtitle={copy.subtitle} role={role} />
 
-            {role === 'student' && view === 'overview' && (
+            {view === 'landing' && <RoleLandingPage role={role} onNavigate={setView} />}
+
+            {(role === 'student' || role === 'individual') && view === 'overview' && (
               <>
                 <WelcomeBanner />
                 <StatCardGrid />
@@ -112,6 +124,8 @@ export default function App() {
               <TeacherSubmissionsPage submissions={submissions} onReview={setReviewing} />
             )}
             {view === 'design-system' && <DesignSystemPage />}
+            {view === 'organization' && <B2BServicesPage />}
+                      {view === 'subscriptions' && <SubscriptionServicesPage />}
           </div>
         </div>
       </div>

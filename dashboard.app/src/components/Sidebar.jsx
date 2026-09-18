@@ -9,6 +9,7 @@ const ICONS = {
   leaderboard: <path d="M6 20v-6M12 20V6M18 20v-9" strokeLinecap="round" />,
   settings: <><circle cx="12" cy="12" r="3" /><path d="M12 3v2.2M12 18.8V21M4.2 12H2M22 12h-2.2M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6" strokeLinecap="round" /></>,
   submissions: <><path d="M5 4.5h9a2.5 2.5 0 012.5 2.5v12.5H7.5A2.5 2.5 0 015 16.9V4.5z" strokeLinejoin="round" /><path d="M5 16.5h11.5" strokeLinecap="round" /></>,
+  organization: <><rect x="4" y="5" width="16" height="14" rx="2" /><path d="M8 9h8M8 13h5" strokeLinecap="round" /></>,
 }
 
 function NavIcon({ id }) {
@@ -34,8 +35,28 @@ const TEACHER_NAV = [
   { id: 'settings', label: 'Settings' },
 ]
 
+const ORGANIZATION_NAV = [
+  { id: 'organization', label: 'Organization' },
+  { id: 'submissions', label: 'UPSC Submissions' },
+  { id: 'settings', label: 'Settings' },
+]
+
+const SUPER_ADMIN_NAV = [
+  { id: 'organization', label: 'Organizations' },
+  { id: 'subscriptions', label: 'Subscriptions & rights' },
+  { id: 'settings', label: 'Platform settings' },
+]
+
 export default function Sidebar({ view, onNavigate, role, onToggleRole }) {
-  const items = role === 'teacher' ? TEACHER_NAV : STUDENT_NAV
+  const items = role === 'super_admin' ? SUPER_ADMIN_NAV : role === 'organization' || role === 'org_admin' ? ORGANIZATION_NAV : role === 'teacher' || role === 'faculty' ? TEACHER_NAV : STUDENT_NAV
+
+  function signOut() {
+    try {
+      localStorage.removeItem('heftinRole')
+      localStorage.removeItem('heftinName')
+    } catch (e) {}
+    window.location.href = '../index.html'
+  }
 
   return (
     <motion.aside
@@ -62,7 +83,7 @@ export default function Sidebar({ view, onNavigate, role, onToggleRole }) {
       </nav>
 
       <button type="button" className="role-switch-btn" onClick={onToggleRole}>
-        Switch to {role === 'teacher' ? 'Student' : 'Teacher'} view
+        Switch to next role
       </button>
 
       {role === 'student' && (
@@ -86,6 +107,9 @@ export default function Sidebar({ view, onNavigate, role, onToggleRole }) {
       </a>
 
       <a href="../index.html" className="dash-back">&larr; Back to site</a>
+      <button type="button" className="dash-sign-out" onClick={signOut}>
+        Sign out
+      </button>
     </motion.aside>
   )
 }

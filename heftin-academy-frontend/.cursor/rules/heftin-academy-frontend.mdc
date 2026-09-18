@@ -1,0 +1,16 @@
+---
+description: Heftin Academy frontend — follow AGENTS.md
+alwaysApply: true
+---
+
+# Heftin Academy frontend
+
+Read `AGENTS.md` before coding.
+
+- E-examination product only (not NexGen Athlete)
+- Vite + React 19 + TypeScript + Tailwind v4
+- One Axios client: `src/lib/axios.ts`
+- API in `src/services/`; types in `src/types/`
+- Pages thin; `@/` imports; `cn()` for classNames
+- Branch from `dev`: `feature/<TASK-ID>-slug`
+- Do not merge without approval; never push `main`

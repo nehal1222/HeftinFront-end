@@ -96,6 +96,7 @@
     flex-direction: column;
     gap: 32px;
     padding: 28px 20px;
+    box-sizing: border-box;
 }
 .brand-logo {
     width: 32px;
@@ -117,12 +118,700 @@
     flex-direction: column;
     gap: 2px;
     flex: 1;
+    width: 100%;
+}
+
+.dash-sign-out {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 8px;
+    background: transparent;
+    padding: 9px 12px;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dash-sign-out:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+/* ---------- B2B organization workspace ---------- */
+.b2b-services-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.role-landing-page {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    animation: role-landing-enter 0.5s ease both;
+}
+
+@keyframes role-landing-enter {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.role-landing-identity {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.role-landing-identity > div {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--card-bg);
+    padding: 11px 13px;
+    animation: role-panel-enter 0.45s ease both;
+}
+
+.role-landing-identity > div:nth-child(2) {
+    animation-delay: 0.06s;
+}
+
+.role-landing-identity > div:nth-child(3) {
+    animation-delay: 0.12s;
+}
+
+@keyframes role-panel-enter {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.role-landing-identity span,
+.role-landing-identity strong {
+    display: block;
+}
+
+.role-landing-identity span {
+    color: var(--ink-soft);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.role-landing-identity strong {
+    margin-top: 4px;
+    overflow: hidden;
+    color: var(--ink);
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.subscription-services-page {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.subscription-services-heading,
+.subscription-plan-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.subscription-services-heading,
+.subscription-rights {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    padding: 20px;
+}
+
+.subscription-services-heading h2,
+.subscription-rights h3 {
+    margin-top: 5px;
+    color: var(--ink);
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+}
+
+.subscription-services-heading p {
+    max-width: 680px;
+    margin-top: 7px;
+    color: var(--ink-soft);
+    font-size: 13px;
+}
+
+.subscription-services-heading button,
+.subscription-plan button {
+    border: 0;
+    border-radius: 999px;
+    background: var(--teal);
+    padding: 9px 13px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.subscription-plan-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.subscription-plan {
+    display: flex;
+    min-height: 154px;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    padding: 16px;
+}
+
+.subscription-plan strong {
+    color: var(--ink);
+    font-family: 'Jost', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.subscription-plan span,
+.subscription-plan p,
+.subscription-rights-grid span {
+    display: block;
+    color: var(--ink-soft);
+    font-size: 11px;
+}
+
+.subscription-plan-top b {
+    color: var(--teal);
+    font-size: 10px;
+}
+
+.subscription-plan p {
+    flex: 1;
+    margin: 0;
+}
+
+.subscription-plan button {
+    align-self: flex-start;
+    background: var(--teal-soft);
+    color: var(--teal);
+}
+
+.subscription-rights-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.subscription-rights-grid > div {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 13px;
+}
+
+.subscription-rights-grid strong {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--ink);
+    font-size: 12px;
+}
+
+@media (max-width: 900px) {
+    .subscription-plan-grid,
+    .subscription-rights-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .subscription-plan-grid,
+    .subscription-rights-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.role-landing-hero,
+.role-landing-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 18px;
+}
+
+.role-landing-hero {
+    grid-template-columns: 72px minmax(0, 1fr) auto;
+    align-items: start;
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--card-bg), var(--teal-soft));
+    animation: role-panel-enter 0.45s 0.16s ease both;
+}
+
+.role-landing-orb {
+    position: relative;
+    display: grid;
+    width: 72px;
+    height: 72px;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 5px solid var(--teal-light);
+    border-radius: 50%;
+    background: var(--teal-soft);
+    color: var(--teal);
+    font-family: 'Jost', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    box-shadow: 0 0 0 8px rgba(102, 180, 187, 0.12), 0 12px 28px rgba(0, 72, 78, 0.14);
+    animation: role-orb-in 0.6s 0.12s ease both;
+}
+
+.role-landing-orb::after {
+    position: absolute;
+    inset: -12px;
+    border: 1px dashed rgba(0, 130, 142, 0.28);
+    border-radius: 50%;
+    content: '';
+    animation: role-orbit 9s linear infinite;
+}
+
+.role-landing-orb b {
+    position: absolute;
+    right: -5px;
+    bottom: -3px;
+    display: grid;
+    width: 23px;
+    height: 23px;
+    place-items: center;
+    border: 3px solid var(--card-bg);
+    border-radius: 50%;
+    background: var(--teal);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 12px;
+}
+
+.role-landing-orb-super_admin {
+    border-color: #8ccbd0;
+    background: var(--teal);
+    color: #fff;
+}
+
+.role-landing-orb-super_admin b {
+    background: #003439;
+}
+
+@keyframes role-orb-in {
+    from { opacity: 0; transform: scale(0.7) rotate(-12deg); }
+    to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+@keyframes role-orbit {
+    to { transform: rotate(360deg); }
+}
+
+.role-landing-hero h2 {
+    margin-top: 6px;
+    color: var(--ink);
+    font-family: 'Jost', sans-serif;
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 300;
+}
+
+.role-landing-hero p {
+    max-width: 620px;
+    margin-top: 8px;
+    color: var(--ink-soft);
+    font-size: 13px;
+}
+
+.role-landing-badge {
+    border: 1px solid var(--teal-light);
+    border-radius: 999px;
+    padding: 7px 11px;
+    color: var(--teal);
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.role-landing-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.role-landing-stats > div,
+.role-landing-focus,
+.role-landing-activity,
+.role-landing-actions button {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+}
+
+.role-landing-stats > div {
+    padding: 16px;
+    animation: role-panel-enter 0.45s ease both;
+}
+
+.role-landing-stats > div:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.role-landing-stats > div:nth-child(3) {
+    animation-delay: 0.16s;
+}
+
+.role-landing-stats strong {
+    display: block;
+    color: var(--ink);
+    font-family: 'Jost', sans-serif;
+    font-size: 26px;
+}
+
+.role-landing-stats span,
+.role-landing-stats small {
+    display: block;
+    margin-top: 3px;
+    color: var(--ink-soft);
+    font-size: 12px;
+}
+
+.role-landing-stats small {
+    color: var(--teal);
+    font-size: 11px;
+}
+
+.role-landing-grid {
+    grid-template-columns: 1fr 1fr;
+}
+
+.role-landing-focus,
+.role-landing-activity {
+    padding: 18px;
+    animation: role-panel-enter 0.45s 0.22s ease both;
+}
+
+.role-landing-activity {
+    animation-delay: 0.28s;
+}
+
+.role-landing-focus strong {
+    display: block;
+    margin-top: 10px;
+    color: var(--ink);
+    font-family: 'Jost', sans-serif;
+    font-size: 20px;
+}
+
+.role-landing-focus p {
+    margin-top: 6px;
+    color: var(--ink-soft);
+    font-size: 12px;
+}
+
+.role-landing-focus button {
+    margin-top: 16px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--teal);
+    padding: 9px 13px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.role-landing-activity > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.role-landing-activity > div:last-child {
+    border-bottom: 0;
+}
+
+.role-landing-activity strong,
+.role-landing-activity span {
+    font-size: 12px;
+}
+
+.role-landing-activity strong {
+    color: var(--ink);
+}
+
+.role-landing-activity span {
+    color: var(--ink-soft);
+    text-align: right;
+}
+
+.role-landing-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.role-landing-actions button {
+    display: flex;
+    min-height: 112px;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+    text-align: left;
+    cursor: pointer;
+    animation: role-panel-enter 0.45s ease both;
+}
+
+.role-landing-actions button:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.role-landing-actions button:nth-child(3) {
+    animation-delay: 0.16s;
+}
+
+.role-landing-actions button:hover {
+    border-color: var(--teal);
+    transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .role-landing-page,
+    .role-landing-identity > div,
+    .role-landing-hero,
+    .role-landing-stats > div,
+    .role-landing-focus,
+    .role-landing-activity,
+    .role-landing-actions button {
+        animation: none;
+    }
+
+    .role-landing-orb,
+    .role-landing-orb::after {
+        animation: none;
+    }
+}
+
+.role-landing-actions strong {
+    color: var(--ink);
+    font-size: 13px;
+}
+
+.role-landing-actions span {
+    margin-top: 6px;
+    color: var(--ink-soft);
+    font-size: 11px;
+}
+
+.role-landing-actions b {
+    margin-top: auto;
+    color: var(--teal);
+    font-size: 11px;
+}
+
+@media (max-width: 760px) {
+    .role-landing-identity,
+    .role-landing-hero,
+    .role-landing-grid,
+    .role-landing-stats,
+    .role-landing-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+.b2b-services-heading,
+.b2b-panel-heading,
+.b2b-batch-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.b2b-services-heading h2,
+.b2b-panel-heading h3 {
+    margin: 4px 0 0;
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    color: var(--ink);
+}
+
+.b2b-services-heading p,
+.b2b-rights-panel > p {
+    margin-top: 6px;
+    color: var(--ink-soft);
+    font-size: 13px;
+}
+
+.b2b-pack-status,
+.b2b-panel-heading button,
+.b2b-create-exam {
+    border: 0;
+    border-radius: 999px;
+    background: var(--teal);
+    color: #fff;
+    padding: 9px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.b2b-service-stats,
+.b2b-service-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.b2b-service-stats > div,
+.b2b-service-panel {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    padding: 18px;
+}
+
+.b2b-service-stats strong {
+    display: block;
+    font-family: 'Jost', sans-serif;
+    font-size: 26px;
+    color: var(--ink);
+}
+
+.b2b-service-stats span,
+.b2b-batch span,
+.b2b-batch small,
+.b2b-exam span,
+.b2b-rights-panel p {
+    display: block;
+    color: var(--ink-soft);
+    font-size: 12px;
+}
+
+.b2b-service-grid {
+    grid-template-columns: 1.1fr 0.9fr;
+}
+
+.b2b-batch-list,
+.b2b-exam-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.b2b-batch,
+.b2b-exam {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 13px;
+}
+
+.b2b-batch strong,
+.b2b-exam strong,
+.b2b-rights strong {
+    display: block;
+    color: var(--ink);
+    font-size: 13px;
+}
+
+.b2b-batch b,
+.b2b-exam b {
+    color: var(--teal);
+    font-size: 11px;
+}
+
+.b2b-progress {
+    height: 6px;
+    margin: 10px 0 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--line);
+}
+
+.b2b-progress span {
+    height: 100%;
+    border-radius: inherit;
+    background: var(--teal);
+}
+
+.b2b-exam {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.b2b-create-exam {
+    width: 100%;
+    margin-top: 16px;
+}
+
+.b2b-rights-panel {
+    grid-column: 1 / -1;
+}
+
+.b2b-rights {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.b2b-rights > div {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.b2b-rights .is-enabled {
+    border-color: var(--teal-light);
+    background: var(--teal-soft);
+}
+
+.b2b-rights span {
+    display: block;
+    margin-top: 4px;
+    color: var(--ink-soft);
+    font-size: 11px;
+}
+
+@media (max-width: 760px) {
+    .b2b-service-grid,
+    .b2b-service-stats,
+    .b2b-rights {
+        grid-template-columns: 1fr;
+    }
 }
 
 .dash-nav a {
     display: flex;
     align-items: center;
     gap: 11px;
+    width: 100%;
+    box-sizing: border-box;
     color: rgba(255, 255, 255, 0.72);
     font-size: 13px;
     font-weight: 600;
@@ -762,9 +1451,10 @@
         position: sticky;
         top: 0;
         z-index: 20;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: 16px;
         padding: 16px 20px;
     }
 
@@ -777,6 +1467,11 @@
         flex-direction: row;
         flex-wrap: wrap;
         flex: none;
+        align-items: center;
+    }
+
+    .dash-nav a {
+        width: auto;
     }
 
     .dash-stats {

@@ -2,8 +2,47 @@
    not a live import. Re-sync manually if the shared tokens in the root
    stylesheet change later. */
 
-/* ---------- Fonts & tokens ---------- */
+@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,500;0,8..60,600;1,8..60,500&family=Inter:wght@400;500;600;700;800&family=Jost:wght@300;400;500&display=swap');
+
+/* Sprint 1 design tokens. Tailwind utilities such as bg-primary and
+   text-muted are generated from this vocabulary. */
+@theme {
+    /* Brand and semantic colors */
+    --color-primary: #00828e;
+    --color-primary-dark: #00484e;
+    --color-primary-soft: #cce6e8;
+    --color-surface: #ffffff;
+    --color-surface-soft: #f4fbfb;
+    --color-ink: #003439;
+    --color-muted: #557477;
+    --color-line: #cce6e8;
+    --color-on-primary: #ffffff;
+
+    /* Typography */
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-display: 'Jost', 'Inter', system-ui, sans-serif;
+    --font-serif: 'Source Serif 4', Georgia, serif;
+
+    /* Layout scale */
+    --spacing-page: 1.5rem;
+    --spacing-section: 2rem;
+    --spacing-card: 1rem;
+    --spacing-control: 0.75rem;
+
+    /* Shape */
+    --radius-control: 0.5rem;
+    --radius-card: 1.125rem;
+    --radius-pill: 999px;
+
+    /* Responsive layout */
+    --breakpoint-sm: 40rem;
+    --breakpoint-md: 48rem;
+    --breakpoint-lg: 64rem;
+    --breakpoint-xl: 80rem;
+}
+
+/* ---------- Fonts & tokens ---------- */
 
 :root {
     /* Strict brand system: #00828E + white only. Every other value below is

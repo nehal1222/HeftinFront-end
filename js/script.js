@@ -24,6 +24,21 @@ const buttonArrow = document.getElementById("buttonArrow");
 
 const loader = document.getElementById("loader");
 
+function showWorkspaceWelcome(role, name) {
+    const labels = {
+        student: ["Student", "Personal workspace"],
+        individual: ["Individual learner", "Personal workspace"],
+        faculty: ["Faculty", "Heftin UPSC Institute"],
+        org_admin: ["Organization Admin", "Heftin UPSC Institute"],
+        super_admin: ["Heftin Super Admin", "Heftin platform"],
+    };
+    const details = labels[role] || labels.student;
+    document.getElementById("welcomeName").textContent = name;
+    document.getElementById("welcomeRole").textContent = details[0];
+    document.getElementById("welcomeOrganization").textContent = details[1];
+    document.getElementById("workspaceWelcome").classList.remove("hidden");
+}
+
 
 /* ================================
    SHOW / HIDE PASSWORD
@@ -97,6 +112,8 @@ loginForm.addEventListener("submit", function (event) {
     const email = emailInput.value.trim();
 
     const password = passwordInput.value;
+
+    const selectedRole = loginForm.querySelector('input[name="role"]:checked')?.value || "student";
 
     let valid = true;
 
@@ -183,7 +200,14 @@ loginForm.addEventListener("submit", function (event) {
 
         setTimeout(function () {
 
-            window.location.href = "dashboard/index.html";
+            localStorage.setItem("heftinRole", selectedRole);
+            const displayName = email.split("@")[0];
+            localStorage.setItem("heftinName", displayName);
+            showWorkspaceWelcome(selectedRole, displayName);
+
+            setTimeout(function () {
+                window.location.href = "dashboard/index.html";
+            }, 10000);
 
         }, 700);
 

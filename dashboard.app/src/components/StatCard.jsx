@@ -1,4 +1,5 @@
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
+import { cn } from '../utils/cn.js'
 
 const DISTANCE_THRESHOLD = 140 // px
 const VELOCITY_THRESHOLD = 500 // px/s
@@ -41,7 +42,7 @@ export default function StatCard({ card, onDismiss }) {
     >
       <strong>{card.value}</strong>
       <span className="dash-stat-label">{card.label}</span>
-      <span className={`dash-stat-delta${card.deltaClass ? ` ${card.deltaClass}` : ''}`}>
+      <span className={cn('dash-stat-delta', card.deltaClass)}>
         {card.delta}
       </span>
     </motion.div>
