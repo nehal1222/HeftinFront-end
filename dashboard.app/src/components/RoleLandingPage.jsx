@@ -57,11 +57,13 @@ export default function RoleLandingPage({ role, onNavigate }) {
   })()
   const organization = role === 'super_admin' ? 'Heftin platform' : role === 'student' || role === 'individual' ? 'Personal workspace' : 'Heftin UPSC Institute'
   const roleLabel = role === 'org_admin' ? 'Organization Admin' : role === 'super_admin' ? 'Heftin Super Admin' : role === 'faculty' ? 'Faculty' : role === 'individual' ? 'Individual learner' : 'Student'
+  const roleMark = { student: 'ST', individual: 'IN', faculty: 'FA', org_admin: 'OA', super_admin: 'SA' }[role] || 'ST'
 
   return (
     <section className="role-landing-page">
       <div className="role-landing-identity"><div><span>Signed in as</span><strong>{personName}</strong></div><div><span>Organization</span><strong>{organization}</strong></div><div><span>Role</span><strong>{roleLabel}</strong></div></div>
       <div className="role-landing-hero">
+        <div className={`role-landing-orb role-landing-orb-${role}`} aria-label={`${roleLabel} role active`}><span>{roleMark}</span><b>✓</b></div>
         <div><span className="dash-section-label">{landing.eyebrow}</span><h2>{landing.title}</h2><p>{landing.subtitle}</p></div>
         <span className="role-landing-badge">Role home</span>
       </div>
