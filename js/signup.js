@@ -101,9 +101,17 @@ const ROLE_LABELS = {
 
     student: "student",
 
-    teacher: "teacher",
+    faculty: "faculty",
 
-    admin: "Super Admin",
+    individual: "individual",
+
+    org_admin: "Organization Admin",
+
+    super_admin: "Heftin Super Admin",
+
+    teacher: "faculty",
+
+    admin: "Heftin Super Admin",
 
 };
 
@@ -270,8 +278,8 @@ signupForm.addEventListener("submit", function (event) {
 
         } catch (e) {}
 
-        successMessage.textContent = role === "admin"
-            ? "Your Super Admin account is ready. Note: a dedicated admin panel isn't built yet, so you'll land on the student/teacher dashboard for now."
+        successMessage.textContent = role === "admin" || role === "super_admin"
+            ? "Your Heftin Super Admin account is ready. Taking you to your platform dashboard..."
             : "Your account is ready. Taking you to your " + ROLE_LABELS[role] + " dashboard...";
 
         formView.classList.add("hidden");

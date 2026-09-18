@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 
 export default function TopBar({ title, subtitle, role = 'student' }) {
-  const user = role === 'teacher' ? { initials: 'SK', name: 'Prof. Sanjay K.' } : { initials: 'AR', name: 'Ananya R.' }
+  const user = role === 'organization' ? { initials: 'OA', name: 'Organization Admin' } : role === 'super_admin' ? { initials: 'SA', name: 'Heftin Super Admin' } : role === 'teacher' ? { initials: 'SK', name: 'Prof. Sanjay K.' } : { initials: 'AR', name: 'Ananya R.' }
 
   return (
     <motion.header
@@ -11,7 +11,7 @@ export default function TopBar({ title, subtitle, role = 'student' }) {
       transition={{ duration: 0.4 }}
     >
       <div>
-        <span className="dash-topbar-eyebrow">{role === 'teacher' ? 'Teacher Portal' : 'Dashboard'}</span>
+        <span className="dash-topbar-eyebrow">{role === 'organization' ? 'Organization Portal' : role === 'super_admin' ? 'Heftin Control Center' : role === 'teacher' ? 'Teacher Portal' : 'Dashboard'}</span>
         <h1>{title}</h1>
         <p>{subtitle}</p>
       </div>

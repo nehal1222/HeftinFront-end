@@ -119,6 +119,177 @@
     flex: 1;
 }
 
+/* ---------- B2B organization workspace ---------- */
+.b2b-services-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.b2b-services-heading,
+.b2b-panel-heading,
+.b2b-batch-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.b2b-services-heading h2,
+.b2b-panel-heading h3 {
+    margin: 4px 0 0;
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    color: var(--ink);
+}
+
+.b2b-services-heading p,
+.b2b-rights-panel > p {
+    margin-top: 6px;
+    color: var(--ink-soft);
+    font-size: 13px;
+}
+
+.b2b-pack-status,
+.b2b-panel-heading button,
+.b2b-create-exam {
+    border: 0;
+    border-radius: 999px;
+    background: var(--teal);
+    color: #fff;
+    padding: 9px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.b2b-service-stats,
+.b2b-service-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.b2b-service-stats > div,
+.b2b-service-panel {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    padding: 18px;
+}
+
+.b2b-service-stats strong {
+    display: block;
+    font-family: 'Jost', sans-serif;
+    font-size: 26px;
+    color: var(--ink);
+}
+
+.b2b-service-stats span,
+.b2b-batch span,
+.b2b-batch small,
+.b2b-exam span,
+.b2b-rights-panel p {
+    display: block;
+    color: var(--ink-soft);
+    font-size: 12px;
+}
+
+.b2b-service-grid {
+    grid-template-columns: 1.1fr 0.9fr;
+}
+
+.b2b-batch-list,
+.b2b-exam-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.b2b-batch,
+.b2b-exam {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 13px;
+}
+
+.b2b-batch strong,
+.b2b-exam strong,
+.b2b-rights strong {
+    display: block;
+    color: var(--ink);
+    font-size: 13px;
+}
+
+.b2b-batch b,
+.b2b-exam b {
+    color: var(--teal);
+    font-size: 11px;
+}
+
+.b2b-progress {
+    height: 6px;
+    margin: 10px 0 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--line);
+}
+
+.b2b-progress span {
+    height: 100%;
+    border-radius: inherit;
+    background: var(--teal);
+}
+
+.b2b-exam {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.b2b-create-exam {
+    width: 100%;
+    margin-top: 16px;
+}
+
+.b2b-rights-panel {
+    grid-column: 1 / -1;
+}
+
+.b2b-rights {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.b2b-rights > div {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.b2b-rights .is-enabled {
+    border-color: var(--teal-light);
+    background: var(--teal-soft);
+}
+
+.b2b-rights span {
+    display: block;
+    margin-top: 4px;
+    color: var(--ink-soft);
+    font-size: 11px;
+}
+
+@media (max-width: 760px) {
+    .b2b-service-grid,
+    .b2b-service-stats,
+    .b2b-rights {
+        grid-template-columns: 1fr;
+    }
+}
+
 .dash-nav a {
     display: flex;
     align-items: center;
