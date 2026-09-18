@@ -98,6 +98,8 @@ loginForm.addEventListener("submit", function (event) {
 
     const password = passwordInput.value;
 
+    const selectedRole = loginForm.querySelector('input[name="role"]:checked')?.value || "student";
+
     let valid = true;
 
 
@@ -182,6 +184,9 @@ loginForm.addEventListener("submit", function (event) {
            so the success message is actually visible first. */
 
         setTimeout(function () {
+
+            localStorage.setItem("heftinRole", selectedRole);
+            localStorage.setItem("heftinName", email.split("@")[0]);
 
             window.location.href = "dashboard/index.html";
 

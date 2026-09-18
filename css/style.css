@@ -667,6 +667,54 @@ body {
 
 }
 
+.login-role-group {
+    margin-top: 18px;
+}
+
+.login-role-select {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    margin-top: 8px;
+}
+
+.login-role-option {
+    cursor: pointer;
+}
+
+.login-role-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.login-role-option span {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 10px 8px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: center;
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.login-role-option span:hover {
+    border-color: var(--primary);
+}
+
+.login-role-option input:checked + span {
+    border-color: var(--primary);
+    background: rgba(0, 130, 142, 0.1);
+    color: var(--text);
+}
+
+.login-role-option input:focus-visible + span {
+    box-shadow: 0 0 0 4px rgba(0, 130, 142, 0.15);
+}
+
 
 .role-option input {
 
