@@ -149,6 +149,18 @@
     display: flex;
     flex-direction: column;
     gap: 18px;
+    animation: role-landing-enter 0.5s ease both;
+}
+
+@keyframes role-landing-enter {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .role-landing-identity {
@@ -162,6 +174,26 @@
     border-radius: 10px;
     background: var(--card-bg);
     padding: 11px 13px;
+    animation: role-panel-enter 0.45s ease both;
+}
+
+.role-landing-identity > div:nth-child(2) {
+    animation-delay: 0.06s;
+}
+
+.role-landing-identity > div:nth-child(3) {
+    animation-delay: 0.12s;
+}
+
+@keyframes role-panel-enter {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .role-landing-identity span,
@@ -329,6 +361,7 @@
     border: 1px solid var(--line);
     border-radius: var(--radius);
     background: linear-gradient(135deg, var(--card-bg), var(--teal-soft));
+    animation: role-panel-enter 0.45s 0.16s ease both;
 }
 
 .role-landing-hero h2 {
@@ -373,6 +406,15 @@
 
 .role-landing-stats > div {
     padding: 16px;
+    animation: role-panel-enter 0.45s ease both;
+}
+
+.role-landing-stats > div:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.role-landing-stats > div:nth-child(3) {
+    animation-delay: 0.16s;
 }
 
 .role-landing-stats strong {
@@ -402,6 +444,11 @@
 .role-landing-focus,
 .role-landing-activity {
     padding: 18px;
+    animation: role-panel-enter 0.45s 0.22s ease both;
+}
+
+.role-landing-activity {
+    animation-delay: 0.28s;
 }
 
 .role-landing-focus strong {
@@ -469,11 +516,32 @@
     padding: 16px;
     text-align: left;
     cursor: pointer;
+    animation: role-panel-enter 0.45s ease both;
+}
+
+.role-landing-actions button:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.role-landing-actions button:nth-child(3) {
+    animation-delay: 0.16s;
 }
 
 .role-landing-actions button:hover {
     border-color: var(--teal);
     transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .role-landing-page,
+    .role-landing-identity > div,
+    .role-landing-hero,
+    .role-landing-stats > div,
+    .role-landing-focus,
+    .role-landing-activity,
+    .role-landing-actions button {
+        animation: none;
+    }
 }
 
 .role-landing-actions strong {
