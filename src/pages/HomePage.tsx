@@ -2,7 +2,7 @@ import { APP_NAME } from '@/lib/constants'
 
 export function HomePage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-xl flex-col justify-center gap-4 px-6">
+    <main className="mx-auto flex min-h-screen max-w-xl flex-col justify-center gap-section px-page">
       <p className="text-sm font-medium uppercase tracking-wide text-primary">Heftin Academy</p>
       <h1 className="text-3xl font-semibold text-foreground-strong">{APP_NAME}</h1>
       <p className="text-muted">
