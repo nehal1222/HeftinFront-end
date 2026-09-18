@@ -46,7 +46,6 @@ const SUPER_ADMIN_NAV = [
   { id: 'subscriptions', label: 'Subscriptions & rights' },
   { id: 'settings', label: 'Platform settings' },
 ]
-  <a href="#" className="dash-back">
 
 export default function Sidebar({ view, onNavigate, role, onToggleRole }) {
   const items = role === 'super_admin' ? SUPER_ADMIN_NAV : role === 'organization' || role === 'org_admin' ? ORGANIZATION_NAV : role === 'teacher' || role === 'faculty' ? TEACHER_NAV : STUDENT_NAV
