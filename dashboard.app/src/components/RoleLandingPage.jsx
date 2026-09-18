@@ -48,9 +48,19 @@ const LANDINGS = {
 
 export default function RoleLandingPage({ role, onNavigate }) {
   const landing = LANDINGS[role] || LANDINGS.student
+  const personName = (() => {
+    try {
+      return localStorage.getItem('heftinName') || 'Ananya'
+    } catch (e) {
+      return 'Ananya'
+    }
+  })()
+  const organization = role === 'super_admin' ? 'Heftin platform' : role === 'student' || role === 'individual' ? 'Personal workspace' : 'Heftin UPSC Institute'
+  const roleLabel = role === 'org_admin' ? 'Organization Admin' : role === 'super_admin' ? 'Heftin Super Admin' : role === 'faculty' ? 'Faculty' : role === 'individual' ? 'Individual learner' : 'Student'
 
   return (
     <section className="role-landing-page">
+      <div className="role-landing-identity"><div><span>Signed in as</span><strong>{personName}</strong></div><div><span>Organization</span><strong>{organization}</strong></div><div><span>Role</span><strong>{roleLabel}</strong></div></div>
       <div className="role-landing-hero">
         <div><span className="dash-section-label">{landing.eyebrow}</span><h2>{landing.title}</h2><p>{landing.subtitle}</p></div>
         <span className="role-landing-badge">Role home</span>

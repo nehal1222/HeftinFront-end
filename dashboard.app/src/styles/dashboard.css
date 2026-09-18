@@ -151,6 +151,40 @@
     gap: 18px;
 }
 
+.role-landing-identity {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.role-landing-identity > div {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--card-bg);
+    padding: 11px 13px;
+}
+
+.role-landing-identity span,
+.role-landing-identity strong {
+    display: block;
+}
+
+.role-landing-identity span {
+    color: var(--ink-soft);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.role-landing-identity strong {
+    margin-top: 4px;
+    overflow: hidden;
+    color: var(--ink);
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .subscription-services-page {
     display: flex;
     flex-direction: column;
@@ -460,6 +494,7 @@
 }
 
 @media (max-width: 760px) {
+    .role-landing-identity,
     .role-landing-hero,
     .role-landing-grid,
     .role-landing-stats,
