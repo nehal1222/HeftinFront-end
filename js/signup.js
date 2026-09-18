@@ -32,6 +32,21 @@ const successView = document.getElementById("successView");
 
 const successMessage = document.getElementById("successMessage");
 
+function showWorkspaceWelcome(role, name) {
+    const labels = {
+        student: ["Student", "Personal workspace"],
+        individual: ["Individual learner", "Personal workspace"],
+        faculty: ["Faculty", "Heftin UPSC Institute"],
+        org_admin: ["Organization Admin", "Heftin UPSC Institute"],
+        super_admin: ["Heftin Super Admin", "Heftin platform"],
+    };
+    const details = labels[role] || labels.student;
+    document.getElementById("welcomeName").textContent = name;
+    document.getElementById("welcomeRole").textContent = details[0];
+    document.getElementById("welcomeOrganization").textContent = details[1];
+    document.getElementById("workspaceWelcome").classList.remove("hidden");
+}
+
 
 /* ================================
    SHOW / HIDE PASSWORD (shared helper for both fields)
@@ -278,6 +293,8 @@ signupForm.addEventListener("submit", function (event) {
 
         } catch (e) {}
 
+        showWorkspaceWelcome(role, fullName);
+
         successMessage.textContent = role === "admin" || role === "super_admin"
             ? "Your Heftin Super Admin account is ready. Taking you to your platform dashboard..."
             : "Your account is ready. Taking you to your " + ROLE_LABELS[role] + " dashboard...";
@@ -285,6 +302,10 @@ signupForm.addEventListener("submit", function (event) {
         formView.classList.add("hidden");
 
         successView.classList.remove("hidden");
+
+        setTimeout(function () {
+            window.location.href = "dashboard/index.html";
+        }, 1400);
 
     }, 1200);
 
