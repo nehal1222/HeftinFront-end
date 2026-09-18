@@ -723,6 +723,7 @@ body {
     place-items: center;
     padding: 24px;
     background: rgba(244, 251, 251, 0.96);
+    animation: workspace-welcome-fade 0.35s ease both;
 }
 
 .workspace-welcome.hidden {
@@ -737,6 +738,17 @@ body {
     background: #fff;
     box-shadow: 0 24px 70px rgba(0, 72, 78, 0.16);
     text-align: center;
+    animation: workspace-card-rise 0.55s 0.08s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes workspace-welcome-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes workspace-card-rise {
+    from { opacity: 0; transform: translateY(16px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .workspace-welcome-mark {
@@ -750,6 +762,12 @@ body {
     color: #fff;
     font-size: 20px;
     font-weight: 800;
+    animation: workspace-mark-pop 0.5s 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes workspace-mark-pop {
+    from { opacity: 0; transform: scale(0.5) rotate(-12deg); }
+    to { opacity: 1; transform: scale(1) rotate(0); }
 }
 
 .workspace-welcome-eyebrow {
@@ -813,6 +831,21 @@ body {
     color: var(--primary);
     font-size: 11px;
     font-weight: 600;
+    animation: workspace-loading-pulse 1.2s 0.45s ease-in-out infinite alternate;
+}
+
+@keyframes workspace-loading-pulse {
+    from { opacity: 0.45; }
+    to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .workspace-welcome,
+    .workspace-welcome-card,
+    .workspace-welcome-mark,
+    .workspace-welcome-loading {
+        animation: none;
+    }
 }
 
 
