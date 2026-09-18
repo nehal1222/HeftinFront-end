@@ -46,7 +46,7 @@ const VIEW_COPY = {
   'design-system': { title: 'Design System', subtitle: 'Tailwind + CSS tokens - Sprint 1 (FE-01).' },
   organization: { title: 'Organization Services', subtitle: 'Manage UPSC batches, faculty, learners, and exam delivery.' },
   subscriptions: { title: 'Subscriptions and Rights', subtitle: 'Define plan access and organization capability packs.' },
-  landing: { title: 'Workspace', subtitle: 'Your role-based Heftin Academy home.' },
+  landing: { title: 'Workspace', subtitle: 'Everything you need for your next step.' },
 }
 
 function initialRole() {
