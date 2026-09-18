@@ -305,7 +305,7 @@ signupForm.addEventListener("submit", function (event) {
 
         setTimeout(function () {
             window.location.href = "dashboard/index.html";
-        }, 1400);
+        }, 10000);
 
     }, 1200);
 
