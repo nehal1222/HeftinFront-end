@@ -1,4 +1,5 @@
 import { APP_NAME, ROUTES } from '@/lib/constants'
+import { ROLE_DESCRIPTIONS, ROLE_LABELS, ROLE_OPTIONS } from '@/lib/access'
 import { ArrowRight, CheckCircle2, LockKeyhole, ShieldCheck, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
@@ -71,6 +72,24 @@ export function HomePage() {
               <FeatureRow icon={ShieldCheck} title="Scoped roles" description="Dynamic roles, batches, departments, and assignment scopes remain visible only inside the org." />
             </div>
           </aside>
+        </section>
+
+        <section className="border-t border-border py-10" aria-labelledby="profiles-heading">
+          <div className="max-w-2xl">
+            <p className="text-eyebrow font-bold uppercase tracking-wider text-primary">Five access paths</p>
+            <h2 id="profiles-heading" className="mt-2 font-display text-heading-lg text-foreground-strong">Choose a profile to preview its workspace.</h2>
+            <p className="mt-3 text-body text-muted">Every profile opens the same secure demo login, with the right role selected before you enter the workspace.</p>
+          </div>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+            {ROLE_OPTIONS.map((role) => (
+              <Link key={role} to={`${ROUTES.LOGIN}?role=${role}`} className="group rounded-card border border-border bg-surface-elevated p-4 transition-colors hover:border-primary hover:bg-primary-soft">
+                <p className="text-body-sm font-semibold text-foreground-strong group-hover:text-primary-dark">{ROLE_LABELS[role]}</p>
+                <p className="mt-2 text-caption leading-relaxed text-muted">{ROLE_DESCRIPTIONS[role]}</p>
+                <span className="mt-4 inline-flex items-center gap-1 text-caption font-semibold text-primary group-hover:text-primary-dark">Preview workspace <ArrowRight size={13} aria-hidden="true" /></span>
+              </Link>
+            ))}
+          </div>
         </section>
       </div>
     </main>

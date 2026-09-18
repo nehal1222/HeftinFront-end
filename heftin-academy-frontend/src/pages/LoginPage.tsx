@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowRight, Check, ShieldCheck } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { PLAN_LABELS, PLAN_OPTIONS, ROLE_DESCRIPTIONS, ROLE_LABELS, ROLE_OPTIONS } from '@/lib/access'
@@ -10,9 +10,11 @@ export function LoginPage() {
   const { isAuthenticated, login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const [searchParams] = useSearchParams()
   const [displayName, setDisplayName] = useState('Ananya Sharma')
   const [email, setEmail] = useState('ananya@example.com')
-  const [role, setRole] = useState<UserRole>('student')
+  const requestedRole = searchParams.get('role') as UserRole
+  const [role, setRole] = useState<UserRole>(() => ROLE_OPTIONS.includes(requestedRole) ? requestedRole : 'student')
   const [plan, setPlan] = useState<SubscriptionPlan>('scholar')
 
   if (isAuthenticated) return <Navigate to={ROUTES.WORKSPACE} replace />
