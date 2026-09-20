@@ -13,7 +13,7 @@ Also read:
 
 This repo is **Heftin Academy only** (e-examination). Do not mix NexGen Athlete or Heftin IAS code here.
 
-Tasks live in Taiga: project **Heftin Academy**, Sprint 1 `HAC01-FE-*`, entitlements `HAC02-FE-*`.
+Tasks live in Taiga: project **Heftin Academy**, Sprint 1 `HAC01-FE-*`, Sprint 2 `HAC02-FE-*`. Share file: `docs/Heftin_Academy_Sprint_2.md`.
 
 ---
 
@@ -71,7 +71,7 @@ Need Node.js 20+. Full notes: `README.md`.
 9. **Keep pages thin** — layout + wiring only; business/API logic in services/hooks.
 10. Authorize UI by **right codes**, not hardcoded role names. `/auth/me` field is `rights`.
 11. **Prelims:** students only take exams. **Mains:** answer sheet required for validate; answer key optional; difficulty required.
-12. **Org ceiling:** Heftin Admin grants **rights** onto the organization. Org Admin holds the full ceiling. Extra admins get a subset. Hide nav when a right is not in effective `rights`. Tasks: `HAC02-FE-*`.
+12. **Org ceiling:** Heftin Admin grants **rights** onto the account (`account_id`). Org Admin holds the full ceiling. Extra admins get a subset. Hide nav when a right is not in effective `rights`. Tasks: `HAC02-FE-01`–`10`.
 
 ---
 
@@ -136,7 +136,7 @@ export const featureService = {
 
 ## Org rights ceiling (same as NexGen / HRMS)
 
-Heftin Admin grants **rights** onto the organization (`organization_rights`). Org Admin holds the full ceiling. Extra admins get a subset. Nav and routes gate on **right codes**, not role names.
+Heftin Admin grants **rights** onto the account (`organization_rights`, keyed by `account_id`). Org Admin holds the full ceiling. Extra admins get a subset. Nav and routes gate on **right codes**, not role names.
 
 Same structure as NexGen Athlete and HRMS. This product’s catalog is exam features. Do not copy NexGen sports/payments codes here.
 
@@ -148,6 +148,8 @@ Same structure as NexGen Athlete and HRMS. This product’s catalog is exam feat
 
 `/auth/me` must return `rights` (effective codes). Do not return `permissions`.
 
-Taiga: **HAC02-FE-01** Heftin Admin ceiling screen, **HAC02-FE-02** Org Admin roles (filtered), **HAC02-FE-03** nav/routes, **HAC02-FE-04** me payload.
+Taiga (`HAC02-FE-01`–`10`): Heftin Admin ceiling screen, Org Admin roles, nav/routes, `me.rights`, extra admins, catalog/bundles UI, forbidden UI, ceiling empty-states, session refresh, E2E.
 
-Do not start HAC02 until Sprint 1 auth/RBAC (`HAC01-*`) can log in. Seed a full ceiling on the demo org so Sprint 1 still works.
+Team share file: `docs/Heftin_Academy_Sprint_2.md`.
+
+Do not start HAC02 until Sprint 1 auth/RBAC (`HAC01-*`) can log in. Seed a full ceiling on the demo account so Sprint 1 still works.
