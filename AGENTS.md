@@ -9,6 +9,8 @@ Also read:
 - `docs/API_CONVENTIONS.md` — Axios, errors, env
 - `README.md` — git workflow and local setup
 
+**Shared Heftin word: rights** (Academy, NexGen, HRMS). Do not use “permissions” in new APIs, tables, or `/auth/me`. Check with `require_right("users.view")`. JSON field is `rights`. Error code is `right_denied`.
+
 This repo is **Heftin Academy only** (e-examination). Do not mix NexGen Athlete or Heftin IAS code here.
 
 Tasks live in Taiga: project **Heftin Academy**, Sprint 1 `HAC01-FE-*`, entitlements `HAC02-FE-*`.
@@ -67,9 +69,9 @@ Need Node.js 20+. Full notes: `README.md`.
 7. **Auth stays gated** — app pages under `ProtectedRoute`; login under `PublicOnlyRoute`.
 8. **Use `@/` imports** and `cn()` from `@/lib/utils` for classNames.
 9. **Keep pages thin** — layout + wiring only; business/API logic in services/hooks.
-10. Authorize UI by **permission codes**, not hardcoded role names.
+10. Authorize UI by **right codes**, not hardcoded role names. `/auth/me` field is `rights`.
 11. **Prelims:** students only take exams. **Mains:** answer sheet required for validate; answer key optional; difficulty required.
-12. **Org pack:** Heftin Admin assigns roles/rights to the organization. Org Admin may use and assign **only** those rights. Hide nav for modules not in the pack. Tasks: `HAC02-FE-*`.
+12. **Org ceiling:** Heftin Admin grants **rights** onto the organization. Org Admin holds the full ceiling. Extra admins get a subset. Hide nav when a right is not in effective `rights`. Tasks: `HAC02-FE-*`.
 
 ---
 
@@ -132,20 +134,20 @@ export const featureService = {
 
 ---
 
-## Org entitlements (read this)
+## Org rights ceiling (same as NexGen / HRMS)
 
-Heftin Admin does **not** day-to-day assign each student’s job. Heftin Admin gives the **organization a pack** of roles and rights (permission codes). Organization Admin then runs that org using **only** what is in the pack.
+Heftin Admin grants **rights** onto the organization (`organization_rights`). Org Admin holds the full ceiling. Extra admins get a subset. Nav and routes gate on **right codes**, not role names.
 
-Same idea as NexGen Athlete. This product’s pack is exam features (catalog, prelims, mains, evaluation, batches). Do not copy NexGen sports/payments codes here.
+Same structure as NexGen Athlete and HRMS. This product’s catalog is exam features. Do not copy NexGen sports/payments codes here.
 
 | Who | What they do |
 |---|---|
-| Heftin Admin | Create/suspend orgs. Attach a pack (which modules / permission codes this org may use). Platform-only rights stay here (`orgs.manage`, plans). |
-| Org Admin | Create users and org roles. Assign rights **from the pack only**. Cannot invent a permission Heftin Admin did not grant. |
-| Faculty / Student | Get a role inside the org. Effective access = role **and** org pack. |
+| Heftin Admin | Create/suspend orgs. Grant the org ceiling (feature-by-feature or a bundle copy). Platform-only rights stay here. |
+| Org Admin | Create users and extra admins. Assign **subsets of the ceiling**. Cannot invent a right Heftin Admin did not grant. |
+| Faculty / Student | Get a role inside the org. Effective access = `role_rights ∩ organization_rights`. |
 
-`/auth/me` must return `permissions` (user) and `entitlements` (org pack) so nav can hide unsold modules.
+`/auth/me` must return `rights` (effective codes). Do not return `permissions`.
 
-Taiga: **HAC02-FE-01** Heftin Admin pack screen, **HAC02-FE-02** Org Admin roles (filtered), **HAC02-FE-03** nav/routes, **HAC02-FE-04** me payload.
+Taiga: **HAC02-FE-01** Heftin Admin ceiling screen, **HAC02-FE-02** Org Admin roles (filtered), **HAC02-FE-03** nav/routes, **HAC02-FE-04** me payload.
 
-Do not start HAC02 until Sprint 1 auth/RBAC (`HAC01-*`) can log in. Seed a full pack on the demo org so Sprint 1 still works.
+Do not start HAC02 until Sprint 1 auth/RBAC (`HAC01-*`) can log in. Seed a full ceiling on the demo org so Sprint 1 still works.
