@@ -1,5 +1,10 @@
 
-import { useEffect, type ReactNode } from 'react'
+import {
+  useEffect,
+  useId,
+  useRef,
+  type ReactNode,
+} from 'react'
 import { cn } from '@/lib/utils'
 
 type DialogProps = {
@@ -10,6 +15,14 @@ type DialogProps = {
   className?: string
 }
 
+function getFocusableElements(container: HTMLElement) {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  )
+}
+
 export function Dialog({
   open,
   onClose,
@@ -17,14 +30,60 @@ export function Dialog({
   children,
   className,
 }: DialogProps) {
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const titleId = useId()
+
   useEffect(() => {
     if (!open) {
       return
     }
 
+    const previouslyFocused = document.activeElement as HTMLElement | null
+    const dialog = dialogRef.current
+
+    if (!dialog) {
+      return
+    }
+
+    const focusableElements = getFocusableElements(dialog)
+    const firstFocusable = focusableElements[0]
+
+    if (firstFocusable) {
+      firstFocusable.focus()
+    } else {
+      dialog.focus()
+    }
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onClose()
+        return
+      }
+
+      if (event.key !== 'Tab') {
+        return
+      }
+
+      const elements = getFocusableElements(dialog)
+
+      if (elements.length === 0) {
+        event.preventDefault()
+        dialog.focus()
+        return
+      }
+
+      const firstElement = elements[0]
+      const lastElement = elements[elements.length - 1]
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault()
+        lastElement.focus()
+      } else if (
+        !event.shiftKey &&
+        document.activeElement === lastElement
+      ) {
+        event.preventDefault()
+        firstElement.focus()
       }
     }
 
@@ -32,6 +91,7 @@ export function Dialog({
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
+      previouslyFocused?.focus()
     }
   }, [open, onClose])
 
@@ -40,20 +100,20 @@ export function Dialog({
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-label={title}
-    >
-      <button
-        type="button"
-        aria-label="Close dialog"
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
         className="absolute inset-0 bg-black/40"
-        onClick={onClose}
+        aria-hidden="true"
+        onMouseDown={onClose}
       />
 
       <div
+        ref={dialogRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? titleId : undefined}
+        aria-label={!title ? 'Dialog' : undefined}
         className={cn(
           'relative z-10 w-full max-w-lg rounded-lg',
           'border border-border bg-card p-6 shadow-lg',
@@ -62,7 +122,10 @@ export function Dialog({
       >
         <div className="mb-4 flex items-center justify-between">
           {title && (
-            <h2 className="text-lg font-semibold text-foreground-strong">
+            <h2
+              id={titleId}
+              className="text-lg font-semibold text-foreground-strong"
+            >
               {title}
             </h2>
           )}
@@ -82,5 +145,3 @@ export function Dialog({
     </div>
   )
 }
-
-

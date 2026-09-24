@@ -1,4 +1,3 @@
-
 import { Dialog } from '@/components/ui/Dialog'
 import { Button } from '@/components/ui/Button'
 
@@ -10,6 +9,7 @@ type ConfirmDialogProps = {
   message: string
   confirmText?: string
   cancelText?: string
+  confirmVariant?: 'primary' | 'danger'
 }
 
 export function ConfirmDialog({
@@ -20,6 +20,7 @@ export function ConfirmDialog({
   message,
   confirmText = 'Confirm',
   cancelText = 'Cancel',
+  confirmVariant = 'danger',
 }: ConfirmDialogProps) {
   return (
     <Dialog
@@ -40,7 +41,7 @@ export function ConfirmDialog({
         </Button>
 
         <Button
-          variant="danger"
+          variant={confirmVariant}
           onClick={onConfirm}
         >
           {confirmText}
