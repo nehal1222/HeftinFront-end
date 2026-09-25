@@ -1,3 +1,4 @@
+
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { LoginPage } from '@/pages/LoginPage'
 import { HomePage } from '@/pages/HomePage'
@@ -8,6 +9,11 @@ export function AppRouter() {
     <Routes>
       <Route
         path={ROUTES.HOME}
+        element={<Navigate to={ROUTES.DASHBOARD} replace />}
+      />
+
+      <Route
+        path={ROUTES.DASHBOARD}
         element={<HomePage />}
       />
 
@@ -18,8 +24,9 @@ export function AppRouter() {
 
       <Route
         path={ROUTES.NOT_FOUND}
-        element={<Navigate to={ROUTES.HOME} replace />}
+        element={<Navigate to={ROUTES.DASHBOARD} replace />}
       />
     </Routes>
   )
 }
+

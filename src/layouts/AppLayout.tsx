@@ -1,3 +1,4 @@
+
 import { useState, type ReactNode } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -28,7 +29,7 @@ export function AppLayout({
           </h1>
         </div>
 
-        <nav className="flex-1 overflow-y-auto p-4">
+        <nav className="flex-1 p-4">
           {nav ?? (
             <Button
               variant="ghost"
@@ -76,7 +77,7 @@ export function AppLayout({
               </Button>
             </div>
 
-            <nav className="flex-1 overflow-y-auto p-4">
+            <nav className="flex-1 p-4">
               {nav ?? (
                 <Button
                   variant="ghost"
