@@ -1,3 +1,4 @@
+
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { LoginPage } from '@/pages/LoginPage'
 import { HomePage } from '@/pages/HomePage'
@@ -7,7 +8,15 @@ import { ROUTES } from '@/lib/constants'
 export function AppRouter() {
   return (
     <Routes>
-      <Route path={ROUTES.HOME} element={<HomePage />} />
+      <Route
+        path={ROUTES.HOME}
+        element={<Navigate to={ROUTES.DASHBOARD} replace />}
+      />
+
+      <Route
+        path={ROUTES.DASHBOARD}
+        element={<HomePage />}
+      />
       <Route path={ROUTES.DESIGN_SYSTEM} element={<DesignSystemPage />} />
       <Route
         path={ROUTES.LOGIN}
@@ -15,8 +24,9 @@ export function AppRouter() {
       />
       <Route
         path={ROUTES.NOT_FOUND}
-        element={<Navigate to={ROUTES.HOME} replace />}
+        element={<Navigate to={ROUTES.DASHBOARD} replace />}
       />
     </Routes>
   )
 }
+
