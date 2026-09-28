@@ -63,3 +63,5 @@ Heftin Admin grants **rights** onto the account (`account_id`). Org Admin holds 
 Share file for the team: `docs/Heftin_Academy_Sprint_2.md`. Taiga: `HAC02-FE-*` after Sprint 1 `HAC01-*`.
 
 Read `docs/PROJECT_STRUCTURE.md` before adding screens.
+
+Read [`docs/design-system.md`](docs/design-system.md) before building shared UI or updating design tokens.
