@@ -8,6 +8,7 @@ type AppLayoutProps = {
   children: ReactNode
   nav?: ReactNode
   profile?: ReactNode
+  title?: ReactNode
   className?: string
 }
 
@@ -15,6 +16,7 @@ export function AppLayout({
   children,
   nav,
   profile,
+  title = 'Dashboard',
   className,
 }: AppLayoutProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
@@ -105,9 +107,7 @@ export function AppLayout({
       {/* Main application area */}
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-card px-4 md:px-6">
-          <h2 className="text-base font-semibold text-foreground-strong">
-            Dashboard
-          </h2>
+          <h2 className="text-base font-semibold text-foreground-strong">{title}</h2>
 
           <div className="md:hidden">
             <Button

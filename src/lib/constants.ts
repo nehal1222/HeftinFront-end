@@ -12,6 +12,13 @@ export const ROUTES = {
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
   DASHBOARD: '/dashboard',
+  PEOPLE: '/people',
+  ROLES: '/roles',
+  DEPARTMENTS: '/departments',
+  BATCHES: '/batches',
+  AUDIT: '/audit',
+  PLATFORM_ORGANIZATIONS: '/platform/organizations',
+  PLATFORM_RIGHTS: '/platform/rights',
   DESIGN_SYSTEM: '/design-system',
   NOT_FOUND: '*',
 } as const
