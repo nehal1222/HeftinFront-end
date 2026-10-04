@@ -1,11 +1,12 @@
 import { Card } from '@/components/ui/Card'
 import { AppLayout } from '@/layouts/AppLayout'
+import { AppNavigation } from '@/navigation/AppNavigation'
 import { APP_NAME } from '@/lib/constants'
 import { Link } from 'react-router-dom'
 
 export function HomePage() {
   return (
-    <AppLayout>
+    <AppLayout nav={<AppNavigation />}>
       <div className="mx-auto max-w-4xl space-y-6">
         <div>
           <p className="text-sm font-medium uppercase tracking-wide text-primary">

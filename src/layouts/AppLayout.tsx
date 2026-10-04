@@ -1,7 +1,7 @@
-
 import { useState, type ReactNode } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
 
 type AppLayoutProps = {
@@ -18,6 +18,46 @@ export function AppLayout({
   className,
 }: AppLayoutProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const { profile: authProfile, personaId, setPersona } = useAuth()
+
+  const demoPersonaSelector = (
+    <div className="mt-3">
+      <label
+        htmlFor="demo-persona"
+        className="mb-1 block text-xs font-medium text-muted"
+      >
+        Demo persona
+      </label>
+
+      <select
+        id="demo-persona"
+        value={personaId}
+        onChange={(event) =>
+          setPersona(event.target.value as typeof personaId)
+        }
+        className="w-full rounded-control border border-border bg-surface px-2 py-2 text-sm text-foreground"
+      >
+        <option value="student">Student</option>
+        <option value="faculty">Faculty</option>
+        <option value="org_admin">Org Admin</option>
+        <option value="super_admin">Super Admin</option>
+      </select>
+
+      <p className="mt-2 text-xs text-muted">
+        Signed in as {authProfile.name}
+      </p>
+    </div>
+  )
+
+  const profileContent = profile ?? (
+    <Card className="p-3">
+      <p className="text-sm font-medium text-foreground">
+        User Profile
+      </p>
+
+      {demoPersonaSelector}
+    </Card>
+  )
 
   return (
     <div className="flex h-screen overflow-hidden bg-surface text-foreground">
@@ -41,13 +81,7 @@ export function AppLayout({
         </nav>
 
         <div className="border-t border-border p-4">
-          {profile ?? (
-            <Card className="p-3">
-              <p className="text-sm font-medium text-foreground">
-                User Profile
-              </p>
-            </Card>
-          )}
+          {profileContent}
         </div>
       </aside>
 
@@ -90,13 +124,7 @@ export function AppLayout({
             </nav>
 
             <div className="border-t border-border p-4">
-              {profile ?? (
-                <Card className="p-3">
-                  <p className="text-sm font-medium text-foreground">
-                    User Profile
-                  </p>
-                </Card>
-              )}
+              {profileContent}
             </div>
           </aside>
         </div>
