@@ -1,25 +1,70 @@
 import { useState, type FormEvent } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { FormField } from '@/components/ui/FormField'
 import { Input } from '@/components/ui/Input'
 import { AuthLayout } from '@/layouts/AuthLayout'
+import { ROUTES, STORAGE_KEYS } from '@/lib/constants'
+import { getErrorMessage } from '@/lib/axios'
+import { authService } from '@/services/auth.service'
 
 export function LoginPage() {
-  const [email, setEmail] = useState('')
+  const navigate = useNavigate()
+  const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
-  const [message, setMessage] = useState('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [serverError, setServerError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    if (!email || !password) {
-      setMessage('Please enter your email and password.')
+    const nextErrors: Record<string, string> = {}
+
+    if (!login.trim()) {
+      nextErrors.login = 'Enter your email or mobile number.'
+    }
+
+    if (!password) {
+      nextErrors.password = 'Enter your password.'
+    }
+
+    setErrors(nextErrors)
+    setServerError('')
+
+    if (Object.keys(nextErrors).length > 0) {
       return
     }
 
-    setMessage('Login form is ready for authentication integration.')
+    setIsSubmitting(true)
+
+    try {
+      const response = await authService.login({
+        login: login.trim(),
+        password,
+      })
+
+      if (response.access_token) {
+        localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, response.access_token)
+      }
+
+      if (response.refresh_token) {
+        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refresh_token)
+      }
+
+      navigate(ROUTES.HOME)
+    } catch (error) {
+      setServerError(
+        getErrorMessage(
+          error,
+          'We could not sign you in. Check your details and try again.',
+        ),
+      )
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -35,56 +80,69 @@ export function LoginPage() {
           </h1>
 
           <p className="mt-1 text-sm text-muted">
-            Sign in to continue to your account.
+            Sign in to continue your preparation.
           </p>
         </div>
 
-        {message && (
+        {serverError && (
           <Alert
-            variant="info"
+            variant="error"
             className="mb-6"
           >
-            {message}
+            {serverError}
           </Alert>
         )}
 
         <form
           onSubmit={handleSubmit}
           className="space-y-4"
+          noValidate
         >
           <FormField
-            label="Email"
-            htmlFor="email"
+            label="Email or mobile number"
+            htmlFor="login"
+            error={errors.login}
           >
             <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="Enter your email"
-              autoComplete="email"
-              required
+              id="login"
+              type="text"
+              value={login}
+              onChange={(event) => setLogin(event.target.value)}
+              autoComplete="username"
+              aria-invalid={Boolean(errors.login)}
+              disabled={isSubmitting}
             />
           </FormField>
 
           <FormField
             label="Password"
             htmlFor="password"
+            error={errors.password}
           >
             <Input
               id="password"
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              placeholder="Enter your password"
               autoComplete="current-password"
-              required
+              aria-invalid={Boolean(errors.password)}
+              disabled={isSubmitting}
             />
           </FormField>
+
+          <div className="flex justify-end">
+            <Link
+              className="text-sm font-medium text-primary hover:underline"
+              to={ROUTES.FORGOT_PASSWORD}
+            >
+              Forgot password?
+            </Link>
+          </div>
 
           <Button
             type="submit"
             className="w-full"
+            loading={isSubmitting}
           >
             Sign in
           </Button>
