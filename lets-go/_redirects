@@ -9,3 +9,6 @@
 /platform/organizations/* /dashboard/index.html 200
 /platform/rights /dashboard/index.html 200
 /design-samples /dashboard/index.html 200
+/auth-samples /dashboard/index.html 200
+/tokens /dashboard/index.html 200
+/session-lifecycle /dashboard/index.html 200

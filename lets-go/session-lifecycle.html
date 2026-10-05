@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Lifecycle &amp; Async States — Heftin Academy</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Jost:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --primary: #00828e;
+            --primary-dark: #006f79;
+            --border: #cce6e8;
+            --error: #001a1c;
+            --white: #ffffff;
+            --bg-soft: #f4fbfb;
+        }
+        body {
+            background: #ffffff;
+            color: var(--error);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+        }
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 32px;
+        }
+        .top-nav a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .eyebrow {
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--primary);
+        }
+        h1 {
+            font-size: 30px;
+            font-weight: 800;
+            margin: 6px 0 10px;
+            color: var(--error);
+        }
+        .state-trigger-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .btn-state {
+            padding: 8px 16px;
+            border-radius: 9px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            color: var(--error);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-state.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+        .preview-box {
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--bg-soft);
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+        }
+        .state-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 32px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 12px 32px -12px rgba(0, 26, 28, 0.1);
+        }
+        .state-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 16px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="top-nav">
+            <a href="index.html">← Back to Heftin Academy</a>
+            <div style="display: flex; gap: 10px;">
+                <a href="auth-samples.html" style="padding: 6px 14px; border: 1px solid var(--border); border-radius: 8px; color: var(--error);">Auth Samples</a>
+                <a href="tokens.html" style="padding: 6px 14px; border: 1px solid var(--border); border-radius: 8px; color: var(--error);">Design Tokens</a>
+                <a href="dashboard/index.html" style="padding: 6px 14px; background: var(--primary); color: #fff; border-radius: 8px;">Workspace Shell →</a>
+            </div>
+        </header>
+
+        <span class="eyebrow">Ticket HAC01-FE-11 Deliverable</span>
+        <h1>Error, Loading &amp; Session Lifecycle Handling</h1>
+        <p style="color: var(--error); opacity: 0.85; font-size: 14px; max-width: 720px; margin-bottom: 28px;">
+            Production error boundary and session interceptor testbench. Simulates async loading states, 401 token expiry redirects, 403 forbidden gates, and network retry logic.
+        </p>
+
+        <!-- Triggers -->
+        <div class="state-trigger-bar">
+            <button type="button" class="btn-state active" onclick="setState('loading')">1. Loading State</button>
+            <button type="button" class="btn-state" onclick="setState('empty')">2. Empty State</button>
+            <button type="button" class="btn-state" onclick="setState('session_expiry')">3. 401 Session Expiry</button>
+            <button type="button" class="btn-state" onclick="setState('forbidden')">4. 403 Forbidden Gate</button>
+            <button type="button" class="btn-state" onclick="setState('error')">5. 500 Server Error</button>
+        </div>
+
+        <!-- Live Preview Stage -->
+        <div class="preview-box">
+            <!-- Loading -->
+            <div id="viewLoading" class="state-card">
+                <div class="spinner"></div>
+                <h3 style="font-size: 18px; margin: 0 0 6px;">Loading workspace data...</h3>
+                <p style="font-size: 12.5px; opacity: 0.8; margin: 0;">Synchronizing assigned permissions and batch enrollments.</p>
+            </div>
+
+            <!-- Empty -->
+            <div id="viewEmpty" class="state-card" style="display: none;">
+                <div class="state-icon" style="background: var(--bg-soft); color: var(--primary);">0</div>
+                <h3 style="font-size: 18px; margin: 0 0 6px;">No attempts recorded</h3>
+                <p style="font-size: 12.5px; opacity: 0.8; margin: 0 0 16px;">You haven't attempted any mock tests in this exam series yet.</p>
+                <a href="dashboard/index.html" style="padding: 8px 16px; background: var(--primary); color: #fff; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: 700;">Start First Mock Test →</a>
+            </div>
+
+            <!-- 401 Session Expiry -->
+            <div id="view401" class="state-card" style="display: none;">
+                <div class="state-icon" style="background: rgba(0, 26, 28, 0.08); color: var(--error);">⏱</div>
+                <h3 style="font-size: 18px; margin: 0 0 6px;">Session Expired</h3>
+                <p style="font-size: 12.5px; opacity: 0.8; margin: 0 0 16px;">Your cryptographic session token has expired. Redirecting to login...</p>
+                <a href="login.html" style="padding: 8px 16px; background: var(--error); color: #fff; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: 700;">Re-authenticate Now →</a>
+            </div>
+
+            <!-- 403 Forbidden -->
+            <div id="view403" class="state-card" style="display: none;">
+                <div class="state-icon" style="background: rgba(0, 130, 142, 0.1); color: var(--primary);">🔒</div>
+                <h3 style="font-size: 18px; margin: 0 0 6px;">403 Access Denied</h3>
+                <p style="font-size: 12.5px; opacity: 0.8; margin: 0 0 8px;">Your assigned role does not hold the required permission:</p>
+                <code style="background: var(--bg-soft); padding: 4px 10px; border-radius: 6px; font-size: 12px; color: var(--primary); display: inline-block; margin-bottom: 16px;">roles.rights.edit</code>
+                <div><a href="dashboard/index.html" style="font-size: 12px; font-weight: 700; color: var(--primary); text-decoration: none;">← Return to Authorized Home</a></div>
+            </div>
+
+            <!-- 500 Error -->
+            <div id="view500" class="state-card" style="display: none;">
+                <div class="state-icon" style="background: #ffebeb; color: #c00;">!</div>
+                <h3 style="font-size: 18px; margin: 0 0 6px;">Unable to load endpoint</h3>
+                <p style="font-size: 12.5px; opacity: 0.8; margin: 0 0 16px;">Network request timed out while communicating with the analytics API.</p>
+                <button type="button" onclick="setState('loading')" style="padding: 8px 18px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;">Retry Request</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setState(state) {
+            ['viewLoading', 'viewEmpty', 'view401', 'view403', 'view500'].forEach(id => {
+                document.getElementById(id).style.display = 'none';
+            });
+            document.querySelectorAll('.btn-state').forEach(btn => btn.classList.remove('active'));
+
+            if (state === 'loading') {
+                document.getElementById('viewLoading').style.display = 'block';
+                event.target?.classList?.add('active');
+            } else if (state === 'empty') {
+                document.getElementById('viewEmpty').style.display = 'block';
+                event.target?.classList?.add('active');
+            } else if (state === 'session_expiry') {
+                document.getElementById('view401').style.display = 'block';
+                event.target?.classList?.add('active');
+            } else if (state === 'forbidden') {
+                document.getElementById('view403').style.display = 'block';
+                event.target?.classList?.add('active');
+            } else if (state === 'error') {
+                document.getElementById('view500').style.display = 'block';
+                event.target?.classList?.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -15,7 +15,10 @@ import {
   RightsCatalogPage,
   RoleEditorPage,
   RolesPage,
+  AuthSamplesHubView,
+  SessionLifecycleView,
 } from './components/Phase1Views.jsx'
+import DesignSystemPage from './components/DesignSystemPage.jsx'
 import { DEMO_ORGANIZATION, DEMO_PERSONAS, MOCK_ROLE_GRANTABLE_RIGHTS, MOCK_STUDENT_GRANTABLE_RIGHTS, ORGANIZATION_CEILING, ROLE_DEFINITIONS } from './data/mockAuth.js'
 import { isPlatformAdmin } from './utils/rights.js'
 
@@ -120,7 +123,10 @@ export default function Phase1Root() {
 
   function renderRoute() {
     if (path === '/dashboard' || path === '/') return <OrganizationDashboard auth={{ profile: auth }} navigate={navigate} />
-    if (path === '/design-samples') return <OrganizationDashboard auth={{ profile: auth }} navigate={navigate} />
+    if (path === '/design-samples') return <DesignSamplesPage navigate={navigate} />
+    if (path === '/auth-samples') return <AuthSamplesHubView navigate={navigate} />
+    if (path === '/tokens') return <DesignSystemPage />
+    if (path === '/session-lifecycle') return <SessionLifecycleView navigate={navigate} />
 
     if (path === '/people') return <RequireRight auth={auth} right="users.view" scope={auth.scopes}><PeoplePage auth={{ profile: auth }} /></RequireRight>
     if (path === '/roles') return <RequireRight auth={auth} right="roles.view"><RolesPage roles={roles} auth={{ profile: auth }} navigate={navigate} onCreateRole={createRole} /></RequireRight>

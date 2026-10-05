@@ -17,6 +17,13 @@ const PLATFORM_NAV = [
   { label: 'Organization ceiling', path: '/platform/organizations/org_001/rights' },
 ]
 
+const SAMPLES_NAV = [
+  { label: 'Blueprints', path: '/design-samples' },
+  { label: 'Auth Samples', path: '/auth-samples' },
+  { label: 'Design Tokens', path: '/tokens' },
+  { label: 'Session Lifecycle', path: '/session-lifecycle' },
+]
+
 function isActive(itemPath, currentPath) {
   return itemPath === currentPath || (itemPath === '/roles' && currentPath.startsWith('/roles/'))
 }
@@ -43,6 +50,22 @@ export default function Phase1Shell({ auth, persona, path, navigate, onPersonaCh
         <nav className="phase-nav" aria-label="Phase 1 navigation">
           <span className="phase-nav-label">{isPlatformAdmin(auth.profile) ? 'PLATFORM' : 'ORGANIZATION'}</span>
           {navigation.map((item) => (
+            <a
+              key={`${item.label}-${item.path}`}
+              href={item.path}
+              className={isActive(item.path, path) ? 'active' : ''}
+              aria-current={isActive(item.path, path) ? 'page' : undefined}
+              onClick={(event) => { event.preventDefault(); navigate(item.path) }}
+            >
+              <span className="phase-nav-mark" aria-hidden="true">{item.label.slice(0, 1)}</span>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+
+        <nav className="phase-nav" aria-label="Architecture samples" style={{ marginTop: '16px' }}>
+          <span className="phase-nav-label">SAMPLES & BENCHES</span>
+          {SAMPLES_NAV.map((item) => (
             <a
               key={`${item.label}-${item.path}`}
               href={item.path}

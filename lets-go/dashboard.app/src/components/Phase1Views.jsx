@@ -937,3 +937,225 @@ export function DesignSamplesPage({ navigate }) {
     </>
   )
 }
+
+/* ==========================================================================
+   # 16. AUTH SAMPLES HUB VIEW: /auth-samples
+   ========================================================================== */
+export function AuthSamplesHubView({ navigate }) {
+  const [activeTab, setActiveTab] = useState('1')
+  const [samplePersona, setSamplePersona] = useState('org_admin')
+  const [subdomain, setSubdomain] = useState('dpa')
+  const [cohort, setCohort] = useState('101')
+
+  const personas = {
+    org_admin: {
+      email: 'orgadmin@dpa.edu',
+      rights: 'Full organization administration across users, roles, departments, and batches.',
+    },
+    teacher: {
+      email: 'teacher@dpa.edu',
+      rights: 'View assigned batch exams, grade student submissions, review question analytics.',
+    },
+    student: {
+      email: 'sana@dpa.edu',
+      rights: 'Attempt mock tests, view detailed answer keys, track performance percentiles.',
+    },
+    platform_admin: {
+      email: 'admin@heftin.com',
+      rights: 'Platform SuperAdmin: provision tenant academies, manage global rights ceiling.',
+    },
+  }
+
+  return (
+    <>
+      <PageHeading
+        eyebrow="ARCHITECTURE EVALUATION"
+        title="Enterprise Auth Samples Hub"
+        description="Interactive comparison of 3 production authentication patterns with zero tenant leakage."
+      />
+
+      <div className="phase-sample-hub" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <section className="phase-panel" style={{ padding: '20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+            <span className="phase-eyebrow">GOVERNANCE GUARANTEES</span>
+            <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--primary)', background: 'rgba(0,130,142,0.1)', padding: '3px 8px', borderRadius: '6px' }}>100% Architecture Compliant</span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+            <div style={{ padding: '12px', border: '1px solid var(--border)', borderRadius: '10px' }}>
+              <strong style={{ fontSize: '12px', color: 'var(--primary)', display: 'block' }}>✓ Server-Computed Rights</strong>
+              <p style={{ fontSize: '11px', color: 'var(--error)', margin: '4px 0 0', opacity: 0.85 }}>Permissions derived from authoritative tokens; zero client math.</p>
+            </div>
+            <div style={{ padding: '12px', border: '1px solid var(--border)', borderRadius: '10px' }}>
+              <strong style={{ fontSize: '12px', color: 'var(--primary)', display: 'block' }}>✓ Session Scope Isolation</strong>
+              <p style={{ fontSize: '11px', color: 'var(--error)', margin: '4px 0 0', opacity: 0.85 }}>Teachers only access assigned cohorts; fail-closed boundaries.</p>
+            </div>
+            <div style={{ padding: '12px', border: '1px solid var(--border)', borderRadius: '10px' }}>
+              <strong style={{ fontSize: '12px', color: 'var(--primary)', display: 'block' }}>✓ SuperAdmin Boundary</strong>
+              <p style={{ fontSize: '11px', color: 'var(--error)', margin: '4px 0 0', opacity: 0.85 }}>account_id: null; isolated at central platform layer.</p>
+            </div>
+            <div style={{ padding: '12px', border: '1px solid var(--border)', borderRadius: '10px' }}>
+              <strong style={{ fontSize: '12px', color: 'var(--primary)', display: 'block' }}>✓ Ceiling Safeguards</strong>
+              <p style={{ fontSize: '11px', color: 'var(--error)', margin: '4px 0 0', opacity: 0.85 }}>Organizations cannot exceed their purchased rights ceiling.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="phase-panel" style={{ padding: '24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '20px', borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
+            <div>
+              <span className="phase-eyebrow">INTERACTIVE PROPOSALS</span>
+              <h2 style={{ fontSize: '16px', fontWeight: 800, margin: '2px 0 0', color: 'var(--error)' }}>Test Layout Proposals</h2>
+            </div>
+            <div style={{ display: 'flex', gap: '6px' }}>
+              <button type="button" onClick={() => setActiveTab('1')} style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '11.5px', fontWeight: 700, border: activeTab === '1' ? '1px solid var(--primary)' : '1px solid var(--border)', background: activeTab === '1' ? 'var(--primary)' : '#fff', color: activeTab === '1' ? '#fff' : 'var(--error)', cursor: 'pointer' }}>1. Executive Split-Screen</button>
+              <button type="button" onClick={() => setActiveTab('2')} style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '11.5px', fontWeight: 700, border: activeTab === '2' ? '1px solid var(--primary)' : '1px solid var(--border)', background: activeTab === '2' ? 'var(--primary)' : '#fff', color: activeTab === '2' ? '#fff' : 'var(--error)', cursor: 'pointer' }}>2. Subdomain Gateway</button>
+              <button type="button" onClick={() => setActiveTab('3')} style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '11.5px', fontWeight: 700, border: activeTab === '3' ? '1px solid var(--primary)' : '1px solid var(--border)', background: activeTab === '3' ? 'var(--primary)' : '#fff', color: activeTab === '3' ? '#fff' : 'var(--error)', cursor: 'pointer' }}>3. Cohort Chooser</button>
+            </div>
+          </div>
+
+          {activeTab === '1' && (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', alignItems: 'center' }}>
+              <div>
+                <span className="phase-eyebrow">PRODUCTION STANDARD</span>
+                <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '4px 0 8px' }}>Executive Split-Screen</h3>
+                <p style={{ fontSize: '12px', opacity: 0.85, margin: '0 0 14px' }}>Two-column command center with single-line English permission summary.</p>
+                <div style={{ padding: '12px', background: 'var(--bg-soft)', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                  <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--primary)', display: 'block' }}>Computed Rights:</span>
+                  <span style={{ fontSize: '11.5px', fontWeight: 600 }}>{personas[samplePersona].rights}</span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  {Object.keys(personas).map((p) => (
+                    <button key={p} type="button" onClick={() => setSamplePersona(p)} style={{ flex: 1, padding: '6px', fontSize: '10.5px', fontWeight: 700, borderRadius: '6px', border: samplePersona === p ? '1px solid var(--primary)' : '1px solid var(--border)', background: samplePersona === p ? 'var(--primary)' : '#fff', color: samplePersona === p ? '#fff' : 'var(--error)', cursor: 'pointer' }}>{p === 'org_admin' ? 'Admin' : p === 'teacher' ? 'Faculty' : p === 'student' ? 'Student' : 'SuperAdmin'}</button>
+                  ))}
+                </div>
+                <input type="text" readOnly value={personas[samplePersona].email} style={{ padding: '8px 10px', fontSize: '12px', borderRadius: '6px', border: '1px solid var(--border)' }} />
+                <button type="button" className="phase-primary-button" onClick={() => navigate(samplePersona === 'platform_admin' ? '/platform/organizations' : '/dashboard')}>Launch Selected Session →</button>
+              </div>
+            </div>
+          )}
+
+          {activeTab === '2' && (
+            <div>
+              <span className="phase-eyebrow">TENANT BOUNDARY</span>
+              <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '4px 0 8px' }}>Subdomain Tenant Gateway</h3>
+              <p style={{ fontSize: '12px', opacity: 0.85, margin: '0 0 16px' }}>Client binds cryptographically to tenant slug; client never sends account_id.</p>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '14px' }}>
+                <input type="text" value={subdomain} onChange={(e) => setSubdomain(e.target.value)} style={{ padding: '8px 10px', fontSize: '12px', borderRadius: '6px', border: '1px solid var(--border)' }} />
+                <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>.heftin.edu</span>
+                <span style={{ fontSize: '11px', color: 'var(--primary)', fontWeight: 700 }}>✓ Verified Tenant: org_001</span>
+              </div>
+              <button type="button" className="phase-primary-button" onClick={() => navigate('/dashboard')}>Open Tenant Workspace →</button>
+            </div>
+          )}
+
+          {activeTab === '3' && (
+            <div>
+              <span className="phase-eyebrow">MULTI-COHORT ISOLATION</span>
+              <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '4px 0 8px' }}>Cohort Scope Chooser</h3>
+              <p style={{ fontSize: '12px', opacity: 0.85, margin: '0 0 16px' }}>Multi-cohort faculty select active scope at login to prevent cross-batch leaks.</p>
+              <div style={{ display: 'flex', gap: '10px', marginBottom: '16px' }}>
+                {['101', '102', 'dept'].map((c) => (
+                  <button key={c} type="button" onClick={() => setCohort(c)} style={{ flex: 1, padding: '12px', textAlign: 'left', borderRadius: '10px', border: cohort === c ? '1px solid var(--primary)' : '1px solid var(--border)', background: cohort === c ? '#f8fcfe' : '#fff', cursor: 'pointer' }}>
+                    <strong style={{ fontSize: '12px', color: cohort === c ? 'var(--primary)' : 'var(--error)', display: 'block' }}>{c === '101' ? 'Batch 101' : c === '102' ? 'Batch 102' : 'Department Observer'}</strong>
+                    <span style={{ fontSize: '10.5px', opacity: 0.8 }}>{c === '101' ? '42 Students · Active' : c === '102' ? '38 Students' : 'Audit across batches'}</span>
+                  </button>
+                ))}
+              </div>
+              <button type="button" className="phase-primary-button" onClick={() => navigate('/dashboard')}>Launch Cohort Scope →</button>
+            </div>
+          )}
+        </section>
+      </div>
+    </>
+  )
+}
+
+/* ==========================================================================
+   # 17. SESSION LIFECYCLE & ASYNC STATES VIEW: /session-lifecycle
+   ========================================================================== */
+export function SessionLifecycleView({ navigate }) {
+  const [state, setState] = useState('loading')
+
+  return (
+    <>
+      <PageHeading
+        eyebrow="TICKET HAC01-FE-11"
+        title="Session Lifecycle & Async States"
+        description="Interactive testbench for Loading, 401 Session Expiry, 403 Forbidden, and 500 Retry states."
+      />
+
+      <section className="phase-panel" style={{ padding: '24px' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '24px', borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
+          {['loading', 'empty', '401', '403', '500'].map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => setState(s)}
+              style={{
+                padding: '8px 14px',
+                borderRadius: '8px',
+                fontSize: '11.5px',
+                fontWeight: 700,
+                border: state === s ? '1px solid var(--primary)' : '1px solid var(--border)',
+                background: state === s ? 'var(--primary)' : '#fff',
+                color: state === s ? '#fff' : 'var(--error)',
+                cursor: 'pointer',
+              }}
+            >
+              {s === 'loading' ? '1. Loading State' : s === 'empty' ? '2. Empty State' : s === '401' ? '3. 401 Session Expiry' : s === '403' ? '4. 403 Forbidden Gate' : '5. 500 Server Error'}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ minHeight: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '30px', background: 'var(--bg-soft)', borderRadius: '12px' }}>
+          {state === 'loading' && (
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ width: '32px', height: '32px', border: '3px solid var(--border)', borderTopColor: 'var(--primary)', borderRadius: '50%', margin: '0 auto 12px', animation: 'spin 0.8s linear infinite' }} />
+              <strong style={{ fontSize: '14px', display: 'block' }}>Loading workspace data...</strong>
+              <span style={{ fontSize: '11.5px', opacity: 0.8 }}>Synchronizing assigned permissions and batch enrollments.</span>
+            </div>
+          )}
+
+          {state === 'empty' && (
+            <div style={{ textAlign: 'center' }}>
+              <span style={{ fontSize: '24px', display: 'block', marginBottom: '8px' }}>📂</span>
+              <strong style={{ fontSize: '14px', display: 'block' }}>No records found</strong>
+              <p style={{ fontSize: '11.5px', opacity: 0.8, margin: '4px 0 14px' }}>There are no items created in this section yet.</p>
+              <button type="button" className="phase-primary-button" onClick={() => navigate('/dashboard')}>Create First Item</button>
+            </div>
+          )}
+
+          {state === '401' && (
+            <div style={{ textAlign: 'center' }}>
+              <span style={{ fontSize: '24px', display: 'block', marginBottom: '8px' }}>⏱</span>
+              <strong style={{ fontSize: '14px', display: 'block' }}>Session Expired (401)</strong>
+              <p style={{ fontSize: '11.5px', opacity: 0.8, margin: '4px 0 14px' }}>Your authentication token has expired. Redirecting to login...</p>
+              <a href="/login.html" className="phase-primary-button" style={{ textDecoration: 'none' }}>Re-authenticate Now →</a>
+            </div>
+          )}
+
+          {state === '403' && (
+            <div style={{ textAlign: 'center' }}>
+              <span style={{ fontSize: '24px', display: 'block', marginBottom: '8px' }}>🔒</span>
+              <strong style={{ fontSize: '14px', display: 'block' }}>403 Access Denied</strong>
+              <p style={{ fontSize: '11.5px', opacity: 0.8, margin: '4px 0 8px' }}>Your assigned role lacks required permission:</p>
+              <code style={{ background: '#fff', border: '1px solid var(--border)', padding: '3px 8px', borderRadius: '4px', fontSize: '11px', color: 'var(--primary)', display: 'inline-block', marginBottom: '14px' }}>roles.rights.edit</code>
+              <div><button type="button" className="phase-primary-button" onClick={() => navigate('/dashboard')}>Return to Authorized Home</button></div>
+            </div>
+          )}
+
+          {state === '500' && (
+            <div style={{ textAlign: 'center' }}>
+              <span style={{ fontSize: '24px', display: 'block', marginBottom: '8px' }}>⚠️</span>
+              <strong style={{ fontSize: '14px', display: 'block' }}>Endpoint Error (500)</strong>
+              <p style={{ fontSize: '11.5px', opacity: 0.8, margin: '4px 0 14px' }}>API communication timed out while fetching performance metrics.</p>
+              <button type="button" className="phase-primary-button" onClick={() => setState('loading')}>Retry Connection</button>
+            </div>
+          )}
+        </div>
+      </section>
+    </>
+  )
+}

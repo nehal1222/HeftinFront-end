@@ -47,15 +47,17 @@
 
             <div class="navbar-collapse" id="navCollapse">
                 <ul>
-                    <li><a href="explore.html">Explore</a></li>
-                    <li><a href="b2b.html">For Institutes</a></li>
-                    <li><a href="#">Test Series</a></li>
-                    <li><a href="#">Practice</a></li>
+                    <li><a href="explore.html" style="white-space: nowrap;">Explore</a></li>
+                    <li><a href="b2b.html" style="white-space: nowrap;">For Institutes</a></li>
+                    <li><a href="#blueprints" style="white-space: nowrap;">Blueprints</a></li>
+                    <li><a href="#roles" style="white-space: nowrap;">Roles</a></li>
+                    <li><a href="auth-samples.html" style="white-space: nowrap;">Auth Samples</a></li>
+                    <li><a href="tokens.html" style="white-space: nowrap;">Tokens</a></li>
                 </ul>
-                <div class="nav-actions-inner">
-                    <a href="premium.html" class="go-premium">Go Premium</a>
-                    <a href="login.html" class="login">Login</a>
-                    <a href="dashboard/index.html" class="start-button">Get Started</a>
+                <div class="nav-actions-inner" style="white-space: nowrap;">
+                    <a href="premium.html" class="go-premium" style="white-space: nowrap;">Go Premium</a>
+                    <a href="login.html" class="login" style="white-space: nowrap;">Login</a>
+                    <a href="dashboard/index.html" class="start-button" style="white-space: nowrap;">Get Started</a>
                 </div>
             </div>
         </div>
@@ -350,6 +352,244 @@
             </div>
         </section>
 
+        <!-- ================================
+             THE 3 CORE BLUEPRINTS (PHASE 1 ARCHITECTURE)
+        ================================= -->
+        <section class="blueprints-section" id="blueprints" style="padding: 80px 20px; background: var(--primary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); position: relative;">
+            <div style="max-width: 1140px; margin: 0 auto;">
+                <div style="text-align: center; max-width: 640px; margin: 0 auto 48px;">
+                    <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 9999px; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(204, 230, 232, 0.4); margin-bottom: 12px;">
+                        <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #ffffff; font-family: monospace;">✦ Phase 1 Architecture</span>
+                    </div>
+                    <h2 style="font-size: clamp(26px, 4vw, 36px); font-weight: 800; color: #ffffff; letter-spacing: -0.02em; margin: 4px 0 10px; line-height: 1.15;">
+                        <span style="color: var(--border); font-weight: 500;">The 3 Core </span>
+                        <span>Blueprints</span>
+                    </h2>
+                    <div style="width: 48px; height: 2px; background: var(--border); margin: 14px auto; border-radius: 9999px;"></div>
+                    <p style="font-size: 13.5px; color: #ffffff; opacity: 0.95; margin: 0 auto; line-height: 1.6;">
+                        Strict rights-based navigation, immutable ceilings, and zero-trust role boundaries.
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+                    <!-- Blueprint 01: Organization Admin Dashboard -->
+                    <div style="border: 1px solid var(--border); border-radius: 20px; padding: 28px 24px; background: #ffffff; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 16px 36px -12px rgba(0, 26, 28, 0.22);">
+                        <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                                <div style="width: 38px; height: 38px; border-radius: 10px; background: var(--primary); display: grid; place-items: center; color: #ffffff;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                                </div>
+                                <span style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.08em; font-family: monospace; background: rgba(0, 130, 142, 0.08); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border);">Blueprint 01</span>
+                            </div>
+
+                            <h3 style="font-size: 18px; font-weight: 700; color: var(--error); margin: 0 0 8px; line-height: 1.3;">Organization Admin Dashboard</h3>
+                            <p style="font-size: 13px; color: var(--error); opacity: 0.85; line-height: 1.55; margin: 0;">
+                                Real-time workspace for People, Roles, Departments, Batches, and Audit logs driven by effective rights.
+                            </p>
+
+                            <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span style="font-size: 10.5px; font-weight: 700; color: var(--primary); background: rgba(204, 230, 232, 0.35); padding: 3px 8px; border-radius: 4px;">Dynamic Navigation</span>
+                                <span style="font-size: 10.5px; font-weight: 700; color: var(--error); background: #f8fcfe; border: 1px solid var(--border); padding: 3px 8px; border-radius: 4px;">Audit Trail</span>
+                                <span style="font-size: 10.5px; font-weight: 700; color: var(--error); background: #f8fcfe; border: 1px solid var(--border); padding: 3px 8px; border-radius: 4px;">Tenant Scoped</span>
+                            </div>
+                        </div>
+
+                        <a href="dashboard/index.html" onclick="localStorage.setItem('heftin-phase1-persona', 'org_admin')" class="start-button" style="margin-top: 24px; padding: 10px 18px; font-size: 12.5px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;">
+                            <span>Open Admin Dashboard</span>
+                            <span>→</span>
+                        </a>
+                    </div>
+
+                    <!-- Blueprint 02: Role & Rights Builder -->
+                    <div style="border: 1px solid var(--border); border-radius: 20px; padding: 28px 24px; background: #ffffff; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 16px 36px -12px rgba(0, 26, 28, 0.22);">
+                        <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                                <div style="width: 38px; height: 38px; border-radius: 10px; background: var(--primary); display: grid; place-items: center; color: #ffffff;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="21" y2="21"/><line x1="4" x2="20" y1="3" y2="3"/><line x1="12" x2="12" y1="8" y2="16"/><line x1="8" x2="16" y1="12" y2="12"/></svg>
+                                </div>
+                                <span style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.08em; font-family: monospace; background: rgba(0, 130, 142, 0.08); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border);">Blueprint 02</span>
+                            </div>
+
+                            <h3 style="font-size: 18px; font-weight: 700; color: var(--error); margin: 0 0 8px; line-height: 1.3;">Role &amp; Rights Builder</h3>
+                            <p style="font-size: 13px; color: var(--error); opacity: 0.85; line-height: 1.55; margin: 0;">
+                                Dynamic custom role editor featuring immutable ceiling barriers that stop privilege self-escalation.
+                            </p>
+
+                            <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span style="font-size: 10.5px; font-weight: 700; color: var(--primary); background: rgba(204, 230, 232, 0.35); padding: 3px 8px; border-radius: 4px;">Immutable Ceilings</span>
+                                <span style="font-size: 10.5px; font-weight: 700; color: var(--error); background: #f8fcfe; border: 1px solid var(--border); padding: 3px 8px; border-radius: 4px;">No Escalation</span>
+                                <span style="font-size: 10.5px; font-weight: 700; color: var(--error); background: #f8fcfe; border: 1px solid var(--border); padding: 3px 8px; border-radius: 4px;">Granular Matrix</span>
+                            </div>
+                        </div>
+
+                        <a href="dashboard/index.html" onclick="localStorage.setItem('heftin-phase1-persona', 'org_admin')" class="start-button" style="margin-top: 24px; padding: 10px 18px; font-size: 12.5px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;">
+                            <span>Open Role Builder</span>
+                            <span>→</span>
+                        </a>
+                    </div>
+
+                    <!-- Blueprint 03: SuperAdmin Organization Control -->
+                    <div style="border: 1px solid var(--border); border-radius: 20px; padding: 28px 24px; background: #ffffff; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 16px 36px -12px rgba(0, 26, 28, 0.22);">
+                        <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                                <div style="width: 38px; height: 38px; border-radius: 10px; background: var(--primary); display: grid; place-items: center; color: #ffffff;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>
+                                </div>
+                                <span style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.08em; font-family: monospace; background: rgba(0, 130, 142, 0.08); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border);">Blueprint 03</span>
+                            </div>
+
+                            <h3 style="font-size: 18px; font-weight: 700; color: var(--error); margin: 0 0 8px; line-height: 1.3;">SuperAdmin Organization Control</h3>
+                            <p style="font-size: 13px; color: var(--error); opacity: 0.85; line-height: 1.55; margin: 0;">
+                                Multi-tenant provisioner with organization seat limits, quota bars, and master rights allocation.
+                            </p>
+
+                            <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span style="font-size: 10.5px; font-weight: 700; color: var(--primary); background: rgba(204, 230, 232, 0.35); padding: 3px 8px; border-radius: 4px;">Tenant Quotas</span>
+                                <span style="font-size: 10.5px; font-weight: 700; color: var(--error); background: #f8fcfe; border: 1px solid var(--border); padding: 3px 8px; border-radius: 4px;">Master Ceiling</span>
+                                <span style="font-size: 10.5px; font-weight: 700; color: var(--error); background: #f8fcfe; border: 1px solid var(--border); padding: 3px 8px; border-radius: 4px;">Central Governance</span>
+                            </div>
+                        </div>
+
+                        <a href="dashboard/index.html" onclick="localStorage.setItem('heftin-phase1-persona', 'platform_admin')" class="start-button" style="margin-top: 24px; padding: 10px 18px; font-size: 12.5px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;">
+                            <span>Open SuperAdmin Central</span>
+                            <span>→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================
+             DYNAMIC ROLES & PLAIN-ENGLISH PERMISSIONS
+        ================================= -->
+        <section class="roles-sandbox-section" id="roles" style="padding: 70px 20px; background: #f8fcfe; border-top: 1px solid var(--border);">
+            <div style="max-width: 1000px; margin: 0 auto;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+                    <div>
+                        <p class="eyebrow" style="margin: 0;">ACCESS CONTROL</p>
+                        <h2 class="split-heading" style="margin: 4px 0;">
+                            <span class="split-heading-lead">Dynamic Roles &amp; </span>
+                            <span class="split-heading-bold">Rights</span>
+                        </h2>
+                        <p style="font-size: 12.5px; color: var(--error); opacity: 0.85; margin: 4px 0 0;">
+                            Select a role to verify its effective rights summary in plain English.
+                        </p>
+                    </div>
+
+                    <!-- Role switcher buttons -->
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <button type="button" class="role-tab-btn active" data-role="admin" onclick="selectRolePersona('admin')" style="padding: 8px 14px; border-radius: 10px; border: 1px solid var(--primary); background: var(--primary); color: #ffffff; font-size: 12px; font-weight: 700; cursor: pointer;">Admin</button>
+                        <button type="button" class="role-tab-btn" data-role="hod" onclick="selectRolePersona('hod')" style="padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); background: #ffffff; color: var(--error); font-size: 12px; font-weight: 700; cursor: pointer;">HOD</button>
+                        <button type="button" class="role-tab-btn" data-role="teacher" onclick="selectRolePersona('teacher')" style="padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); background: #ffffff; color: var(--error); font-size: 12px; font-weight: 700; cursor: pointer;">Teacher</button>
+                        <button type="button" class="role-tab-btn" data-role="student" onclick="selectRolePersona('student')" style="padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); background: #ffffff; color: var(--error); font-size: 12px; font-weight: 700; cursor: pointer;">Student</button>
+                        <button type="button" class="role-tab-btn" data-role="superadmin" onclick="selectRolePersona('superadmin')" style="padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); background: #ffffff; color: var(--error); font-size: 12px; font-weight: 700; cursor: pointer;">SuperAdmin</button>
+                    </div>
+                </div>
+
+                <!-- Active role details card -->
+                <div style="border-radius: 18px; border: 1px solid var(--border); background: #ffffff; padding: 26px; box-shadow: 0 12px 32px -16px rgba(0, 26, 28, 0.09);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+                        <div>
+                            <span id="roleScope" style="font-size: 11px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.06em; font-family: monospace;">Delhi Public Academy</span>
+                            <h3 id="roleTitle" style="font-size: 20px; font-weight: 800; color: var(--error); margin: 4px 0 0;">Organization Admin</h3>
+                        </div>
+
+                        <a id="roleActionBtn" href="dashboard/index.html" onclick="launchActiveRolePersona()" class="start-button" style="padding: 8px 16px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+                            <span id="roleActionLabel">Launch Admin View</span>
+                            <span>→</span>
+                        </a>
+                    </div>
+
+                    <p id="roleIntro" style="font-size: 13px; color: var(--error); opacity: 0.9; line-height: 1.5; margin: 16px 0 12px;">
+                        Manages staff accounts, dynamic roles, academic departments, and audit logs.
+                    </p>
+
+                    <div style="background: #f3fafb; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 10px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary); flex-shrink: 0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span id="rolePermissions" style="font-size: 12.5px; color: var(--error); font-weight: 600;">
+                            Permissions: View and create users, manage roles and permissions, configure org profile.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            const roleData = {
+                admin: {
+                    title: 'Organization Admin',
+                    scope: 'Delhi Public Academy',
+                    intro: 'Manages staff accounts, dynamic roles, academic departments, and audit logs.',
+                    permissions: 'Permissions: View and create users, manage roles and permissions, configure org profile.',
+                    persona: 'org_admin',
+                    actionLabel: 'Launch Admin View'
+                },
+                hod: {
+                    title: 'Department HOD',
+                    scope: 'General Studies Department',
+                    intro: 'Oversees department curriculum, question bank audits, and faculty performance.',
+                    permissions: 'Permissions: View department faculties, review question banks, approve exam papers.',
+                    persona: 'org_admin',
+                    actionLabel: 'Launch HOD View'
+                },
+                teacher: {
+                    title: 'Faculty / Teacher',
+                    scope: 'Batch 101 Faculty',
+                    intro: 'Builds mock tests, reviews question analytics, and tracks batch test rankings.',
+                    permissions: 'Permissions: View users and manage assigned batch exams.',
+                    persona: 'teacher',
+                    actionLabel: 'Launch Teacher View'
+                },
+                student: {
+                    title: 'Student Aspirant',
+                    scope: 'UPSC & SSC Candidate',
+                    intro: 'Attempts high-fidelity mock tests, analyses test scores, and tracks ranking percentiles.',
+                    permissions: 'Permissions: Attempt mock exams, view performance reports, track streaks.',
+                    persona: 'student',
+                    actionLabel: 'Launch Student View'
+                },
+                superadmin: {
+                    title: 'Platform SuperAdmin',
+                    scope: 'Heftin Platform Central',
+                    intro: 'Oversees tenant academies, manages platform rights catalog, and enforces ceiling constraints.',
+                    permissions: 'Permissions: Full platform ceiling, provision organizations, manage system catalog.',
+                    persona: 'platform_admin',
+                    actionLabel: 'Launch SuperAdmin View'
+                }
+            };
+            let currentActiveRole = 'admin';
+
+            function selectRolePersona(roleKey) {
+                currentActiveRole = roleKey;
+                const d = roleData[roleKey];
+                if (!d) return;
+                document.getElementById('roleTitle').textContent = d.title;
+                document.getElementById('roleScope').textContent = d.scope;
+                document.getElementById('roleIntro').textContent = d.intro;
+                document.getElementById('rolePermissions').textContent = d.permissions;
+                document.getElementById('roleActionLabel').textContent = d.actionLabel;
+
+                document.querySelectorAll('.role-tab-btn').forEach(btn => {
+                    if (btn.dataset.role === roleKey) {
+                        btn.style.background = 'var(--primary)';
+                        btn.style.color = '#ffffff';
+                        btn.style.border = '1px solid var(--primary)';
+                    } else {
+                        btn.style.background = '#ffffff';
+                        btn.style.color = 'var(--error)';
+                        btn.style.border = '1px solid var(--border)';
+                    }
+                });
+            }
+
+            function launchActiveRolePersona() {
+                const d = roleData[currentActiveRole] || roleData.admin;
+                try {
+                    localStorage.setItem('heftin-phase1-persona', d.persona);
+                } catch (e) {}
+            }
+        </script>
+
         <section class="testimonial">
             <div class="testimonial-inner reveal corner-marks on-dark">
                 <span class="quote-mark">&ldquo;</span>
@@ -395,12 +635,12 @@
             </div>
 
             <div class="footer-col">
-                <h4>Resources</h4>
+                <h4>Architecture &amp; Samples</h4>
                 <ul>
-                    <li><a href="#">Help Center</a></li>
-                    <li><a href="#">FAQs</a></li>
-                    <li><a href="#">Community</a></li>
-                    <li><a href="#">Guides</a></li>
+                    <li><a href="auth-samples.html">Auth Samples Hub</a></li>
+                    <li><a href="tokens.html">Design Tokens (Tailwind v4)</a></li>
+                    <li><a href="session-lifecycle.html">Session Lifecycle &amp; Async</a></li>
+                    <li><a href="#blueprints">Architecture Blueprints</a></li>
                 </ul>
             </div>
 

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Architecture Samples &amp; Comparison — Heftin Academy</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Jost:wght@300;400;500;600&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --primary: #00828e;
+            --primary-dark: #006f79;
+            --border: #cce6e8;
+            --error: #001a1c;
+            --white: #ffffff;
+            --bg-soft: #f4fbfb;
+            --bg-card: #ffffff;
+        }
+        body {
+            background: #ffffff;
+            color: var(--error);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+        .hub-container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+        }
+        .hub-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 32px;
+        }
+        .hub-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .hub-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 9px;
+            background: var(--primary);
+            color: var(--white);
+            font-size: 12.5px;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 9px;
+            background: var(--white);
+            color: var(--error);
+            font-size: 12.5px;
+            font-weight: 700;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .hub-eyebrow {
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--primary);
+        }
+        .hub-title {
+            font-size: clamp(24px, 4vw, 34px);
+            font-weight: 800;
+            color: var(--error);
+            margin: 6px 0 10px;
+            line-height: 1.2;
+        }
+        .hub-desc {
+            font-size: 14px;
+            color: var(--error);
+            opacity: 0.85;
+            max-width: 780px;
+            margin: 0 0 32px;
+        }
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        .matrix-card {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            background: var(--white);
+            box-shadow: 0 4px 16px -8px rgba(0, 26, 28, 0.08);
+        }
+        .matrix-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .matrix-card strong {
+            display: block;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--error);
+            margin-bottom: 4px;
+        }
+        .matrix-card p {
+            font-size: 11.5px;
+            color: var(--error);
+            opacity: 0.85;
+            margin: 0;
+            line-height: 1.5;
+        }
+        .sandbox-section {
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--bg-soft);
+            padding: 32px 24px;
+            margin-bottom: 48px;
+        }
+        .sandbox-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+        }
+        .tab-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            color: var(--error);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        .sandbox-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 12px 36px -16px rgba(0, 26, 28, 0.12);
+            max-width: 840px;
+            margin: 0 auto;
+        }
+        .scorecard-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            background: var(--white);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .scorecard-table th {
+            text-align: left;
+            padding: 12px 16px;
+            background: var(--bg-soft);
+            font-size: 10.5px;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+        }
+        .scorecard-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--error);
+        }
+        .scorecard-table tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="hub-container">
+        <!-- Navigation bar -->
+        <header class="hub-nav">
+            <a href="index.html" class="hub-back">
+                <span>←</span> Back to Heftin Academy
+            </a>
+            <div class="hub-actions">
+                <a href="login.html" class="btn-primary">Open Live Login →</a>
+                <a href="signup.html" class="btn-outline">Open Live Sign Up</a>
+                <a href="dashboard/index.html" class="btn-outline">Workspace Shell</a>
+            </div>
+        </header>
+
+        <div>
+            <span class="hub-eyebrow">Executive Architecture Review</span>
+            <h1 class="hub-title">Phase 1 Enterprise Auth Samples Hub</h1>
+            <p class="hub-desc">
+                Evaluate <strong>3 production-ready enterprise authentication patterns</strong> built for institutional governance, zero-trust boundary isolation, and server-authoritative role rights.
+            </p>
+        </div>
+
+        <!-- Compliance Matrix -->
+        <section>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                <span class="hub-eyebrow">Security Governance</span>
+                <span style="font-size: 11px; font-weight: 800; color: var(--primary); background: rgba(0,130,142,0.1); padding: 4px 10px; border-radius: 99px;">100% Architecture Compliant</span>
+            </div>
+
+            <div class="matrix-grid">
+                <div class="matrix-card">
+                    <span class="matrix-badge">✓ Server-Computed Rights</span>
+                    <strong>Zero Client Arithmetic</strong>
+                    <p>Permissions derive directly from session tokens; client never computes role grants.</p>
+                </div>
+                <div class="matrix-card">
+                    <span class="matrix-badge">✓ Scope Isolation</span>
+                    <strong>Assigned Batch Scopes</strong>
+                    <p>Teachers access only their assigned cohorts (e.g. <code>batch_101</code>) with fail-closed bounds.</p>
+                </div>
+                <div class="matrix-card">
+                    <span class="matrix-badge">✓ SuperAdmin Boundary</span>
+                    <strong>account_id: null</strong>
+                    <p>SuperAdmin is isolated at the central platform layer, unbound by tenant ceilings.</p>
+                </div>
+                <div class="matrix-card">
+                    <span class="matrix-badge">✓ Ceiling Safeguards</span>
+                    <strong>Anti-Self-Escalation</strong>
+                    <p>Organization admins cannot grant rights that exceed their purchased institutional ceiling.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Interactive Sandbox -->
+        <section class="sandbox-section">
+            <div class="sandbox-header">
+                <div>
+                    <span class="hub-eyebrow">Interactive Sandbox</span>
+                    <h2 style="font-size: 18px; font-weight: 800; margin: 4px 0 0; color: var(--error);">
+                        Test the 3 Approved Layout Proposals
+                    </h2>
+                </div>
+                <div class="tab-group">
+                    <button type="button" class="tab-btn active" id="tabSample1" onclick="showSample('1')">Layout 01: Executive Split-Screen</button>
+                    <button type="button" class="tab-btn" id="tabSample2" onclick="showSample('2')">Layout 02: Subdomain Gateway</button>
+                    <button type="button" class="tab-btn" id="tabSample3" onclick="showSample('3')">Layout 03: Cohort Chooser</button>
+                </div>
+            </div>
+
+            <!-- Sample 1: Executive Split-Screen -->
+            <div id="sample1View" class="sandbox-card">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: center;">
+                    <div style="padding-right: 16px; border-right: 1px solid var(--border);">
+                        <span class="hub-eyebrow">Recommended Production Standard</span>
+                        <h3 style="font-size: 20px; font-weight: 800; margin: 8px 0; color: var(--error);">Executive Split-Screen</h3>
+                        <p style="font-size: 12.5px; color: var(--error); opacity: 0.85; line-height: 1.5;">
+                            Provides an authoritative enterprise layout with single-line English permission explanations and 1-click persona testing.
+                        </p>
+                        <div style="margin-top: 16px; padding: 12px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px;">
+                            <span style="font-size: 11px; font-weight: 700; color: var(--primary); display: block; margin-bottom: 4px;">Effective Rights Summary:</span>
+                            <span id="sample1Rights" style="font-size: 12px; color: var(--error); font-weight: 600;">Full organization administration across users, roles, departments, and batches.</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;">
+                            <button type="button" onclick="setSample1Persona('org_admin')" style="padding: 6px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--primary); background: var(--primary); color: #fff; cursor: pointer;">Org Admin</button>
+                            <button type="button" onclick="setSample1Persona('teacher')" style="padding: 6px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer;">Faculty</button>
+                            <button type="button" onclick="setSample1Persona('student')" style="padding: 6px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer;">Student</button>
+                            <button type="button" onclick="setSample1Persona('platform_admin')" style="padding: 6px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer;">SuperAdmin</button>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <input type="email" id="sample1Email" value="orgadmin@dpa.edu" style="padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 12px;" readonly>
+                            <input type="password" value="••••••••••••" style="padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 12px;" readonly>
+                            <button type="button" onclick="launchSampleSession('org_admin')" class="btn-primary" style="justify-content: center; width: 100%;">
+                                Sign In &amp; Launch Workspace →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample 2: Subdomain Gateway -->
+            <div id="sample2View" class="sandbox-card" style="display: none;">
+                <span class="hub-eyebrow">Institutional Multi-Tenant Architecture</span>
+                <h3 style="font-size: 20px; font-weight: 800; margin: 8px 0; color: var(--error);">Subdomain Tenant Gateway</h3>
+                <p style="font-size: 12.5px; color: var(--error); opacity: 0.85; line-height: 1.5; margin-bottom: 20px;">
+                    Users sign in through their dedicated tenant subdomain (e.g. <code>https://dpa.heftin.edu</code>), ensuring zero tenant identifier leakage over client HTTP requests.
+                </p>
+
+                <div style="background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                    <label style="font-size: 11px; font-weight: 700; color: var(--primary); display: block; margin-bottom: 6px;">ENTER ACADEMY SUBDOMAIN</label>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="text" id="subdomainInput" value="dpa" style="flex: 1; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; font-weight: 600;">
+                        <span style="font-family: monospace; font-size: 13px; font-weight: 700; color: var(--error);">.heftin.edu</span>
+                        <button type="button" onclick="verifySubdomain()" class="btn-primary" style="padding: 10px 16px;">Verify</button>
+                    </div>
+                    <div id="subdomainResult" style="margin-top: 12px; font-size: 12px; color: var(--primary); font-weight: 600;">
+                        ✓ Delhi Public Academy (Tenant: org_001 · Verified)
+                    </div>
+                </div>
+
+                <button type="button" onclick="launchSampleSession('org_admin')" class="btn-primary">
+                    Proceed to Delhi Public Academy Workspace →
+                </button>
+            </div>
+
+            <!-- Sample 3: Cohort Chooser -->
+            <div id="sample3View" class="sandbox-card" style="display: none;">
+                <span class="hub-eyebrow">LMS Multi-Cohort Scoping</span>
+                <h3 style="font-size: 20px; font-weight: 800; margin: 8px 0; color: var(--error);">Cohort Scope Chooser</h3>
+                <p style="font-size: 12.5px; color: var(--error); opacity: 0.85; line-height: 1.5; margin-bottom: 20px;">
+                    Faculty assigned to multiple academic cohorts select their active scope at login, preventing accidental cross-batch grading leaks.
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                    <div class="matrix-card" onclick="selectCohort('101')" id="cohort101" style="cursor: pointer; border-color: var(--primary); background: #f8fcfe;">
+                        <strong style="color: var(--primary);">Batch 101 (Active)</strong>
+                        <p>GS Paper 1 &amp; Prelims Mock Series · 42 Students</p>
+                    </div>
+                    <div class="matrix-card" onclick="selectCohort('102')" id="cohort102" style="cursor: pointer;">
+                        <strong>Batch 102</strong>
+                        <p>CSAT &amp; Quantitative Aptitude · 38 Students</p>
+                    </div>
+                    <div class="matrix-card" onclick="selectCohort('dept')" id="cohortDept" style="cursor: pointer;">
+                        <strong>Department Observer</strong>
+                        <p>Curriculum review and question audit across all batches</p>
+                    </div>
+                </div>
+
+                <button type="button" onclick="launchSampleSession('teacher')" class="btn-primary">
+                    Launch Batch 101 Faculty Workspace →
+                </button>
+            </div>
+        </section>
+
+        <!-- Evaluation Table -->
+        <section>
+            <h2 style="font-size: 16px; font-weight: 800; color: var(--error); margin-bottom: 14px;">
+                Stakeholder Evaluation &amp; Recommendation Matrix
+            </h2>
+            <table class="scorecard-table">
+                <thead>
+                    <tr>
+                        <th>Architecture Pattern</th>
+                        <th>Core Mechanics</th>
+                        <th>Security Standard</th>
+                        <th>Recommendation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: rgba(0, 130, 142, 0.04);">
+                        <td><strong style="color: var(--primary);">★ Executive Split-Screen</strong></td>
+                        <td>2-Column Layout · Single-line English rights · 1-click test deck</td>
+                        <td>Server-Computed Rights &amp; Platform Boundary</td>
+                        <td><strong style="color: var(--primary);">Recommended Production Standard</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Subdomain Gateway</strong></td>
+                        <td>Custom institutional slug · Tenant-bound URLs · 2-step flow</td>
+                        <td>Zero Client Tenant Identifier Leaks</td>
+                        <td>Approved Alternative for Multi-Campus Institutions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cohort Chooser</strong></td>
+                        <td>Active cohort card selector · Session scope isolation</td>
+                        <td>Anti-Self-Escalation &amp; Cross-Batch Safety</td>
+                        <td>Approved Alternative for Multi-Cohort Teachers</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script>
+        function showSample(num) {
+            document.getElementById('sample1View').style.display = num === '1' ? 'block' : 'none';
+            document.getElementById('sample2View').style.display = num === '2' ? 'block' : 'none';
+            document.getElementById('sample3View').style.display = num === '3' ? 'block' : 'none';
+
+            document.getElementById('tabSample1').classList.toggle('active', num === '1');
+            document.getElementById('tabSample2').classList.toggle('active', num === '2');
+            document.getElementById('tabSample3').classList.toggle('active', num === '3');
+        }
+
+        const personaData = {
+            org_admin: {
+                email: 'orgadmin@dpa.edu',
+                rights: 'Full organization administration across users, roles, departments, and batches.'
+            },
+            teacher: {
+                email: 'teacher@dpa.edu',
+                rights: 'View assigned batch exams, grade student submissions, review question analytics.'
+            },
+            student: {
+                email: 'sana@dpa.edu',
+                rights: 'Attempt mock tests, view detailed answer keys, track performance percentiles.'
+            },
+            platform_admin: {
+                email: 'admin@heftin.com',
+                rights: 'Platform SuperAdmin: provision tenant academies, manage global rights ceiling.'
+            }
+        };
+
+        let currentSample1Persona = 'org_admin';
+
+        function setSample1Persona(persona) {
+            currentSample1Persona = persona;
+            const d = personaData[persona];
+            document.getElementById('sample1Email').value = d.email;
+            document.getElementById('sample1Rights').textContent = d.rights;
+        }
+
+        function verifySubdomain() {
+            const input = document.getElementById('subdomainInput').value.trim();
+            const res = document.getElementById('subdomainResult');
+            if (input === 'dpa') {
+                res.innerHTML = '✓ Delhi Public Academy (Tenant: org_001 · Verified)';
+                res.style.color = 'var(--primary)';
+            } else {
+                res.innerHTML = '✓ ' + input.toUpperCase() + ' Academy (Tenant: custom_tenant · Verified)';
+                res.style.color = 'var(--primary)';
+            }
+        }
+
+        function selectCohort(id) {
+            ['cohort101', 'cohort102', 'cohortDept'].forEach(c => {
+                const el = document.getElementById(c);
+                el.style.borderColor = 'var(--border)';
+                el.style.background = 'var(--white)';
+            });
+            const sel = document.getElementById(id === '101' ? 'cohort101' : id === '102' ? 'cohort102' : 'cohortDept');
+            sel.style.borderColor = 'var(--primary)';
+            sel.style.background = '#f8fcfe';
+        }
+
+        function launchSampleSession(persona) {
+            try {
+                localStorage.setItem('heftin-phase1-persona', persona);
+                localStorage.setItem('heftinName', persona === 'student' ? 'Sana Khan' : persona === 'teacher' ? 'Rohit Sharma' : persona === 'platform_admin' ? 'SuperAdmin' : 'Dr. R. K. Verma');
+            } catch (e) {}
+            window.location.href = 'dashboard/index.html';
+        }
+    </script>
+</body>
+</html>
