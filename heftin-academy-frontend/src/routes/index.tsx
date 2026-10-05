@@ -8,6 +8,7 @@ import { LoginPage } from '@/pages/LoginPage'
 import { SignupPage } from '@/pages/SignupPage'
 import { AuthSamplesHubPage } from '@/pages/AuthSamplesHubPage'
 import { OnboardingRequestPage } from '@/pages/OnboardingRequestPage'
+import { SessionLifecyclePage } from '@/pages/SessionLifecyclePage'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { PublicOnlyRoute } from '@/components/auth/PublicOnlyRoute'
 import { ROUTES } from '@/lib/constants'
@@ -52,6 +53,8 @@ export function AppRouter() {
       <Route path={ROUTES.DESIGN_SYSTEM} element={<DesignSystemPage />} />
       <Route path="/tokens" element={<DesignSystemPage />} />
       <Route path="/design-tokens" element={<DesignSystemPage />} />
+      <Route path="/session-lifecycle" element={<SessionLifecyclePage />} />
+      <Route path="/async-states" element={<SessionLifecyclePage />} />
       <Route
         path={ROUTES.NOT_FOUND}
         element={

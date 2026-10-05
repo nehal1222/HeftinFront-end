@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { ArrowLeft, Check, Code2, Copy } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@/lib/constants'
-import { AsyncState } from '@/components/ui/AsyncState'
-import type { AsyncStateKind } from '@/lib/async-state'
 
 const TOKENS_CSS_CONTENT = `/* Sprint 1 design system - Tailwind v4 + CSS design tokens. */
 
@@ -87,8 +85,6 @@ const RADIUS_SWATCHES = [
 const SPACING_SWATCHES = ['p-1', 'p-2', 'p-4', 'p-6', 'p-8', 'p-section', 'p-page']
 
 export function DesignSystemPage() {
-  const [activeState, setActiveState] = useState<AsyncStateKind>('loading')
-  const [retryCount, setRetryCount] = useState(0)
   const [copied, setCopied] = useState(false)
 
   function handleCopyTokens() {
@@ -242,67 +238,6 @@ export function DesignSystemPage() {
           <p className="hidden lg:block xl:hidden font-semibold text-primary">lg (1024px+ / 64rem)</p>
           <p className="hidden xl:block font-semibold text-primary">xl (1280px+ / 80rem)</p>
           <p className="mt-2 text-caption text-error">Resize your browser window to test the active responsive breakpoint in real-time.</p>
-        </div>
-      </section>
-      <section>
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3">
-          <div>
-            <span className="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-              [HAC01-FE-11] Error, Loading & Session Handling
-            </span>
-            <h2 className="font-display text-heading-sm tracking-tight text-foreground-strong">
-              Shared Async States & Session Lifecycle
-            </h2>
-          </div>
-          <span className="rounded-full bg-primary/10 px-2.5 py-0.5 font-mono text-[11px] font-bold text-primary">
-            Auth + Dashboard Pattern
-          </span>
-        </div>
-
-        <div className="rounded-card border border-border bg-white p-5 shadow-sm">
-          <p className="text-body-sm text-error/80 mb-4">
-            Unified pattern used across login, auth guards, and dashboard pages. Handles all 6 lifecycle events without leaving a broken shell.
-          </p>
-
-          <div className="flex flex-wrap gap-2 mb-5">
-            {(['loading', 'empty', 'error', 'forbidden', 'notFound'] as AsyncStateKind[]).map((kind) => (
-              <button
-                key={kind}
-                type="button"
-                onClick={() => setActiveState(kind)}
-                className={`rounded-control border px-3 py-1.5 text-xs font-bold transition-all ${
-                  activeState === kind
-                    ? 'border-primary bg-primary text-white shadow-xs'
-                    : 'border-border bg-white text-error hover:border-primary/50'
-                }`}
-              >
-                {kind}
-              </button>
-            ))}
-
-            <Link
-              to="/login?expired=true"
-              className="rounded-control border border-primary/40 bg-border/20 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all ml-auto"
-            >
-              Simulate Session Expired →
-            </Link>
-          </div>
-
-          <div className="rounded-xl border border-border bg-border/10 p-6 min-h-[220px] flex items-center justify-center">
-            <AsyncState
-              state={activeState}
-              onRetry={
-                activeState === 'error'
-                  ? () => setRetryCount((c) => c + 1)
-                  : undefined
-              }
-              description={
-                activeState === 'error' && retryCount > 0
-                  ? `Simulated retry clicked ${retryCount} time(s). Everything re-evaluated safely.`
-                  : undefined
-              }
-            />
-          </div>
         </div>
       </section>
     </main>
