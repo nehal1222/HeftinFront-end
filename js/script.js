@@ -26,17 +26,57 @@ const loader = document.getElementById("loader");
 
 function showWorkspaceWelcome(role, name) {
     const labels = {
-        student: ["Student", "Personal workspace"],
-        individual: ["Individual learner", "Personal workspace"],
-        faculty: ["Faculty", "Heftin UPSC Institute"],
-        org_admin: ["Organization Admin", "Heftin UPSC Institute"],
-        super_admin: ["Heftin Super Admin", "Heftin platform"],
+        student: ["Student", "Delhi Public Academy"],
+        org_admin: ["Organization Admin", "Delhi Public Academy"],
+        teacher: ["Teacher", "Delhi Public Academy"],
+        platform_admin: ["Platform administrator", "Heftin platform"],
     };
-    const details = labels[role] || labels.student;
+    const details = labels[role] || labels.org_admin;
     document.getElementById("welcomeName").textContent = name;
     document.getElementById("welcomeRole").textContent = details[0];
     document.getElementById("welcomeOrganization").textContent = details[1];
     document.getElementById("workspaceWelcome").classList.remove("hidden");
+}
+
+function switchLoginMode(mode) {
+    const tabOrg = document.getElementById("tabOrg");
+    const tabInd = document.getElementById("tabInd");
+    const orgForm = document.getElementById("loginForm");
+    const indContainer = document.getElementById("individualContainer");
+    const bottomText = document.querySelector(".bottom-text");
+    const testDeck = document.getElementById("reviewerTestDeck");
+
+    if (mode === "ind") {
+        if (tabOrg) {
+            tabOrg.style.background = "#ffffff";
+            tabOrg.style.color = "var(--error)";
+            tabOrg.style.border = "1px solid var(--border)";
+        }
+        if (tabInd) {
+            tabInd.style.background = "var(--primary)";
+            tabInd.style.color = "#ffffff";
+            tabInd.style.border = "none";
+        }
+        if (orgForm) orgForm.style.display = "none";
+        if (testDeck) testDeck.style.display = "none";
+        if (bottomText) bottomText.style.display = "none";
+        if (indContainer) indContainer.style.display = "block";
+    } else {
+        if (tabOrg) {
+            tabOrg.style.background = "var(--primary)";
+            tabOrg.style.color = "#ffffff";
+            tabOrg.style.border = "none";
+        }
+        if (tabInd) {
+            tabInd.style.background = "#ffffff";
+            tabInd.style.color = "var(--error)";
+            tabInd.style.border = "1px solid var(--border)";
+        }
+        if (orgForm) orgForm.style.display = "block";
+        if (testDeck) testDeck.style.display = "block";
+        if (bottomText) bottomText.style.display = "block";
+        if (indContainer) indContainer.style.display = "none";
+    }
 }
 
 
@@ -95,9 +135,28 @@ function clearErrors() {
     formMessage.textContent = "";
 
     formMessage.className = "form-message";
+    formMessage.dataset.state = "idle";
 
 }
 
+let currentPersona = "org_admin";
+
+function fillTestAccount(email, password, persona) {
+    if (emailInput) emailInput.value = email;
+    if (passwordInput) passwordInput.value = password;
+    currentPersona = persona;
+    clearErrors();
+    const tenantEl = document.getElementById("tenantIndicator");
+    if (tenantEl) {
+        if (persona === "platform_admin") {
+            tenantEl.innerHTML = '<div><strong style="display: block; color: var(--error);">Heftin Platform Central</strong><span style="color: var(--primary); font-size: 10px; font-weight: 600;">Platform Administrator · Full Scope</span></div><span style="color: var(--primary); font-weight: 700; font-size: 10px;">✓ Platform</span>';
+        } else if (persona === "student") {
+            tenantEl.innerHTML = '<div><strong style="display: block; color: var(--error);">Delhi Public Academy</strong><span style="color: var(--primary); font-size: 10px; font-weight: 600;">Tenant: org_001 · Student (Batch 101)</span></div><span style="color: var(--primary); font-weight: 700; font-size: 10px;">✓ Verified</span>';
+        } else {
+            tenantEl.innerHTML = '<div><strong style="display: block; color: var(--error);">Delhi Public Academy</strong><span style="color: var(--primary); font-size: 10px; font-weight: 600;">Tenant: org_001 · ' + (persona === "teacher" ? "Faculty (Batch 101 Scoped)" : "Org Admin (Institution-wide)") + '</span></div><span style="color: var(--primary); font-weight: 700; font-size: 10px;">✓ Verified</span>';
+        }
+    }
+}
 
 /* ================================
    LOGIN FORM
@@ -113,7 +172,16 @@ loginForm.addEventListener("submit", function (event) {
 
     const password = passwordInput.value;
 
-    const selectedRole = loginForm.querySelector('input[name="role"]:checked')?.value || "student";
+    let selectedPersona = currentPersona;
+    if (email.includes("student") || email.includes("sana")) {
+        selectedPersona = "student";
+    } else if (email.includes("teacher") || email.includes("rohit")) {
+        selectedPersona = "teacher";
+    } else if (email.includes("admin") || email.includes("platform")) {
+        selectedPersona = "platform_admin";
+    } else {
+        selectedPersona = "org_admin";
+    }
 
     let valid = true;
 
@@ -176,6 +244,10 @@ loginForm.addEventListener("submit", function (event) {
     /* LOADING */
 
     loginButton.disabled = true;
+    loginForm.setAttribute("aria-busy", "true");
+    formMessage.textContent = "Signing you in...";
+    formMessage.dataset.state = "loading";
+    formMessage.setAttribute("role", "status");
 
     buttonText.classList.add("hidden");
 
@@ -189,9 +261,11 @@ loginForm.addEventListener("submit", function (event) {
     setTimeout(function () {
 
         formMessage.textContent =
-            "Signed in — redirecting to your dashboard...";
+            "Demo access ready — opening the Phase 1 workspace...";
 
         formMessage.classList.add("success");
+        formMessage.dataset.state = "success";
+        formMessage.setAttribute("role", "status");
 
 
         /* No real backend here — this demos a successful login by
@@ -200,14 +274,33 @@ loginForm.addEventListener("submit", function (event) {
 
         setTimeout(function () {
 
-            localStorage.setItem("heftinRole", selectedRole);
-            const displayName = email.split("@")[0];
-            localStorage.setItem("heftinName", displayName);
-            showWorkspaceWelcome(selectedRole, displayName);
+            try {
+                localStorage.setItem("heftin-phase1-persona", selectedPersona);
+                localStorage.removeItem("heftinRole");
+                const displayName = email.split("@")[0];
+                localStorage.setItem("heftinName", displayName);
+                showWorkspaceWelcome(selectedPersona, displayName);
+                loginForm.removeAttribute("aria-busy");
 
-            setTimeout(function () {
-                window.location.href = "dashboard/index.html";
-            }, 10000);
+                setTimeout(function () {
+                    window.location.href = "dashboard/index.html";
+                }, 1200);
+            } catch (error) {
+                try {
+                    localStorage.removeItem("heftinRole");
+                    localStorage.removeItem("heftinName");
+                    localStorage.removeItem("heftin-phase1-persona");
+                } catch (storageError) {}
+                loginButton.disabled = false;
+                loginForm.removeAttribute("aria-busy");
+                buttonText.classList.remove("hidden");
+                buttonArrow.classList.remove("hidden");
+                loader.classList.add("hidden");
+                formMessage.textContent = "Unable to start your session. Check browser storage settings and try again.";
+                formMessage.className = "form-message error";
+                formMessage.dataset.state = "error";
+                formMessage.setAttribute("role", "alert");
+            }
 
         }, 700);
 

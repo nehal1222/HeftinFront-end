@@ -1,0 +1,113 @@
+/* Copied from ../../../styles.css at scaffold time — point-in-time copy,
+   not a live import. Re-sync manually if the shared tokens in the root
+   stylesheet change later. */
+
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,500;0,8..60,600;1,8..60,500&family=Inter:wght@400;500;600;700;800&family=Jost:wght@300;400;500&display=swap');
+
+/* Sprint 1 design tokens. Tailwind utilities such as bg-primary and
+   text-muted are generated from this vocabulary. */
+@theme {
+    /* Brand and semantic colors */
+    --color-primary: #00828e;
+    --color-primary-dark: #00484e;
+    --color-primary-soft: #cce6e8;
+    --color-surface: #ffffff;
+    --color-surface-soft: #f4fbfb;
+    --color-ink: #003439;
+    --color-muted: #557477;
+    --color-line: #cce6e8;
+    --color-on-primary: #ffffff;
+
+    /* Typography */
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-display: 'Jost', 'Inter', system-ui, sans-serif;
+    --font-serif: 'Source Serif 4', Georgia, serif;
+
+    /* Layout scale */
+    --spacing-page: 1.5rem;
+    --spacing-section: 2rem;
+    --spacing-card: 1rem;
+    --spacing-control: 0.75rem;
+
+    /* Shape */
+    --radius-control: 0.5rem;
+    --radius-card: 1.125rem;
+    --radius-pill: 999px;
+
+    /* Responsive layout */
+    --breakpoint-sm: 40rem;
+    --breakpoint-md: 48rem;
+    --breakpoint-lg: 64rem;
+    --breakpoint-xl: 80rem;
+}
+
+/* ---------- Fonts & tokens ---------- */
+
+:root {
+    /* Strict brand system: #00828E + white only. Every other value below is
+       a mathematical tint/shade of that one hue — not a separate color. */
+    --primary: #00828e;
+    --primary-shade-1: #006f79;
+    --primary-shade-2: #005b63;
+    --primary-shade-3: #00484e;
+    --primary-shade-4: #003439;
+    --primary-shade-5: #001a1c;
+    --primary-tint-1: #1a8f99;
+    --primary-tint-2: #40a1aa;
+    --primary-tint-3: #66b4bb;
+    --primary-tint-4: #99cdd2;
+    --primary-tint-5: #cce6e8;
+
+    --navy: var(--primary-shade-3);
+    --teal: var(--primary);
+    --teal-light: var(--primary-tint-3);
+    --bg-pattern: var(--primary-tint-5);
+    --radius: 18px;
+    /* text sitting on the always-navy elements (hero, header, dashboard
+       card, contact) — stays white in both themes since navy never swaps */
+    --on-navy: #ffffff;
+    --on-navy-soft: rgba(255, 255, 255, 0.75);
+}
+
+/* theme-swappable tokens — scoped to body (not :root/html) so a light/dark
+   toggle here never collides with a host page's own theme attribute */
+body {
+    --cream: #ffffff;
+    --cream-soft: rgba(255, 255, 255, 0.75);
+    --ink: var(--primary-shade-4);
+    --ink-soft: rgba(0, 52, 57, 0.68);
+    --line: var(--primary-tint-5);
+    --card-bg: #ffffff;
+    --section-grey: #ffffff;
+    --shadow: 0 24px 50px -28px rgba(0, 72, 78, 0.35);
+    color-scheme: light;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+    font-family: 'Bahnschrift', sans-serif;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}

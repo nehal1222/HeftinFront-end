@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Your Own Exam — Heftin Academy</title>
+    <meta name="description" content="Institute admins: build a custom exam for your students — add questions manually or upload them in bulk." />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  </head>
+  <body>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('heftin-theme');
+          if (t !== 'light' && t !== 'dark') {
+            t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.body.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
+
+    <div class="cursor-dot" aria-hidden="true"></div>
+    <div class="cursor-ring" aria-hidden="true"></div>
+
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="index.html" class="brand">
+                <img src="images/logo.jpeg" alt="Heftin Academy" class="brand-logo">
+                <span class="brand-name">Heftin Academy</span>
+            </a>
+
+            <button type="button" class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navCollapse">
+                <span></span><span></span><span></span>
+            </button>
+
+            <div class="navbar-collapse" id="navCollapse">
+                <ul>
+                    <li><a href="b2b.html">For Institutes</a></li>
+                    <li><a href="explore.html">Explore</a></li>
+                </ul>
+                <div class="nav-actions-inner">
+                    <a href="b2b.html" class="login">&larr; Institute Hub</a>
+                    <a href="dashboard/index.html" class="start-button">Go to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+
+        <section class="exam-explore-hero">
+            <div class="exam-explore-hero-inner reveal">
+                <p class="eyebrow">INSTITUTE ADMIN TOOLS</p>
+                <h1 class="split-heading"><span class="split-heading-lead">Create Your Own</span><span class="split-heading-bold">Exam.</span></h1>
+                <p class="exams-competitive-line">Build a fully custom test — your questions, your rules, published only to your own batches.</p>
+            </div>
+        </section>
+
+        <section class="b2b-contact ce-section">
+            <div class="b2b-contact-inner reveal">
+
+                <div id="ceFormView">
+                    <form class="b2b-form" id="ceForm" novalidate>
+
+                        <div class="ce-form-heading">
+                            <h2>Exam details</h2>
+                        </div>
+
+                        <div class="b2b-form-row">
+                            <div class="b2b-field">
+                                <label for="examTitle">Exam title</label>
+                                <input type="text" id="examTitle" placeholder="e.g. Batch 4 — Banking Mock 1" required>
+                            </div>
+                            <div class="b2b-field">
+                                <label for="examCategory">Category</label>
+                                <select id="examCategory" required>
+                                    <option value="" disabled selected>Select a category</option>
+                                    <option>Campus Recruitment &amp; Placement</option>
+                                    <option>College &amp; University Assessments</option>
+                                    <option>Coaching Batch Programs</option>
+                                    <option>School Board Practice</option>
+                                    <option>Corporate L&amp;D &amp; Certification</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="b2b-form-row">
+                            <div class="b2b-field">
+                                <label for="examDuration">Duration (minutes)</label>
+                                <input type="number" id="examDuration" min="1" placeholder="60" required>
+                            </div>
+                            <div class="b2b-field">
+                                <label for="examMarks">Total marks</label>
+                                <input type="number" id="examMarks" min="1" placeholder="100" required>
+                            </div>
+                        </div>
+
+                        <div class="b2b-form-row">
+                            <div class="b2b-field">
+                                <label for="negativeMarking">Negative marking</label>
+                                <select id="negativeMarking">
+                                    <option value="none">None</option>
+                                    <option value="-0.25">&minus;0.25 per wrong answer</option>
+                                    <option value="-0.33">&minus;0.33 per wrong answer</option>
+                                    <option value="-0.5">&minus;0.5 per wrong answer</option>
+                                </select>
+                            </div>
+                            <div class="b2b-field">
+                                <label for="visibleTo">Visible to</label>
+                                <input type="text" id="visibleTo" placeholder="e.g. Batch 4, Batch 5">
+                            </div>
+                        </div>
+
+                        <div class="b2b-field">
+                            <label for="examInstructions">Instructions for students</label>
+                            <textarea id="examInstructions" rows="3" placeholder="Any special instructions, syllabus notes, or rules for this exam"></textarea>
+                        </div>
+
+                        <div class="ce-form-heading ce-questions-heading">
+                            <h2>Questions</h2>
+                            <span class="ce-question-count" id="ceQuestionCount">1 question added</span>
+                        </div>
+
+                        <div class="ce-tabs" role="tablist">
+                            <button type="button" class="ce-tab active" id="ceTabManual" role="tab" aria-selected="true">Add manually</button>
+                            <button type="button" class="ce-tab" id="ceTabUpload" role="tab" aria-selected="false">Upload a file</button>
+                        </div>
+
+                        <div id="cePanelManual" class="ce-panel">
+                            <div id="ceQuestionList"></div>
+
+                            <template id="ceQuestionTemplate">
+                                <div class="ce-question-block">
+                                    <div class="ce-question-head">
+                                        <span class="ce-question-label">Question 1</span>
+                                        <button type="button" class="ce-remove-btn">Remove</button>
+                                    </div>
+                                    <div class="b2b-field">
+                                        <label>Question text</label>
+                                        <textarea rows="2" class="ce-question-text" placeholder="Type the question here"></textarea>
+                                    </div>
+                                    <div class="ce-options-grid">
+                                        <label class="ce-option">
+                                            <input type="radio" name="ce-correct-0" value="A" checked>
+                                            <input type="text" class="ce-option-text" placeholder="Option A">
+                                        </label>
+                                        <label class="ce-option">
+                                            <input type="radio" name="ce-correct-0" value="B">
+                                            <input type="text" class="ce-option-text" placeholder="Option B">
+                                        </label>
+                                        <label class="ce-option">
+                                            <input type="radio" name="ce-correct-0" value="C">
+                                            <input type="text" class="ce-option-text" placeholder="Option C">
+                                        </label>
+                                        <label class="ce-option">
+                                            <input type="radio" name="ce-correct-0" value="D">
+                                            <input type="text" class="ce-option-text" placeholder="Option D">
+                                        </label>
+                                    </div>
+                                    <p class="ce-option-hint">Select the radio button next to the correct option.</p>
+                                </div>
+                            </template>
+
+                            <button type="button" class="btn-outline ce-add-btn" id="ceAddQuestion">+ Add another question</button>
+                        </div>
+
+                        <div id="cePanelUpload" class="ce-panel hidden">
+                            <label class="ce-dropzone" id="ceDropzone" for="ceFileInput">
+                                <span class="ce-dropzone-icon">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </span>
+                                <span class="ce-dropzone-text">Drag and drop your question file here, or click to browse</span>
+                                <span class="ce-dropzone-filename" id="ceFileName"></span>
+                                <input type="file" id="ceFileInput" accept=".csv,.xlsx,.xls" hidden>
+                            </label>
+                            <p class="ce-option-hint">Supported formats: CSV or XLSX — one row per question, with columns for the question text, four options, and the correct answer.</p>
+                        </div>
+
+                        <button type="submit" class="start-button b2b-submit" id="cePublish">Publish Exam</button>
+                    </form>
+                </div>
+
+                <div id="ceSuccessView" class="b2b-success hidden">
+                    <div class="b2b-success-icon">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 6 9 17l-5-5"></path>
+                        </svg>
+                    </div>
+                    <h3>Exam created</h3>
+                    <p>Your exam has been queued for review and will be live for your selected batches shortly.</p>
+                    <div class="ce-success-actions">
+                        <button type="button" class="btn-outline" id="ceCreateAnother">Create another exam</button>
+                        <a href="b2b.html" class="start-button">Back to Institute Hub</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <img src="images/logo.jpeg" alt="Heftin Academy" class="brand-logo">
+                    <span>Heftin Academy</span>
+                </div>
+                <p>Every mock test brings you closer to rank one.</p>
+                <p class="footer-contact">Contact: <a href="mailto:hello@example.com">hello@example.com</a></p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="b2b.html">For Institutes</a></li>
+                    <li><a href="index.html#">About Us</a></li>
+                    <li><a href="index.html#">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="index.html#">Privacy Policy</a></li>
+                    <li><a href="index.html#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Heftin Academy. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+      (function () {
+        var targets = document.querySelectorAll('.reveal');
+        if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            targets.forEach(function (el) { el.classList.add('is-visible'); });
+            return;
+        }
+
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+        targets.forEach(function (el) { observer.observe(el); });
+      })();
+    </script>
+
+    <script>
+      (function () {
+        if (window.matchMedia('(pointer: coarse)').matches) return;
+
+        var dot = document.querySelector('.cursor-dot');
+        var ring = document.querySelector('.cursor-ring');
+        if (!dot || !ring) return;
+
+        document.addEventListener('mousemove', function (event) {
+            dot.style.transform = 'translate(' + event.clientX + 'px,' + event.clientY + 'px)';
+            ring.style.transform = 'translate(' + event.clientX + 'px,' + event.clientY + 'px)';
+        });
+      })();
+    </script>
+
+    <script>
+      (function () {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (typeof Lenis === 'undefined') return;
+
+        var lenis = new Lenis({
+            duration: 1.1,
+            smoothWheel: true,
+            easing: function (t) { return 1 - Math.pow(1 - t, 3); }
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+      })();
+    </script>
+
+    <script>
+      (function () {
+        var list = document.getElementById('ceQuestionList');
+        var template = document.getElementById('ceQuestionTemplate');
+        var addBtn = document.getElementById('ceAddQuestion');
+        var countLabel = document.getElementById('ceQuestionCount');
+        var questionSeq = 0;
+
+        function renumber() {
+            var blocks = list.querySelectorAll('.ce-question-block');
+            blocks.forEach(function (block, i) {
+                block.querySelector('.ce-question-label').textContent = 'Question ' + (i + 1);
+                var removeBtn = block.querySelector('.ce-remove-btn');
+                removeBtn.style.visibility = blocks.length > 1 ? 'visible' : 'hidden';
+            });
+            countLabel.textContent = blocks.length + (blocks.length === 1 ? ' question added' : ' questions added');
+        }
+
+        function addQuestion() {
+            var fragment = template.content.cloneNode(true);
+            var block = fragment.querySelector('.ce-question-block');
+            questionSeq += 1;
+            var radios = block.querySelectorAll('input[type="radio"]');
+            radios.forEach(function (radio) { radio.name = 'ce-correct-' + questionSeq; });
+            block.querySelector('.ce-remove-btn').addEventListener('click', function () {
+                if (list.querySelectorAll('.ce-question-block').length <= 1) return;
+                block.remove();
+                renumber();
+            });
+            list.appendChild(block);
+            renumber();
+        }
+
+        if (addBtn) {
+            addBtn.addEventListener('click', addQuestion);
+            addQuestion();
+        }
+
+        var tabManual = document.getElementById('ceTabManual');
+        var tabUpload = document.getElementById('ceTabUpload');
+        var panelManual = document.getElementById('cePanelManual');
+        var panelUpload = document.getElementById('cePanelUpload');
+
+        function selectTab(which) {
+            var manual = which === 'manual';
+            tabManual.classList.toggle('active', manual);
+            tabUpload.classList.toggle('active', !manual);
+            tabManual.setAttribute('aria-selected', manual);
+            tabUpload.setAttribute('aria-selected', !manual);
+            panelManual.classList.toggle('hidden', !manual);
+            panelUpload.classList.toggle('hidden', manual);
+        }
+
+        if (tabManual && tabUpload) {
+            tabManual.addEventListener('click', function () { selectTab('manual'); });
+            tabUpload.addEventListener('click', function () { selectTab('upload'); });
+        }
+
+        var dropzone = document.getElementById('ceDropzone');
+        var fileInput = document.getElementById('ceFileInput');
+        var fileNameLabel = document.getElementById('ceFileName');
+
+        function showFileName(file) {
+            fileNameLabel.textContent = file ? file.name : '';
+        }
+
+        if (fileInput) {
+            fileInput.addEventListener('change', function () {
+                showFileName(fileInput.files[0]);
+            });
+        }
+
+        if (dropzone) {
+            ['dragenter', 'dragover'].forEach(function (evt) {
+                dropzone.addEventListener(evt, function (e) {
+                    e.preventDefault();
+                    dropzone.classList.add('dragover');
+                });
+            });
+            ['dragleave', 'drop'].forEach(function (evt) {
+                dropzone.addEventListener(evt, function (e) {
+                    e.preventDefault();
+                    dropzone.classList.remove('dragover');
+                });
+            });
+            dropzone.addEventListener('drop', function (e) {
+                var file = e.dataTransfer.files[0];
+                if (file) {
+                    fileInput.files = e.dataTransfer.files;
+                    showFileName(file);
+                }
+            });
+        }
+
+        var form = document.getElementById('ceForm');
+        var formView = document.getElementById('ceFormView');
+        var successView = document.getElementById('ceSuccessView');
+        var createAnother = document.getElementById('ceCreateAnother');
+
+        if (form) {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                formView.classList.add('hidden');
+                successView.classList.remove('hidden');
+            });
+        }
+
+        if (createAnother) {
+            createAnother.addEventListener('click', function () {
+                form.reset();
+                list.innerHTML = '';
+                addQuestion();
+                selectTab('manual');
+                showFileName(null);
+                successView.classList.add('hidden');
+                formView.classList.remove('hidden');
+            });
+        }
+      })();
+    </script>
+
+    <script src="js/nav-toggle.js"></script>
+
+  </body>
+</html>
