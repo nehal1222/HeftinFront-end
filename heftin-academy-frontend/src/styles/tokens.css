@@ -1,0 +1,62 @@
+/* Sprint 1 design system - Tailwind v4 + CSS design tokens. */
+
+:root {
+  --primary: #00828e;
+  --border: #cce6e8;
+  --error: #001a1c;
+  --white: #ffffff;
+}
+
+@theme {
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --color-primary: #00828e;
+  --color-border: #cce6e8;
+  --color-error: #001a1c;
+
+  --color-primary-shade-1: #00828e;
+  --color-primary-shade-2: #001a1c;
+  --color-primary-shade-3: #001a1c;
+  --color-primary-shade-4: #001a1c;
+  --color-primary-shade-5: #001a1c;
+  --color-primary-tint-1: #00828e;
+  --color-primary-tint-2: #00828e;
+  --color-primary-tint-3: #cce6e8;
+  --color-primary-tint-4: #cce6e8;
+  --color-primary-tint-5: #cce6e8;
+
+  --color-ink: #001a1c;
+  --color-muted: #001a1c;
+  --color-surface: #ffffff;
+  --color-on-primary: #ffffff;
+
+  --font-display: "Jost", sans-serif;
+  --font-serif: "Source Serif 4", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-auth: "Roboto", sans-serif;
+
+  --text-eyebrow: 0.625rem;
+  --text-body-sm: 0.75rem;
+  --text-body: 0.8125rem;
+  --text-heading-sm: 1.125rem;
+  --text-heading-md: 1.375rem;
+  --text-heading-lg: 1.75rem;
+  --tracking-tight: -0.01em;
+
+  --spacing: 0.25rem;
+  --spacing-section: 2.5rem;
+  --spacing-page: 3rem;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.125rem;
+  --radius-full: 999px;
+
+  --breakpoint-sm: 35rem;
+  --breakpoint-md: 40rem;
+  --breakpoint-lg: 56.25rem;
+  --breakpoint-xl: 75rem;
+}

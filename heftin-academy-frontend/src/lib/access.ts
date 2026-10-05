@@ -50,7 +50,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
 const ALL_PERMISSIONS: PermissionCode[] = NAVIGATION_ITEMS.map((item) => item.permission)
 const ALL_ENTITLEMENTS: EntitlementCode[] = NAVIGATION_ITEMS.map((item) => item.entitlement)
 
-const ROLE_PERMISSIONS: Record<UserRole, PermissionCode[]> = {
+export const ROLE_PERMISSIONS: Record<UserRole, PermissionCode[]> = {
   individual: ['dashboard.view', 'exams.take', 'learning.view', 'microtasks.use', 'knowledge.view', 'analytics.view'],
   super_admin: ALL_PERMISSIONS,
   org_admin: ['dashboard.view', 'exams.take', 'learning.view', 'microtasks.use', 'knowledge.view', 'analytics.view', 'content.manage', 'assignments.manage', 'users.manage', 'org.manage'],
@@ -58,7 +58,7 @@ const ROLE_PERMISSIONS: Record<UserRole, PermissionCode[]> = {
   student: ['dashboard.view', 'exams.take', 'learning.view', 'microtasks.use', 'knowledge.view'],
 }
 
-const ROLE_ENTITLEMENTS: Record<UserRole, EntitlementCode[]> = {
+export const ROLE_ENTITLEMENTS: Record<UserRole, EntitlementCode[]> = {
   individual: ['exams', 'learning', 'microtasks', 'knowledge', 'analytics'],
   super_admin: ALL_ENTITLEMENTS,
   org_admin: ['exams', 'learning', 'microtasks', 'knowledge', 'analytics', 'content', 'assignments', 'users', 'org-settings'],

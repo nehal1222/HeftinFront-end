@@ -1,3 +1,5 @@
+import type { RightCode, Scope } from '@/types/auth'
+
 export type UserRole = 'individual' | 'super_admin' | 'org_admin' | 'faculty' | 'student'
 
 export type SubscriptionPlan = 'free' | 'scholar' | 'pro' | 'institution'
@@ -34,6 +36,10 @@ export type AccessProfile = {
   plan: SubscriptionPlan
   permissions: PermissionCode[]
   entitlements: EntitlementCode[]
+  rights?: RightCode[]
+  scopes?: Scope[]
+  is_platform_admin?: boolean
+  account_id?: string | null
 }
 
 export type NavigationItem = {

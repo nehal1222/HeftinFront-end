@@ -1,37 +1,58 @@
+import { useEffect, useState } from 'react'
 import { Building2, CalendarDays, CheckCircle2, ClipboardList, Users } from 'lucide-react'
+import { AsyncState } from '@/components/ui/AsyncState'
+import { getAsyncState } from '@/lib/async-state'
+import { getErrorMessage } from '@/lib/axios'
+import { b2bService } from '@/services/b2b.service'
 import type { B2BBatch, B2BEntitlement, B2BExam, B2BOrganization } from '@/types/b2b'
 
-const organization: B2BOrganization = {
-  id: 'demo-org',
-  name: 'Heftin UPSC Institute',
-  examFocus: 'UPSC',
-  learnerCount: 148,
-  facultyCount: 12,
-  batchCount: 6,
-  status: 'active',
+type OrganizationData = {
+  organization: B2BOrganization
+  batches: B2BBatch[]
+  exams: B2BExam[]
+  entitlements: B2BEntitlement[]
 }
 
-const batches: B2BBatch[] = [
-  { id: 'b1', name: 'UPSC Foundation 2026', learnerCount: 64, facultyName: 'Dr. Meera Kapoor', nextExam: 'UPSC Prelims Mock 04', progress: 72 },
-  { id: 'b2', name: 'UPSC Prelims Intensive', learnerCount: 48, facultyName: 'Arjun Rao', nextExam: 'UPSC CSAT Practice 02', progress: 58 },
-  { id: 'b3', name: 'UPSC Mains Answer Writing', learnerCount: 36, facultyName: 'Nisha Menon', nextExam: 'GS Paper II Review', progress: 84 },
-]
-
-const exams: B2BExam[] = [
-  { id: 'e1', title: 'UPSC Prelims Mock 04', batchName: 'UPSC Foundation 2026', status: 'scheduled', scheduledFor: '18 Sep, 10:00', submissions: 0 },
-  { id: 'e2', title: 'UPSC CSAT Practice 02', batchName: 'UPSC Prelims Intensive', status: 'live', scheduledFor: 'Today, 14:00', submissions: 31 },
-  { id: 'e3', title: 'GS Paper II Review', batchName: 'UPSC Mains Answer Writing', status: 'completed', scheduledFor: '16 Sep, 09:00', submissions: 34 },
-]
-
-const entitlements: B2BEntitlement[] = [
-  { code: 'exams', label: 'UPSC exam delivery', enabled: true, source: 'Heftin pack' },
-  { code: 'batches', label: 'Batch management', enabled: true, source: 'Heftin pack' },
-  { code: 'faculty', label: 'Faculty workspace', enabled: true, source: 'Heftin pack' },
-  { code: 'analytics', label: 'Organization analytics', enabled: true, source: 'Heftin pack' },
-  { code: 'mains-evaluation', label: 'Mains evaluation', enabled: false, source: 'Heftin pack' },
-]
+type LoadState = { status: 'loading' } | { status: 'ready'; data: OrganizationData } | { status: 'failed'; error: unknown }
 
 export function B2BServicesPage() {
+  const [attempt, setAttempt] = useState(0)
+  const [loadState, setLoadState] = useState<LoadState>({ status: 'loading' })
+
+  useEffect(() => {
+    let active = true
+    setLoadState({ status: 'loading' })
+
+    Promise.all([
+      b2bService.getOrganization(),
+      b2bService.listBatches(),
+      b2bService.listExams(),
+      b2bService.listEntitlements(),
+    ]).then(([organization, batches, exams, entitlements]) => {
+      if (active) setLoadState({ status: 'ready', data: { organization, batches, exams, entitlements } })
+    }).catch((error: unknown) => {
+      if (active) setLoadState({ status: 'failed', error })
+    })
+
+    return () => {
+      active = false
+    }
+  }, [attempt])
+
+  if (loadState.status === 'loading') return <AsyncState state="loading" />
+  if (loadState.status === 'failed') {
+    const state = getAsyncState(loadState.error)
+    return (
+      <AsyncState
+        state={state}
+        description={state === 'error' ? getErrorMessage(loadState.error) : undefined}
+        onRetry={state === 'error' ? () => setAttempt((value) => value + 1) : undefined}
+      />
+    )
+  }
+
+  const { organization, batches, exams, entitlements } = loadState.data
+
   return (
     <section className="mt-8 space-y-6" aria-labelledby="b2b-services-title">
       <div className="flex flex-col gap-3 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
@@ -46,12 +67,12 @@ export function B2BServicesPage() {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <article className="rounded-card border border-border bg-surface-elevated p-card"><div className="flex items-center justify-between gap-3"><div><p className="text-eyebrow font-bold uppercase tracking-wider text-muted">Batches</p><h3 className="mt-1 font-display text-heading-sm text-foreground-strong">Manage UPSC cohorts</h3></div><button type="button" className="rounded-control bg-primary px-3 py-2 text-caption font-semibold text-primary-foreground hover:bg-primary-dark">New batch</button></div><div className="mt-5 space-y-3">{batches.map((batch) => <div key={batch.id} className="rounded-control border border-border bg-surface p-4"><div className="flex flex-wrap items-start justify-between gap-2"><div><p className="text-body-sm font-semibold text-foreground-strong">{batch.name}</p><p className="mt-1 text-caption text-muted">{batch.learnerCount} learners · {batch.facultyName}</p></div><span className="text-caption font-semibold text-primary-dark">{batch.progress}% progress</span></div><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-primary-soft"><div className="h-full rounded-full bg-primary" style={{ width: `${batch.progress}%` }} /></div><p className="mt-2 text-caption text-muted">Next: {batch.nextExam}</p></div>)}</div></article>
+        <article className="rounded-card border border-border bg-surface-elevated p-card"><div className="flex items-center justify-between gap-3"><div><p className="text-eyebrow font-bold uppercase tracking-wider text-muted">Batches</p><h3 className="mt-1 font-display text-heading-sm text-foreground-strong">Manage UPSC cohorts</h3></div><button type="button" className="rounded-control bg-primary px-3 py-2 text-caption font-semibold text-primary-foreground hover:bg-primary-dark">New batch</button></div><div className="mt-5 space-y-3">{batches.length ? batches.map((batch) => <div key={batch.id} className="rounded-control border border-border bg-surface p-4"><div className="flex flex-wrap items-start justify-between gap-2"><div><p className="text-body-sm font-semibold text-foreground-strong">{batch.name}</p><p className="mt-1 text-caption text-muted">{batch.learnerCount} learners · {batch.facultyName}</p></div><span className="text-caption font-semibold text-primary-dark">{batch.progress}% progress</span></div><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-primary-soft"><div className="h-full rounded-full bg-primary" style={{ width: `${batch.progress}%` }} /></div><p className="mt-2 text-caption text-muted">Next: {batch.nextExam}</p></div>) : <AsyncState state="empty" />}</div></article>
 
-        <article className="rounded-card border border-border bg-surface-elevated p-card"><div><p className="text-eyebrow font-bold uppercase tracking-wider text-muted">Exam operations</p><h3 className="mt-1 font-display text-heading-sm text-foreground-strong">UPSC exam schedule</h3></div><div className="mt-5 space-y-3">{exams.map((exam) => <div key={exam.id} className="flex gap-3 rounded-control border border-border bg-surface p-3"><CalendarDays size={17} className="mt-0.5 shrink-0 text-primary" aria-hidden="true" /><div className="min-w-0 flex-1"><p className="text-body-sm font-semibold text-foreground-strong">{exam.title}</p><p className="mt-1 text-caption text-muted">{exam.batchName} · {exam.scheduledFor}</p><p className="mt-1 text-caption text-muted">{exam.submissions} submissions</p></div><span className="text-caption font-semibold capitalize text-primary-dark">{exam.status}</span></div>)}</div><button type="button" className="mt-5 w-full rounded-control border border-primary px-3 py-2.5 text-body-sm font-semibold text-primary hover:bg-primary-soft">Create UPSC exam</button></article>
+        <article className="rounded-card border border-border bg-surface-elevated p-card"><div><p className="text-eyebrow font-bold uppercase tracking-wider text-muted">Exam operations</p><h3 className="mt-1 font-display text-heading-sm text-foreground-strong">UPSC exam schedule</h3></div><div className="mt-5 space-y-3">{exams.length ? exams.map((exam) => <div key={exam.id} className="flex gap-3 rounded-control border border-border bg-surface p-3"><CalendarDays size={17} className="mt-0.5 shrink-0 text-primary" aria-hidden="true" /><div className="min-w-0 flex-1"><p className="text-body-sm font-semibold text-foreground-strong">{exam.title}</p><p className="mt-1 text-caption text-muted">{exam.batchName} · {exam.scheduledFor}</p><p className="mt-1 text-caption text-muted">{exam.submissions} submissions</p></div><span className="text-caption font-semibold capitalize text-primary-dark">{exam.status}</span></div>) : <AsyncState state="empty" />}</div><button type="button" className="mt-5 w-full rounded-control border border-primary px-3 py-2.5 text-body-sm font-semibold text-primary hover:bg-primary-soft">Create UPSC exam</button></article>
       </div>
 
-      <article className="rounded-card border border-border bg-surface-elevated p-card"><p className="text-eyebrow font-bold uppercase tracking-wider text-muted">Heftin-managed rights</p><h3 className="mt-1 font-display text-heading-sm text-foreground-strong">Organization pack</h3><div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">{entitlements.map((item) => <div key={item.code} className={`rounded-control border p-3 ${item.enabled ? 'border-primary-tint-4 bg-primary-soft' : 'border-border bg-surface'}`}><p className="text-body-sm font-semibold text-foreground-strong">{item.label}</p><p className="mt-1 text-caption text-muted">{item.enabled ? 'Available' : 'Not included'}</p></div>)}</div><p className="mt-4 text-caption text-muted">Heftin Super Admin controls this pack. Organization Admin can assign only enabled rights to faculty and learners.</p></article>
+      <article className="rounded-card border border-border bg-surface-elevated p-card"><p className="text-eyebrow font-bold uppercase tracking-wider text-muted">Heftin-managed rights</p><h3 className="mt-1 font-display text-heading-sm text-foreground-strong">Organization pack</h3>{entitlements.length ? <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">{entitlements.map((item) => <div key={item.code} className={`rounded-control border p-3 ${item.enabled ? 'border-primary-tint-4 bg-primary-soft' : 'border-border bg-surface'}`}><p className="text-body-sm font-semibold text-foreground-strong">{item.label}</p><p className="mt-1 text-caption text-muted">{item.enabled ? 'Available' : 'Not included'}</p></div>)}</div> : <AsyncState state="empty" />}<p className="mt-4 text-caption text-muted">Heftin Super Admin controls this pack. Organization Admin can assign only enabled rights to faculty and learners.</p></article>
     </section>
   )
 }

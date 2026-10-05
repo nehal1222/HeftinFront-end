@@ -1,0 +1,11 @@
+/dashboard /dashboard/index.html 200
+/people /dashboard/index.html 200
+/roles /dashboard/index.html 200
+/roles/* /dashboard/index.html 200
+/departments /dashboard/index.html 200
+/batches /dashboard/index.html 200
+/audit /dashboard/index.html 200
+/platform/organizations /dashboard/index.html 200
+/platform/organizations/* /dashboard/index.html 200
+/platform/rights /dashboard/index.html 200
+/design-samples /dashboard/index.html 200

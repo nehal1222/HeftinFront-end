@@ -3,3 +3,4 @@ node_modules/
 # Aider Studio (auto-added)
 REPO_MAP.md
 .aider/
+.kilo/

@@ -1,10 +1,14 @@
 import { createContext } from 'react'
-import type { AccessProfile, SubscriptionPlan, UserRole } from '@/types/access'
+import type { AccessProfile } from '@/types/access'
+import type { LoginCredentials } from '@/types/auth'
+
+export type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated'
 
 export type AuthContextValue = {
   user: AccessProfile | null
+  status: AuthStatus
   isAuthenticated: boolean
-  login: (details: { displayName: string; email: string; role: UserRole; plan: SubscriptionPlan }) => void
+  login: (credentials: LoginCredentials) => Promise<void>
   logout: () => void
 }
 

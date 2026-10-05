@@ -1,30 +1,44 @@
 @import "tailwindcss";
 
+:root {
+  --primary: #00828e;
+  --border: #cce6e8;
+  --error: #001a1c;
+  --white: #ffffff;
+}
+
 @theme {
-  /* Brand ramp and semantic roles. */
+  /* Strict 4-color palette */
   --color-*: initial;
   --color-white: #ffffff;
-  --color-black: #000000;
   --color-transparent: transparent;
   --color-current: currentColor;
+
   --color-primary: #00828e;
-  --color-primary-shade-1: #006f79;
-  --color-primary-shade-2: #005b63;
-  --color-primary-shade-3: #00484e;
-  --color-primary-shade-4: #003439;
+  --color-border: #cce6e8;
+  --color-error: #001a1c;
+
+  /* Color roles mapped to the 4 strict colors */
+  --color-primary-shade-1: #00828e;
+  --color-primary-shade-2: #001a1c;
+  --color-primary-shade-3: #001a1c;
+  --color-primary-shade-4: #001a1c;
   --color-primary-shade-5: #001a1c;
-  --color-primary-tint-1: #1a8f99;
-  --color-primary-tint-2: #40a1aa;
-  --color-primary-tint-3: #66b4bb;
-  --color-primary-tint-4: #99cdd2;
+  --color-primary-tint-1: #00828e;
+  --color-primary-tint-2: #00828e;
+  --color-primary-tint-3: #cce6e8;
+  --color-primary-tint-4: #cce6e8;
   --color-primary-tint-5: #cce6e8;
-  --color-primary-dark: var(--color-primary-shade-3);
-  --color-primary-soft: var(--color-primary-tint-5);
-  --color-primary-foreground: var(--color-white);
+  --color-primary-white: #ffffff;
+  --color-primary-dark: #001a1c;
+  --color-primary-soft: #cce6e8;
+  --color-primary-foreground: #ffffff;
 
   /* Typography roles. */
   --font-sans: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --font-display: "Jost", "Inter", "Segoe UI", sans-serif;
+  --font-serif: "Source Serif 4", serif;
+  --font-auth: "Roboto", sans-serif;
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --text-display: clamp(2rem, 5vw, 3.5rem);
   --text-display--line-height: 1.05;
@@ -37,16 +51,19 @@
   --text-heading-sm: 1.125rem;
   --text-heading-md: 1.375rem;
   --text-heading-lg: 1.75rem;
+  --tracking-tight: -0.01em;
 
   /* Content colors. */
-  --color-foreground: var(--color-primary-shade-4);
-  --color-foreground-strong: var(--color-primary-shade-5);
-  --color-muted: #557477;
-  --color-surface: #f4fbfb;
-  --color-surface-elevated: var(--color-white);
-  --color-border: var(--color-primary-tint-5);
-  --color-card: var(--color-white);
-  --color-ring: var(--color-primary);
+  --color-ink: #001a1c;
+  --color-on-primary: #ffffff;
+  --color-foreground: #001a1c;
+  --color-foreground-strong: #001a1c;
+  --color-muted: #001a1c;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-card: #ffffff;
+  --color-ring: #00828e;
+  --color-line: #cce6e8;
 
   /* Spacing scale for page, section, card, and control composition. */
   --spacing-page: 1.5rem;
@@ -80,8 +97,8 @@ body,
 body {
   margin: 0;
   font-family: var(--font-sans);
-  background: var(--color-surface);
-  color: var(--color-foreground);
+  background: var(--white);
+  color: var(--error);
 }
 
 button,
@@ -90,3 +107,14 @@ textarea,
 select {
   font: inherit;
 }
+
+@import "./styles/styles.css";
+@import "./styles/dashboard.css";
+@import "./styles/cards.css";
+@import "./styles/async-state.css";
+@import "./styles/zoom.css";
+@import "./styles/pages.css";
+@import "./styles/quiz.css";
+@import "./styles/teacher.css";
+@import "./styles/phase1.css";
+@import "./styles/auth.css";
