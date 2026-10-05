@@ -39,7 +39,17 @@ export default function Phase1Root() {
   const [roles, setRoles] = useState(() => ROLE_DEFINITIONS.map((role) => ({ ...role, rights: [...role.rights] })))
   const [ceiling, setCeiling] = useState(() => [...ORGANIZATION_CEILING])
   const [organizations, setOrganizations] = useState([{ ...DEMO_ORGANIZATION, rightsCount: ORGANIZATION_CEILING.length }])
-  const persona = DEMO_PERSONAS.find((item) => item.id === personaId) ?? DEMO_PERSONAS[0]
+  const storedName = useMemo(() => {
+    try {
+      return localStorage.getItem('heftinName') || null
+    } catch {
+      return null
+    }
+  }, [])
+  const persona = useMemo(() => {
+    const base = DEMO_PERSONAS.find((item) => item.id === personaId) ?? DEMO_PERSONAS[0]
+    return storedName ? { ...base, name: storedName } : base
+  }, [personaId, storedName])
   const auth = useMemo(() => ({ ...persona.profile, scopes: [...persona.profile.scopes], rights: [...persona.profile.rights] }), [persona])
 
   useEffect(() => {

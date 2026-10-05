@@ -287,8 +287,17 @@ signupForm.addEventListener("submit", function (event) {
 
         try {
 
+            const personaMap = {
+                student: "student",
+                individual: "student",
+                faculty: "teacher",
+                org_admin: "org_admin",
+                super_admin: "platform_admin",
+                admin: "platform_admin"
+            };
+            const mappedPersona = personaMap[role] || "student";
+            localStorage.setItem("heftin-phase1-persona", mappedPersona);
             localStorage.setItem("heftinRole", role);
-
             localStorage.setItem("heftinName", fullName);
 
         } catch (e) {}
@@ -305,9 +314,9 @@ signupForm.addEventListener("submit", function (event) {
 
         setTimeout(function () {
             window.location.href = "dashboard/index.html";
-        }, 10000);
+        }, 1200);
 
-    }, 1200);
+    }, 1000);
 
 });
 
