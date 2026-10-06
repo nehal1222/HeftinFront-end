@@ -250,6 +250,117 @@
             border-radius: 12px;
             background: var(--white);
         }
+        /* Enterprise Workflows Styles */
+        .workflows-section {
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: #ffffff;
+            padding: 32px 24px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px -6px rgba(0, 26, 28, 0.06);
+        }
+        .wf-tab-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .wf-tab-btn {
+            padding: 9px 16px;
+            border-radius: 9px;
+            border: 1px solid var(--border);
+            background: var(--bg-soft);
+            color: var(--error);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .wf-tab-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        .wf-stepper {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 768px) {
+            .wf-stepper {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .wf-step-node {
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-soft);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        .wf-step-node:hover {
+            border-color: var(--primary);
+        }
+        .wf-step-node.active {
+            border-color: var(--primary);
+            background: #f0f9fa;
+            box-shadow: 0 2px 8px rgba(0, 130, 142, 0.12);
+        }
+        .wf-step-node.completed {
+            border-color: #80c4cb;
+            background: #ffffff;
+        }
+        .wf-step-number {
+            font-family: monospace;
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 2px;
+        }
+        .wf-step-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--error);
+            display: block;
+            line-height: 1.3;
+        }
+        .wf-display-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 20px;
+            align-items: stretch;
+        }
+        @media (max-width: 860px) {
+            .wf-display-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .wf-detail-card {
+            padding: 22px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--bg-soft);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .wf-terminal {
+            background: #001a1c;
+            border: 1px solid #00363a;
+            border-radius: 14px;
+            padding: 18px;
+            color: #cce6e8;
+            font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+            font-size: 11px;
+            line-height: 1.55;
+            overflow-x: auto;
+            display: flex;
+            flex-direction: column;
+        }
     </style>
 </head>
 <body>
@@ -477,6 +588,93 @@
                     <span id="tamperResultStatus" style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px;"></span>
                 </div>
                 <p id="tamperResultDesc" style="font-size: 12px; margin: 0; line-height: 1.5; color: var(--error); opacity: 0.9;"></p>
+            </div>
+        </section>
+
+        <!-- Interactive Enterprise Authentication Workflows -->
+        <section class="workflows-section" id="workflowsSection">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+                <div>
+                    <span class="hub-eyebrow">Enterprise Lifecycle Simulation</span>
+                    <h2 style="font-size: 21px; font-weight: 800; margin: 4px 0 6px; color: var(--error); font-family: 'Jost', sans-serif;">
+                        3 Core Institutional Auth Workflows
+                    </h2>
+                    <p style="font-size: 13px; color: var(--error); opacity: 0.85; margin: 0;">
+                        Interactive walkthrough of production authentication workflows enforcing zero client arithmetic and fail-closed tenant boundaries.
+                    </p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button type="button" id="wfAutoPlayBtn" onclick="toggleWfAutoPlay()" class="btn-outline" style="font-size: 11.5px; padding: 7px 12px;">
+                        ▶ Run Auto-Simulation
+                    </button>
+                </div>
+            </div>
+
+            <!-- Workflow Selector Tabs -->
+            <div class="wf-tab-bar">
+                <button type="button" class="wf-tab-btn active" id="wfTab_invite" onclick="switchWorkflow('invite')">
+                    Workflow 01: Institutional Invite &amp; Activation
+                </button>
+                <button type="button" class="wf-tab-btn" id="wfTab_stepup" onclick="switchWorkflow('stepup')">
+                    Workflow 02: High-Privilege Step-Up MFA Challenge
+                </button>
+                <button type="button" class="wf-tab-btn" id="wfTab_sso" onclick="switchWorkflow('sso')">
+                    Workflow 03: SAML 2.0 / OIDC SSO Federation
+                </button>
+            </div>
+
+            <!-- 4-Step Interactive Stepper -->
+            <div class="wf-stepper" id="wfStepperContainer">
+                <!-- Dynamically populated step cards -->
+            </div>
+
+            <!-- Dual-Pane Workflow Execution View -->
+            <div class="wf-display-grid">
+                <!-- Left: Narrative & Security Mechanics -->
+                <div class="wf-detail-card">
+                    <div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 6px;">
+                            <span id="wfGuaranteeBadge" style="font-size: 11px; font-weight: 700; color: var(--primary); background: #e0f2f3; padding: 4px 10px; border-radius: 99px;">
+                                Security Guarantee
+                            </span>
+                            <span id="wfActorText" style="font-family: monospace; font-size: 11px; font-weight: 700; color: var(--primary);">
+                                Actor Direction
+                            </span>
+                        </div>
+                        <h4 id="wfStepHeading" style="font-size: 18px; font-weight: 800; margin: 0 0 10px; color: var(--error); font-family: 'Jost', sans-serif;">
+                            Step Title
+                        </h4>
+                        <p id="wfStepDesc" style="font-size: 12.5px; color: var(--error); opacity: 0.88; line-height: 1.6; margin: 0 0 18px;">
+                            Step Description
+                        </p>
+                    </div>
+
+                    <!-- Step Navigation Controls -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 16px; margin-top: 12px;">
+                        <button type="button" id="wfPrevBtn" onclick="prevWfStep()" class="btn-outline" style="font-size: 11.5px; padding: 7px 14px;">
+                            ← Previous Step
+                        </button>
+                        <span id="wfStepCounter" style="font-size: 11px; font-weight: 700; color: var(--primary); font-family: monospace;">
+                            STEP 1 OF 4
+                        </span>
+                        <button type="button" id="wfNextBtn" onclick="nextWfStep()" class="btn-primary" style="font-size: 11.5px; padding: 7px 14px;">
+                            Next Step →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Live Protocol Exchange Inspector Terminal -->
+                <div class="wf-terminal">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #00363a;">
+                        <span style="font-size: 10.5px; font-weight: 700; color: #80c4cb; text-transform: uppercase; letter-spacing: 0.08em;">
+                            Live Protocol Exchange Inspector
+                        </span>
+                        <span id="wfTerminalStatus" style="font-size: 10.5px; font-weight: 800; color: #6ee7b7; padding: 2px 6px; border-radius: 4px; background: rgba(110, 231, 183, 0.1);">
+                            HTTP 200 OK
+                        </span>
+                    </div>
+                    <pre id="wfTerminalOutput" style="margin: 0; font-family: inherit; font-size: 11px; color: #a5f3fc; white-space: pre-wrap; word-break: break-all; flex: 1;"></pre>
+                </div>
             </div>
         </section>
 
@@ -740,8 +938,387 @@
             window.location.href = 'dashboard/index.html';
         }
 
-        // Initialize Inspector on page load
+        /* ==========================================================================
+           Interactive Enterprise Authentication Workflows Controller
+           ========================================================================== */
+        let currentWfKey = 'invite';
+        let currentWfStep = 0;
+        let wfAutoPlayTimer = null;
+
+        const workflowsData = {
+            invite: {
+                id: 'invite',
+                title: 'Institutional Invite & Activation',
+                steps: [
+                    {
+                        number: '01',
+                        shortTitle: 'Token Ingestion',
+                        heading: 'Step 1: Cryptographic Invite Token Resolution',
+                        actor: 'Client → Edge Gateway',
+                        guarantee: 'Zero Client Tenant ID Leakage',
+                        desc: 'The invited faculty member opens an invite URL containing a single-use signed token (e.g. inv_sec_892f). The client application sends zero tenant assumptions; the edge gateway verifies the HMAC-SHA256 signature and resolves the designated institutional tenant and cohort scope.',
+                        status: 'HTTP 200 OK',
+                        terminal: {
+                            request: 'GET /api/v1/auth/invites/verify?token=inv_sec_892f HTTP/1.1\nHost: dpa.heftin.edu\nAccept: application/json',
+                            responseStatus: 'HTTP/1.1 200 OK',
+                            responseBody: {
+                                invite_valid: true,
+                                tenant_id: "org_001",
+                                tenant_slug: "dpa",
+                                designated_role: "faculty",
+                                assigned_scope: { type: "batch", id: "batch_101" },
+                                email: "dr.meera@dpa.edu",
+                                expires_in: "172800s"
+                            }
+                        }
+                    },
+                    {
+                        number: '02',
+                        shortTitle: 'Capacity Audit',
+                        heading: 'Step 2: Institutional License Ceiling Verification',
+                        actor: 'Gateway → Central Platform Service',
+                        guarantee: 'Fail-Closed Tenant Ceiling Guardrail',
+                        desc: 'Before allowing credential registration, the central authorization engine conducts a fail-closed license ceiling check against the tenant record. It verifies that adding this faculty member will not breach the purchased active seat allocation (42/50 seats occupied).',
+                        status: 'HTTP 200 OK',
+                        terminal: {
+                            request: 'POST /internal/v1/tenants/org_001/verify-capacity HTTP/1.1\nAuthorization: Bearer m2m_gateway_internal_key\nContent-Type: application/json\n\n{\n  "tenant_id": "org_001",\n  "requested_role": "faculty"\n}',
+                            responseStatus: 'HTTP/1.1 200 OK',
+                            responseBody: {
+                                tenant_id: "org_001",
+                                tier: "institutional_standard",
+                                seat_limit: 50,
+                                current_active_seats: 42,
+                                ceiling_breach: false,
+                                allow_activation: true
+                            }
+                        }
+                    },
+                    {
+                        number: '03',
+                        shortTitle: 'Credential Binding',
+                        heading: 'Step 3: Argon2id Hashing & WebAuthn Credential Enrollment',
+                        actor: 'Faculty Client → Auth Authority',
+                        guarantee: 'Hardware Attested Authentication Proof',
+                        desc: 'The faculty member sets a password hashed via Argon2id (memory cost 64MB, parallelism 4) and registers a FIDO2 WebAuthn credential. The cryptographic claim verifies ownership of the invited email address without transmitting plaintext credentials.',
+                        status: 'HTTP 201 Created',
+                        terminal: {
+                            request: 'POST /api/v1/auth/invites/claim HTTP/1.1\nHost: dpa.heftin.edu\nContent-Type: application/json\n\n{\n  "token": "inv_sec_892f",\n  "argon2id_hash": "$argon2id$v=19$m=65536,t=3,p=4$...",\n  "webauthn_cred_id": "cred_fido_7719a"\n}',
+                            responseStatus: 'HTTP/1.1 201 Created',
+                            responseBody: {
+                                user_id: "usr_teacher_04",
+                                status: "active",
+                                credential_enrolled: true,
+                                activated_at: "2026-10-06T11:20:00Z"
+                            }
+                        }
+                    },
+                    {
+                        number: '04',
+                        shortTitle: 'Token Issuance',
+                        heading: 'Step 4: Scoped Session Token Issuance & Workspace Launch',
+                        actor: 'Central Auth Server → Client',
+                        guarantee: 'Server-Authoritative Scoped Token',
+                        desc: 'The authority signs and issues an RS256 token scoped strictly to batch_101. The client receives pre-computed rights. No client-side permission algebra is performed. The user is redirected to their authorized faculty grading cockpit.',
+                        status: 'HTTP 200 OK',
+                        terminal: {
+                            request: 'HTTP/1.1 200 OK\nSet-Cookie: __Host-heftin_session=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...; Secure; HttpOnly; SameSite=Strict',
+                            responseStatus: 'Issued RS256 Token Claims:',
+                            responseBody: {
+                                sub: "usr_teacher_04",
+                                tenant_id: "org_001",
+                                role: "faculty",
+                                scopes: [{ type: "batch", id: "batch_101" }],
+                                rights: ["batches.view", "exams.grade", "analytics.batch"],
+                                is_platform_admin: false,
+                                exp: 1791240000
+                            }
+                        }
+                    }
+                ]
+            },
+            stepup: {
+                id: 'stepup',
+                title: 'High-Privilege Step-Up MFA Challenge',
+                steps: [
+                    {
+                        number: '01',
+                        shortTitle: 'Standard Baseline',
+                        heading: 'Step 1: Baseline Session Operational Boundary',
+                        actor: 'Faculty Client → Edge Gateway',
+                        guarantee: 'Principle of Least Privilege',
+                        desc: 'The faculty member performs day-to-day work (reviewing exam submissions) under standard single-factor authentication claims. The session token allows read and grading operations but intentionally lacks high-privilege administrative rights.',
+                        status: 'HTTP 200 OK',
+                        terminal: {
+                            request: 'GET /api/v1/batches/101/submissions HTTP/1.1\nHost: dpa.heftin.edu\nAuthorization: Bearer jwt_standard_session',
+                            responseStatus: 'HTTP/1.1 200 OK',
+                            responseBody: {
+                                batch_id: "batch_101",
+                                active_learners: 42,
+                                acr_strength: "urn:heftin:pwd",
+                                elevated: false
+                            }
+                        }
+                    },
+                    {
+                        number: '02',
+                        shortTitle: 'High-Risk Trigger',
+                        heading: 'Step 2: Sensitive Operation Initiation',
+                        actor: 'Faculty Client → Gateway Boundary',
+                        guarantee: 'High-Risk Operation Interception',
+                        desc: 'The instructor clicks to publish finalized state exam keys (exams.publish_official) or export unmasked student PII. This action requires high assurance under institutional compliance policies.',
+                        status: 'HTTP 401 Intercepted',
+                        terminal: {
+                            request: 'POST /api/v1/exams/prelims-2026/publish-official-key HTTP/1.1\nHost: dpa.heftin.edu\nAuthorization: Bearer jwt_standard_session\nContent-Type: application/json\n\n{\n  "exam_id": "exam_prelims_2026",\n  "action": "publish_irrevocable_key"\n}',
+                            responseStatus: 'Policy Interception Triggered',
+                            responseBody: {
+                                endpoint_classification: "high_risk_administrative",
+                                policy_requirement: "acr_values: urn:heftin:mfa-strong"
+                            }
+                        }
+                    },
+                    {
+                        number: '03',
+                        shortTitle: 'HTTP 401 Challenge',
+                        heading: 'Step 3: Zero-Trust Gateway Step-Up Challenge',
+                        actor: 'API Gateway → Faculty Client',
+                        guarantee: 'Fail-Closed Authentication Step-Up',
+                        desc: 'The zero-trust gateway blocks execution immediately, issuing an HTTP 401 with WWW-Authenticate header. The client renders an inline biometric or 6-digit TOTP challenge modal without discarding the current page state.',
+                        status: 'HTTP 401 Unauthorized',
+                        terminal: {
+                            request: 'HTTP/1.1 401 Unauthorized\nWWW-Authenticate: StepUp realm="heftin-mfa", acr_values="urn:heftin:mfa:strong"\nX-Elevation-Required: exams.publish_official',
+                            responseStatus: 'HTTP/1.1 401 Step-Up Challenge',
+                            responseBody: {
+                                error: "step_up_mfa_required",
+                                challenge_id: "mfa_chal_902bf8",
+                                target_action: "exams.publish_official",
+                                allowed_methods: ["webauthn_fido2", "totp_authenticator"]
+                            }
+                        }
+                    },
+                    {
+                        number: '04',
+                        shortTitle: 'Ephemeral Grant',
+                        heading: 'Step 4: Ephemeral 15-Minute Elevated Scope Grant',
+                        actor: 'Auth Authority → Client',
+                        guarantee: 'Time-Bounded Ephemeral Privilege (15-Min TTL)',
+                        desc: 'User inputs their 6-digit authenticator code. The gateway validates the TOTP HMAC counter and issues a time-bounded elevated token claim (elevated_until: +15m). The exam keys are successfully published while preserving strict batch bounds.',
+                        status: 'HTTP 200 OK (Elevated)',
+                        terminal: {
+                            request: 'POST /api/v1/auth/step-up/verify HTTP/1.1\nContent-Type: application/json\n\n{\n  "challenge_id": "mfa_chal_902bf8",\n  "totp_code": "821495"\n}',
+                            responseStatus: 'HTTP/1.1 200 OK (Action Executed)',
+                            responseBody: {
+                                elevation_granted: true,
+                                acr: "urn:heftin:mfa:strong",
+                                elevated_until: "2026-10-06T11:45:00Z",
+                                action_result: "Exam keys published successfully. Immutable audit log #aud_9981 created."
+                            }
+                        }
+                    }
+                ]
+            },
+            sso: {
+                id: 'sso',
+                title: 'Enterprise SAML 2.0 / OIDC SSO Federation',
+                steps: [
+                    {
+                        number: '01',
+                        shortTitle: 'Domain Discovery',
+                        heading: 'Step 1: Institutional Email & IdP Discovery',
+                        actor: 'User → Discovery Endpoint',
+                        guarantee: 'Zero Client Tenant ID Leak',
+                        desc: 'A university dean enters their enterprise email (e.g. dean@apex.edu). The client sends solely the domain without internal database identifiers. The gateway discovers the registered SAML 2.0 Identity Provider configuration.',
+                        status: 'HTTP 200 OK',
+                        terminal: {
+                            request: 'POST /api/v1/auth/sso/discover HTTP/1.1\nHost: auth.heftin.edu\nContent-Type: application/json\n\n{\n  "email": "dean@apex.edu"\n}',
+                            responseStatus: 'HTTP/1.1 200 OK',
+                            responseBody: {
+                                sso_enabled: true,
+                                tenant_id: "org_002",
+                                idp_type: "SAML_2.0",
+                                idp_name: "Apex University Microsoft Entra ID",
+                                sso_endpoint: "https://login.microsoftonline.com/apex-tenant/saml2"
+                            }
+                        }
+                    },
+                    {
+                        number: '02',
+                        shortTitle: 'SAML Redirect',
+                        heading: 'Step 2: Cryptographically Signed SAML AuthnRequest',
+                        actor: 'Gateway → University IdP',
+                        guarantee: 'Cryptographic Assertion Nonce Protection',
+                        desc: 'Heftin Gateway constructs and signs a SAML 2.0 AuthnRequest using its private X.509 certificate (RSA-SHA256). The browser is redirected to the university login portal with a high-entropy RelayState token to prevent CSRF attacks.',
+                        status: 'HTTP 302 Redirect',
+                        terminal: {
+                            request: 'GET /saml2?SAMLRequest=fVLLbtswEPwVgvd...&RelayState=sso_ctx_4812a HTTP/1.1\nHost: login.microsoftonline.com',
+                            responseStatus: 'HTTP/1.1 302 Found',
+                            responseBody: {
+                                sp_entity_id: "https://auth.heftin.edu/sp",
+                                assertion_consumer_service: "https://auth.heftin.edu/saml/acs",
+                                binding: "HTTP-Redirect",
+                                signature_valid: true
+                            }
+                        }
+                    },
+                    {
+                        number: '03',
+                        shortTitle: 'Assertion Verify',
+                        heading: 'Step 3: SAML Response Assertion Ingestion & Signature Verification',
+                        actor: 'University IdP → Heftin ACS Endpoint',
+                        guarantee: 'X.509 Signature & Time-Window Validation',
+                        desc: 'Upon successful login at the university portal, the IdP sends a signed SAML Response via HTTP-POST. The gateway validates the digital signature against the institutional public key, confirms the assertion validity window, and extracts verified identity attributes.',
+                        status: 'HTTP 200 OK',
+                        terminal: {
+                            request: 'POST /saml/acs HTTP/1.1\nHost: auth.heftin.edu\nContent-Type: application/x-www-form-urlencoded\n\nSAMLResponse=PHNhbWxwOlJlc3BvbnNl...&RelayState=sso_ctx_4812a',
+                            responseStatus: 'HTTP/1.1 200 OK (Assertion Validated)',
+                            responseBody: {
+                                name_id: "dean@apex.edu",
+                                attributes: {
+                                    displayName: "Prof. Ananya Sen",
+                                    groups: ["Faculty-AcademicCouncil", "Dean-Engineering"]
+                                },
+                                idp_issuer: "https://sts.windows.net/apex-tenant/"
+                            }
+                        }
+                    },
+                    {
+                        number: '04',
+                        shortTitle: 'JIT Mapping',
+                        heading: 'Step 4: Server-Side JIT Mapping & Ceiling-Bound Token Issuance',
+                        actor: 'Auth Authority → Client',
+                        guarantee: 'Anti-Self-Escalation Ceiling Enforcement',
+                        desc: 'The central authorization engine maps the external group Dean-Engineering to the internal org_admin role. It validates that the granted rights remain bounded within the purchased 70/70 rights ceiling, issuing an RS256 token.',
+                        status: 'HTTP 200 OK (Session Issued)',
+                        terminal: {
+                            request: 'HTTP/1.1 200 OK\nSet-Cookie: __Host-heftin_session=jwt_federated_...; Secure; HttpOnly; SameSite=Strict',
+                            responseStatus: 'Server-Computed Claims Issued:',
+                            responseBody: {
+                                sub: "usr_dean_ananya",
+                                tenant_id: "org_002",
+                                role: "org_admin",
+                                rights_count: "70/70 Maximum",
+                                mapped_from_group: "Dean-Engineering",
+                                auth_method: "federated_saml2",
+                                is_platform_admin: false,
+                                exp: 1791240000
+                            }
+                        }
+                    }
+                ]
+            }
+        };
+
+        function switchWorkflow(key) {
+            currentWfKey = key;
+            currentWfStep = 0;
+            ['invite', 'stepup', 'sso'].forEach(k => {
+                const btn = document.getElementById('wfTab_' + k);
+                if (btn) btn.classList.toggle('active', k === key);
+            });
+            renderWfStepper();
+            renderWfStepDetails();
+        }
+
+        function renderWfStepper() {
+            const container = document.getElementById('wfStepperContainer');
+            if (!container) return;
+            const wf = workflowsData[currentWfKey];
+            container.innerHTML = wf.steps.map((st, idx) => {
+                const isActive = idx === currentWfStep;
+                const isCompleted = idx < currentWfStep;
+                return `
+                    <div class="wf-step-node ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}" onclick="goToWfStep(${idx})">
+                        <span class="wf-step-number">STEP ${st.number}</span>
+                        <strong class="wf-step-title">${st.shortTitle}</strong>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderWfStepDetails() {
+            const wf = workflowsData[currentWfKey];
+            const st = wf.steps[currentWfStep];
+
+            document.getElementById('wfGuaranteeBadge').textContent = '✓ ' + st.guarantee;
+            document.getElementById('wfActorText').textContent = st.actor;
+            document.getElementById('wfStepHeading').textContent = st.heading;
+            document.getElementById('wfStepDesc').textContent = st.desc;
+            document.getElementById('wfStepCounter').textContent = `STEP ${currentWfStep + 1} OF ${wf.steps.length}`;
+
+            // Buttons state
+            const prevBtn = document.getElementById('wfPrevBtn');
+            const nextBtn = document.getElementById('wfNextBtn');
+            if (prevBtn) prevBtn.disabled = currentWfStep === 0;
+            if (prevBtn) prevBtn.style.opacity = currentWfStep === 0 ? '0.5' : '1';
+            if (nextBtn) nextBtn.textContent = currentWfStep === wf.steps.length - 1 ? 'Finish Simulation ✓' : 'Next Step →';
+
+            // Terminal
+            const termStatus = document.getElementById('wfTerminalStatus');
+            const termOutput = document.getElementById('wfTerminalOutput');
+            termStatus.textContent = st.status;
+
+            let terminalText = `=== REQUEST ===\n${st.terminal.request}\n\n=== RESPONSE [${st.terminal.responseStatus}] ===\n`;
+            if (st.terminal.responseBody) {
+                terminalText += JSON.stringify(st.terminal.responseBody, null, 2);
+            }
+            termOutput.textContent = terminalText;
+        }
+
+        function goToWfStep(index) {
+            currentWfStep = index;
+            renderWfStepper();
+            renderWfStepDetails();
+        }
+
+        function nextWfStep() {
+            const wf = workflowsData[currentWfKey];
+            if (currentWfStep < wf.steps.length - 1) {
+                currentWfStep++;
+            } else {
+                currentWfStep = 0;
+            }
+            renderWfStepper();
+            renderWfStepDetails();
+        }
+
+        function prevWfStep() {
+            if (currentWfStep > 0) {
+                currentWfStep--;
+                renderWfStepper();
+                renderWfStepDetails();
+            }
+        }
+
+        function toggleWfAutoPlay() {
+            const btn = document.getElementById('wfAutoPlayBtn');
+            if (wfAutoPlayTimer) {
+                clearInterval(wfAutoPlayTimer);
+                wfAutoPlayTimer = null;
+                btn.innerHTML = '▶ Run Auto-Simulation';
+                btn.style.background = 'var(--white)';
+                btn.style.color = 'var(--error)';
+            } else {
+                btn.innerHTML = '❚❚ Pause Simulation';
+                btn.style.background = 'var(--primary)';
+                btn.style.color = 'var(--white)';
+                wfAutoPlayTimer = setInterval(() => {
+                    const wf = workflowsData[currentWfKey];
+                    if (currentWfStep < wf.steps.length - 1) {
+                        nextWfStep();
+                    } else {
+                        if (currentWfKey === 'invite') switchWorkflow('stepup');
+                        else if (currentWfKey === 'stepup') switchWorkflow('sso');
+                        else {
+                            switchWorkflow('invite');
+                            toggleWfAutoPlay();
+                        }
+                    }
+                }, 2200);
+            }
+        }
+
+        // Initialize Inspector and Workflows on page load
         updateTokenInspector();
+        switchWorkflow('invite');
     </script>
 </body>
 </html>

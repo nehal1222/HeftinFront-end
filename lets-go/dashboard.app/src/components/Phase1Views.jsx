@@ -946,6 +946,146 @@ export function AuthSamplesHubView({ navigate }) {
   const [samplePersona, setSamplePersona] = useState('org_admin')
   const [subdomain, setSubdomain] = useState('dpa')
   const [cohort, setCohort] = useState('101')
+  const [wfKey, setWfKey] = useState('invite')
+  const [wfStep, setWfStep] = useState(0)
+
+  const workflows = {
+    invite: {
+      title: 'Workflow 01: Institutional Invite & Activation',
+      steps: [
+        {
+          num: '01',
+          name: 'Token Ingestion',
+          heading: 'Step 1: Cryptographic Invite Token Resolution',
+          actor: 'Client → Edge Gateway',
+          guarantee: 'Zero Client Tenant ID Leakage',
+          desc: 'Faculty member opens invite link with one-time signed token (inv_sec_892f). Edge gateway verifies HMAC-SHA256 signature and resolves tenant without client database IDs.',
+          status: 'HTTP 200 OK',
+          payload: { invite_valid: true, tenant_id: 'org_001', tenant_slug: 'dpa', designated_role: 'faculty', assigned_scope: { type: 'batch', id: 'batch_101' } },
+        },
+        {
+          num: '02',
+          name: 'Capacity Audit',
+          heading: 'Step 2: Institutional License Ceiling Verification',
+          actor: 'Gateway → Central Service',
+          guarantee: 'Fail-Closed Tenant Ceiling Guardrail',
+          desc: 'Central platform verifies that activating this faculty member will not breach the purchased active seat allocation (42/50 seats occupied).',
+          status: 'HTTP 200 OK',
+          payload: { tenant_id: 'org_001', seat_limit: 50, current_active_seats: 42, ceiling_breach: false, allow_activation: true },
+        },
+        {
+          num: '03',
+          name: 'Credential Proof',
+          heading: 'Step 3: Argon2id Hashing & WebAuthn Enrollment',
+          actor: 'Client → Auth Authority',
+          guarantee: 'Hardware Attested Authentication Proof',
+          desc: 'User sets credentials hashed via Argon2id (memory 64MB, p=4) and registers FIDO2 WebAuthn passkey.',
+          status: 'HTTP 201 Created',
+          payload: { user_id: 'usr_teacher_04', status: 'active', credential_enrolled: true },
+        },
+        {
+          num: '04',
+          name: 'Token Issuance',
+          heading: 'Step 4: Scoped Session Token Issuance',
+          actor: 'Central Auth Server → Client',
+          guarantee: 'Server-Authoritative Scoped Token',
+          desc: 'Gateway signs and issues an RS256 token scoped strictly to batch_101 with pre-computed rights.',
+          status: 'HTTP 200 OK',
+          payload: { sub: 'usr_teacher_04', tenant_id: 'org_001', role: 'faculty', scopes: [{ type: 'batch', id: 'batch_101' }], rights: ['batches.view', 'exams.grade'] },
+        },
+      ],
+    },
+    stepup: {
+      title: 'Workflow 02: High-Privilege Step-Up MFA Challenge',
+      steps: [
+        {
+          num: '01',
+          name: 'Standard Baseline',
+          heading: 'Step 1: Baseline Session Operational Boundary',
+          actor: 'Faculty Client → Edge Gateway',
+          guarantee: 'Principle of Least Privilege',
+          desc: 'Faculty member operates under standard single-factor authentication claims for routine grading tasks.',
+          status: 'HTTP 200 OK',
+          payload: { batch_id: 'batch_101', active_learners: 42, elevated: false },
+        },
+        {
+          num: '02',
+          name: 'High-Risk Trigger',
+          heading: 'Step 2: Sensitive Operation Initiation',
+          actor: 'Faculty Client → Gateway Boundary',
+          guarantee: 'High-Risk Operation Interception',
+          desc: 'Faculty member initiates high-risk operation: publishing state exam keys or exporting unmasked student PII.',
+          status: 'Policy Intercepted',
+          payload: { action: 'publish_official_key', policy_requirement: 'acr_values: urn:heftin:mfa-strong' },
+        },
+        {
+          num: '03',
+          name: 'HTTP 401 Challenge',
+          heading: 'Step 3: Zero-Trust Gateway Step-Up Challenge',
+          actor: 'API Gateway → Faculty Client',
+          guarantee: 'Fail-Closed Authentication Step-Up',
+          desc: 'Gateway intercepts request, issuing HTTP 401 with WWW-Authenticate header requiring strong MFA verification.',
+          status: 'HTTP 401 Unauthorized',
+          payload: { error: 'step_up_mfa_required', challenge_id: 'mfa_chal_902bf8', allowed_methods: ['webauthn_fido2', 'totp'] },
+        },
+        {
+          num: '04',
+          name: 'Ephemeral Grant',
+          heading: 'Step 4: Ephemeral 15-Minute Elevated Scope Grant',
+          actor: 'Auth Authority → Client',
+          guarantee: 'Time-Bounded Ephemeral Privilege (15-Min TTL)',
+          desc: 'User inputs 6-digit TOTP code. Gateway grants 15-minute elevated token claim, then publishes keys.',
+          status: 'HTTP 200 OK (Elevated)',
+          payload: { elevation_granted: true, acr: 'urn:heftin:mfa:strong', elevated_until: '+15m', audit_log_id: 'aud_9981' },
+        },
+      ],
+    },
+    sso: {
+      title: 'Workflow 03: Enterprise SAML 2.0 / OIDC SSO Federation',
+      steps: [
+        {
+          num: '01',
+          name: 'Domain Discovery',
+          heading: 'Step 1: Institutional Email & IdP Discovery',
+          actor: 'User → Discovery Endpoint',
+          guarantee: 'Zero Client Tenant ID Leak',
+          desc: 'User enters institutional email (dean@apex.edu). Gateway resolves tenant identity provider configuration via domain hash.',
+          status: 'HTTP 200 OK',
+          payload: { sso_enabled: true, tenant_id: 'org_002', idp_name: 'Apex University Entra ID' },
+        },
+        {
+          num: '02',
+          name: 'SAML Redirect',
+          heading: 'Step 2: Cryptographically Signed SAML AuthnRequest',
+          actor: 'Gateway → University IdP',
+          guarantee: 'Cryptographic Assertion Nonce Protection',
+          desc: 'Gateway signs SAML 2.0 AuthnRequest with Heftin Academy private key and redirects browser to university portal.',
+          status: 'HTTP 302 Redirect',
+          payload: { sp_entity_id: 'https://auth.heftin.edu/sp', binding: 'HTTP-Redirect', signature_valid: true },
+        },
+        {
+          num: '03',
+          name: 'Assertion Verify',
+          heading: 'Step 3: SAML Response Assertion Ingestion & Signature Verification',
+          actor: 'University IdP → Heftin ACS Endpoint',
+          guarantee: 'X.509 Signature & Time-Window Validation',
+          desc: 'IdP posts signed SAML Response. Gateway validates X.509 signature and extracts verified enterprise groups.',
+          status: 'HTTP 200 OK',
+          payload: { name_id: 'dean@apex.edu', groups: ['Faculty-AcademicCouncil', 'Dean-Engineering'], signature_valid: true },
+        },
+        {
+          num: '04',
+          name: 'JIT Mapping',
+          heading: 'Step 4: Server-Side JIT Mapping & Ceiling-Bound Token Issuance',
+          actor: 'Auth Authority → Client',
+          guarantee: 'Anti-Self-Escalation Ceiling Enforcement',
+          desc: 'Server maps enterprise group Dean-Engineering to internal org_admin role, bounding rights strictly to 70/70 ceiling.',
+          status: 'HTTP 200 OK',
+          payload: { sub: 'usr_dean_ananya', tenant_id: 'org_002', role: 'org_admin', rights_count: '70/70', auth_method: 'federated_saml2' },
+        },
+      ],
+    },
+  }
 
   const personas = {
     org_admin: {
@@ -1071,6 +1211,69 @@ export function AuthSamplesHubView({ navigate }) {
             </div>
           )}
         </section>
+
+        <section className="phase-panel" style={{ padding: '24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '20px', borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
+            <div>
+              <span className="phase-eyebrow">ENTERPRISE LIFECYCLE</span>
+              <h2 style={{ fontSize: '16px', fontWeight: 800, margin: '2px 0 0', color: 'var(--error)' }}>3 Core Institutional Auth Workflows</h2>
+            </div>
+            <div style={{ display: 'flex', gap: '6px' }}>
+              <button type="button" onClick={() => { setWfKey('invite'); setWfStep(0); }} style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '11.5px', fontWeight: 700, border: wfKey === 'invite' ? '1px solid var(--primary)' : '1px solid var(--border)', background: wfKey === 'invite' ? 'var(--primary)' : '#fff', color: wfKey === 'invite' ? '#fff' : 'var(--error)', cursor: 'pointer' }}>1. Invite &amp; Activation</button>
+              <button type="button" onClick={() => { setWfKey('stepup'); setWfStep(0); }} style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '11.5px', fontWeight: 700, border: wfKey === 'stepup' ? '1px solid var(--primary)' : '1px solid var(--border)', background: wfKey === 'stepup' ? 'var(--primary)' : '#fff', color: wfKey === 'stepup' ? '#fff' : 'var(--error)', cursor: 'pointer' }}>2. Step-Up MFA</button>
+              <button type="button" onClick={() => { setWfKey('sso'); setWfStep(0); }} style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '11.5px', fontWeight: 700, border: wfKey === 'sso' ? '1px solid var(--primary)' : '1px solid var(--border)', background: wfKey === 'sso' ? 'var(--primary)' : '#fff', color: wfKey === 'sso' ? '#fff' : 'var(--error)', cursor: 'pointer' }}>3. SAML 2.0 / SSO</button>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '18px' }}>
+            {workflows[wfKey].steps.map((st, idx) => (
+              <button
+                key={st.num}
+                type="button"
+                onClick={() => setWfStep(idx)}
+                style={{
+                  padding: '10px',
+                  borderRadius: '8px',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  border: wfStep === idx ? '1px solid var(--primary)' : '1px solid var(--border)',
+                  background: wfStep === idx ? '#f0f9fa' : idx < wfStep ? '#fff' : 'var(--bg-soft)',
+                }}
+              >
+                <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--primary)', display: 'block', fontFamily: 'monospace' }}>STEP {st.num}</span>
+                <strong style={{ fontSize: '11.5px', color: 'var(--error)', display: 'block' }}>{st.name}</strong>
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', alignItems: 'stretch' }}>
+            <div style={{ padding: '16px', background: 'var(--bg-soft)', borderRadius: '10px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--primary)', background: '#e0f2f3', padding: '3px 8px', borderRadius: '99px' }}>✓ {workflows[wfKey].steps[wfStep].guarantee}</span>
+                  <span style={{ fontSize: '10px', fontFamily: 'monospace', color: 'var(--primary)', fontWeight: 700 }}>{workflows[wfKey].steps[wfStep].actor}</span>
+                </div>
+                <h4 style={{ fontSize: '14px', fontWeight: 800, margin: '6px 0', color: 'var(--error)' }}>{workflows[wfKey].steps[wfStep].heading}</h4>
+                <p style={{ fontSize: '11.5px', color: 'var(--error)', opacity: 0.85, margin: '0 0 12px', lineHeight: 1.5 }}>{workflows[wfKey].steps[wfStep].desc}</p>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border)', paddingTop: '10px' }}>
+                <button type="button" disabled={wfStep === 0} onClick={() => setWfStep((s) => Math.max(0, s - 1))} style={{ padding: '5px 10px', fontSize: '11px', borderRadius: '6px', border: '1px solid var(--border)', background: '#fff', cursor: wfStep === 0 ? 'not-allowed' : 'pointer', opacity: wfStep === 0 ? 0.5 : 1 }}>← Previous</button>
+                <span style={{ fontSize: '10.5px', fontWeight: 700, fontFamily: 'monospace' }}>STEP {wfStep + 1} OF 4</span>
+                <button type="button" onClick={() => setWfStep((s) => (s < 3 ? s + 1 : 0))} style={{ padding: '5px 10px', fontSize: '11px', borderRadius: '6px', border: '1px solid var(--primary)', background: 'var(--primary)', color: '#fff', cursor: 'pointer' }}>{wfStep === 3 ? 'Restart Flow ✓' : 'Next Step →'}</button>
+              </div>
+            </div>
+
+            <div style={{ padding: '14px', background: '#001a1c', borderRadius: '10px', border: '1px solid #00363a', color: '#cce6e8', fontFamily: 'monospace', fontSize: '10.5px', overflowX: 'auto' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', borderBottom: '1px solid #00363a', paddingBottom: '6px', color: '#80c4cb' }}>
+                <span>Protocol Exchange</span>
+                <span style={{ color: '#6ee7b7', fontWeight: 700 }}>{workflows[wfKey].steps[wfStep].status}</span>
+              </div>
+              <pre style={{ margin: 0, color: '#a5f3fc', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+                {JSON.stringify(workflows[wfKey].steps[wfStep].payload, null, 2)}
+              </pre>
+            </div>
+          </div>
+        </section>
       </div>
     </>
   )
@@ -1124,7 +1327,7 @@ export function SessionLifecycleView({ navigate }) {
 
           {state === 'empty' && (
             <div style={{ textAlign: 'center' }}>
-              <span style={{ fontSize: '24px', display: 'block', marginBottom: '8px' }}>📂</span>
+              <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--primary)', background: '#e0f2f3', padding: '4px 10px', borderRadius: '99px', display: 'inline-block', marginBottom: '8px' }}>EMPTY STATE</span>
               <strong style={{ fontSize: '14px', display: 'block' }}>No records found</strong>
               <p style={{ fontSize: '11.5px', opacity: 0.8, margin: '4px 0 14px' }}>There are no items created in this section yet.</p>
               <button type="button" className="phase-primary-button" onClick={() => navigate('/dashboard')}>Create First Item</button>
@@ -1133,7 +1336,7 @@ export function SessionLifecycleView({ navigate }) {
 
           {state === '401' && (
             <div style={{ textAlign: 'center' }}>
-              <span style={{ fontSize: '24px', display: 'block', marginBottom: '8px' }}>⏱</span>
+              <span style={{ fontSize: '12px', fontWeight: 800, color: '#991b1b', background: '#fee2e2', padding: '4px 10px', borderRadius: '99px', display: 'inline-block', marginBottom: '8px' }}>HTTP 401</span>
               <strong style={{ fontSize: '14px', display: 'block' }}>Session Expired (401)</strong>
               <p style={{ fontSize: '11.5px', opacity: 0.8, margin: '4px 0 14px' }}>Your authentication token has expired. Redirecting to login...</p>
               <a href="/login.html" className="phase-primary-button" style={{ textDecoration: 'none' }}>Re-authenticate Now →</a>
@@ -1142,7 +1345,7 @@ export function SessionLifecycleView({ navigate }) {
 
           {state === '403' && (
             <div style={{ textAlign: 'center' }}>
-              <span style={{ fontSize: '24px', display: 'block', marginBottom: '8px' }}>🔒</span>
+              <span style={{ fontSize: '12px', fontWeight: 800, color: '#991b1b', background: '#fee2e2', padding: '4px 10px', borderRadius: '99px', display: 'inline-block', marginBottom: '8px' }}>HTTP 403</span>
               <strong style={{ fontSize: '14px', display: 'block' }}>403 Access Denied</strong>
               <p style={{ fontSize: '11.5px', opacity: 0.8, margin: '4px 0 8px' }}>Your assigned role lacks required permission:</p>
               <code style={{ background: '#fff', border: '1px solid var(--border)', padding: '3px 8px', borderRadius: '4px', fontSize: '11px', color: 'var(--primary)', display: 'inline-block', marginBottom: '14px' }}>roles.rights.edit</code>
