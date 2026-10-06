@@ -8,10 +8,14 @@ export const STORAGE_KEYS = {
 
 export const ROUTES = {
   HOME: '/',
+  REQUEST_ACCESS: '/request-access',
   LOGIN: '/login',
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
   DASHBOARD: '/dashboard',
+  WORKSPACE: '/workspace',
+  SUPER_ADMIN: '/super-admin',
+  ORG_ADMIN: '/org-admin',
   DESIGN_SYSTEM: '/design-system',
   NOT_FOUND: '*',
 } as const
