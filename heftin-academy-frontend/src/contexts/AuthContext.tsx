@@ -7,16 +7,27 @@ import type { AccessProfile, SubscriptionPlan, UserRole } from '@/types/access'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AccessProfile | null>(() => getStoredUser())
+  const [isLoadingSession, setIsLoadingSession] = useState(false)
+  const [sessionError, setSessionError] = useState<string | null>(null)
 
-  useEffect(() => {
+  async function hydrateSession() {
     const token = getAccessToken()
-    if (!token || token === 'demo-access-token') return
+    if (!token) {
+      setIsLoadingSession(false)
+      return
+    }
 
-    let isMounted = true
-    authService
-      .getMe()
-      .then((me) => {
-        if (!isMounted || !me) return
+    if (token === 'demo-access-token') {
+      setIsLoadingSession(false)
+      return
+    }
+
+    setIsLoadingSession(true)
+    setSessionError(null)
+
+    try {
+      const me = await authService.getMe()
+      if (me) {
         const current = getStoredUser()
         const updated = createAccessProfile(
           me.name || current?.displayName || 'User',
@@ -26,18 +37,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         )
         setStoredUser(updated)
         setUser(updated)
-      })
-      .catch(() => {
-        // If 401 and refresh also failed, storage was cleared by interceptor
-        if (!getAccessToken()) {
-          if (isMounted) setUser(null)
-        }
-      })
-
-    return () => {
-      isMounted = false
+      }
+    } catch {
+      // If server returned 401 or token is invalid
+      if (!getAccessToken()) {
+        setUser(null)
+        setSessionError('Your security session has expired or the token is invalid. Please sign in again.')
+      }
+    } finally {
+      setIsLoadingSession(false)
     }
+  }
+
+  useEffect(() => {
+    // Check for session_error query parameter for instant preview
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('simulate_session_error') === 'true') {
+      setSessionError('Simulated session loading failure: JWT token signature expired (401 Unauthorized).')
+      return
+    }
+
+    hydrateSession()
   }, [])
+
+  function triggerSessionError(customMessage?: string) {
+    setSessionError(
+      customMessage || 'Session verification failed: Authentication token has expired or is invalid.'
+    )
+  }
+
+  function clearSessionError() {
+    setSessionError(null)
+  }
+
+  async function retrySession() {
+    await hydrateSession()
+  }
 
   async function login(details: { displayName: string; email: string; role: UserRole; plan: SubscriptionPlan; password?: string }) {
     try {
@@ -91,7 +126,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: Boolean(user), login, logout, switchRole }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: Boolean(user),
+        isLoadingSession,
+        sessionError,
+        retrySession,
+        triggerSessionError,
+        clearSessionError,
+        login,
+        logout,
+        switchRole,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )
