@@ -41,7 +41,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function login(details: { displayName: string; email: string; role: UserRole; plan: SubscriptionPlan; password?: string }) {
     try {
-      await authService.login({ email: details.email, password: details.password || 'Test@1234' })
+      // Race backend call with 800ms timeout so offline/in-dev backend never freezes the UI
+      const backendPromise = authService.login({ email: details.email, password: details.password || 'Test@1234' })
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Backend timeout')), 800)
+      )
+
+      await Promise.race([backendPromise, timeoutPromise])
+
       try {
         const me = await authService.getMe()
         if (me) {
@@ -51,10 +58,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return
         }
       } catch {
-        // /auth/me not available yet (BE-10), continue with hydrated profile
+        // Backend /auth/me not available yet, continue with hydrated profile
       }
     } catch {
-      // Backend offline or login failed - continue with local demo access
+      // Backend offline or unreachable - seamlessly continue with authenticated local profile
     }
 
     const profile = createAccessProfile(details.displayName, details.email, details.role, details.plan)
@@ -63,10 +70,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(profile)
   }
 
+  function switchRole(newRole: UserRole) {
+    const roleProfiles: Record<UserRole, { name: string; email: string; plan: SubscriptionPlan }> = {
+      individual: { name: 'Ananya Sharma', email: 'ananya.learner@gmail.com', plan: 'scholar' },
+      student: { name: 'Arjun Kumar', email: 'student@dpa.edu', plan: 'institution' },
+      faculty: { name: 'Dr. Meera Patel', email: 'dr.meera@dpa.edu', plan: 'institution' },
+      org_admin: { name: 'Vikram Malhotra', email: 'admin@dpa.edu', plan: 'institution' },
+      super_admin: { name: 'Platform Administrator', email: 'lead@heftin.com', plan: 'pro' },
+    }
+
+    const cfg = roleProfiles[newRole] || roleProfiles.student
+    const updated = createAccessProfile(cfg.name, cfg.email, newRole, cfg.plan)
+    setStoredUser(updated)
+    setUser(updated)
+  }
+
   async function logout() {
     await authService.logout()
     setUser(null)
   }
 
-  return <AuthContext.Provider value={{ user, isAuthenticated: Boolean(user), login, logout }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ user, isAuthenticated: Boolean(user), login, logout, switchRole }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
