@@ -269,7 +269,7 @@ const INITIAL_SUBMISSIONS: FacultySubmission[] = [
 ]
 
 export function DashboardPage() {
-  const { user, logout, switchRole } = useAuth()
+  const { user, logout, switchRole, triggerSessionError } = useAuth()
   const navigate = useNavigate()
 
   const [activeTab, setActiveTab] = useState<NavTab>('overview')
@@ -582,6 +582,14 @@ export function DashboardPage() {
                 }`}
               >
                 Individual
+              </button>
+              <button
+                type="button"
+                onClick={() => triggerSessionError('Session verification failed: Authentication token has expired or is invalid.')}
+                title="Simulate error loading session"
+                className="rounded-control border border-border px-2 py-0.5 transition-colors text-muted hover:text-foreground hover:border-primary"
+              >
+                Test Error Session
               </button>
             </div>
           </div>
