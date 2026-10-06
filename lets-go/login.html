@@ -104,16 +104,21 @@
                 </button>
             </div>
 
-            <!-- Individual Notice Container (Hidden by default) -->
+            <!-- Individual Category Container -->
             <div id="individualContainer" style="display: none; text-align: center; padding: 24px 16px; border: 1px solid var(--border); border-radius: 14px; background: var(--white); margin-bottom: 20px;">
-                <span style="display: inline-block; padding: 3px 10px; border-radius: 99px; background: rgba(0, 130, 142, 0.1); color: var(--primary); font-size: 10px; font-weight: 700; text-transform: uppercase;">Individual Portal</span>
-                <h3 style="margin: 8px 0 4px; font-size: 16px; font-weight: 700; color: var(--error);">Individual Learner Portal</h3>
+                <span style="display: inline-block; padding: 3px 10px; border-radius: 99px; background: rgba(0, 130, 142, 0.1); color: var(--primary); font-size: 10px; font-weight: 700; text-transform: uppercase;">Individual Category</span>
+                <h3 style="margin: 8px 0 4px; font-size: 16px; font-weight: 700; color: var(--error);">Individual Learner Workspace</h3>
                 <p style="margin: 0 auto; font-size: 11.5px; color: var(--error); line-height: 1.5; max-width: 320px;">
-                    Individual accounts and personal test series are scheduled for general release. Heftin is currently configured for organization-managed access.
+                    Access self-paced practice sets, personal test series analytics, and study streaks.
                 </p>
-                <button type="button" onclick="switchLoginMode('org')" class="primary-button" style="margin-top: 16px; width: 100%;">
-                    ← Back to Organization Login
-                </button>
+                <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+                    <button type="button" onclick="fillTestAccount('ananya@gmail.com', 'password123', 'student'); switchLoginMode('org');" class="primary-button" style="width: 100%;">
+                        Sign in as Individual Learner →
+                    </button>
+                    <a href="http://localhost:5174/login?role=individual" class="forgot-link" style="font-size: 11px;">
+                        Open in Academy React App (Port 5174) →
+                    </a>
+                </div>
             </div>
 
             <!-- ================================
