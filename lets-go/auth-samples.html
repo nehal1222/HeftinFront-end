@@ -7,7 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Jost:wght@300;400;500;600&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Jost:wght@300;400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <style>
         :root {
@@ -104,6 +104,7 @@
             color: var(--error);
             margin: 6px 0 10px;
             line-height: 1.2;
+            font-family: 'Jost', sans-serif;
         }
         .hub-desc {
             font-size: 14px;
@@ -121,9 +122,14 @@
         .matrix-card {
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 16px;
+            padding: 18px;
             background: var(--white);
             box-shadow: 0 4px 16px -8px rgba(0, 26, 28, 0.08);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .matrix-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
         }
         .matrix-badge {
             display: inline-flex;
@@ -153,7 +159,7 @@
             border-radius: 20px;
             background: var(--bg-soft);
             padding: 32px 24px;
-            margin-bottom: 48px;
+            margin-bottom: 40px;
         }
         .sandbox-header {
             display: flex;
@@ -171,7 +177,7 @@
             flex-wrap: wrap;
         }
         .tab-btn {
-            padding: 8px 16px;
+            padding: 9px 18px;
             border-radius: 10px;
             border: 1px solid var(--border);
             background: var(--white);
@@ -192,8 +198,57 @@
             border-radius: 16px;
             padding: 32px;
             box-shadow: 0 12px 36px -16px rgba(0, 26, 28, 0.12);
-            max-width: 840px;
+            max-width: 900px;
             margin: 0 auto;
+        }
+        .inspector-panel {
+            margin-top: 28px;
+            padding: 20px;
+            background: #001a1c;
+            border-radius: 14px;
+            color: #cce6e8;
+            font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+            font-size: 11.5px;
+            line-height: 1.6;
+            overflow-x: auto;
+            border: 1px solid #00363a;
+        }
+        .inspector-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #00363a;
+            font-size: 11px;
+            color: #80c4cb;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+        }
+        .tamper-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            color: var(--error);
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        .tamper-btn:hover {
+            border-color: var(--primary);
+            background: #f4fbfb;
+        }
+        .pipeline-step {
+            flex: 1;
+            min-width: 200px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--white);
         }
     </style>
 </head>
@@ -211,6 +266,7 @@
             </div>
         </header>
 
+        <!-- Main Heading & Context -->
         <div>
             <span class="hub-eyebrow">Executive Architecture Review</span>
             <h1 class="hub-title">Phase 1 Enterprise Auth Samples Hub</h1>
@@ -219,7 +275,7 @@
             </p>
         </div>
 
-        <!-- Compliance Matrix -->
+        <!-- Compliance Matrix (The 4 Security Governance Pillars) -->
         <section>
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
                 <span class="hub-eyebrow">Security Governance</span>
@@ -250,7 +306,7 @@
             </div>
         </section>
 
-        <!-- Live Interactive Sandbox -->
+        <!-- Live Interactive Sandbox Section -->
         <section class="sandbox-section">
             <div class="sandbox-header">
                 <div>
@@ -268,31 +324,46 @@
 
             <!-- Sample 1: Executive Split-Screen -->
             <div id="sample1View" class="sandbox-card">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: center;">
-                    <div style="padding-right: 16px; border-right: 1px solid var(--border);">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 28px; align-items: start;">
+                    <div style="padding-right: 18px; border-right: 1px solid var(--border);">
                         <span class="hub-eyebrow">Recommended Production Standard</span>
-                        <h3 style="font-size: 20px; font-weight: 800; margin: 8px 0; color: var(--error);">Executive Split-Screen</h3>
+                        <h3 style="font-size: 21px; font-weight: 800; margin: 8px 0; color: var(--error); font-family: 'Jost', sans-serif;">Executive Split-Screen</h3>
                         <p style="font-size: 12.5px; color: var(--error); opacity: 0.85; line-height: 1.5;">
-                            Provides an authoritative enterprise layout with single-line English permission explanations and 1-click persona testing.
+                            Two-column command center with single-line English permission summary, real-time ceiling meter, and 1-click persona testing.
                         </p>
+
+                        <!-- Live Ceiling Meter Indicator -->
                         <div style="margin-top: 16px; padding: 12px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px;">
-                            <span style="font-size: 11px; font-weight: 700; color: var(--primary); display: block; margin-bottom: 4px;">Effective Rights Summary:</span>
-                            <span id="sample1Rights" style="font-size: 12px; color: var(--error); font-weight: 600;">Full organization administration across users, roles, departments, and batches.</span>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <span style="font-size: 11px; font-weight: 700; color: var(--primary);">Active Rights Ceiling:</span>
+                                <span id="sample1CeilingCount" style="font-size: 11px; font-weight: 800; color: var(--error);">70 / 70 Rights</span>
+                            </div>
+                            <div style="height: 6px; width: 100%; background: #e0f0f2; border-radius: 99px; overflow: hidden;">
+                                <div id="sample1CeilingBar" style="height: 100%; width: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Plain English Rights Summary -->
+                        <div style="margin-top: 12px; padding: 12px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px;">
+                            <span style="font-size: 10.5px; font-weight: 700; color: var(--primary); display: block; margin-bottom: 4px;">Effective Rights Summary:</span>
+                            <span id="sample1Rights" style="font-size: 12px; color: var(--error); font-weight: 600; line-height: 1.4; display: block;">Full organization administration across users, roles, departments, and batches.</span>
                         </div>
                     </div>
 
                     <div>
                         <div style="display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;">
-                            <button type="button" onclick="setSample1Persona('org_admin')" style="padding: 6px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--primary); background: var(--primary); color: #fff; cursor: pointer;">Org Admin</button>
-                            <button type="button" onclick="setSample1Persona('teacher')" style="padding: 6px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer;">Faculty</button>
-                            <button type="button" onclick="setSample1Persona('student')" style="padding: 6px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer;">Student</button>
-                            <button type="button" onclick="setSample1Persona('platform_admin')" style="padding: 6px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer;">SuperAdmin</button>
+                            <button type="button" id="roleBtnOrg" onclick="setSample1Persona('org_admin')" style="flex: 1; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 7px; border: 1px solid var(--primary); background: var(--primary); color: #fff; cursor: pointer;">Org Admin</button>
+                            <button type="button" id="roleBtnTeach" onclick="setSample1Persona('teacher')" style="flex: 1; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 7px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer;">Faculty</button>
+                            <button type="button" id="roleBtnStud" onclick="setSample1Persona('student')" style="flex: 1; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 7px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer;">Student</button>
+                            <button type="button" id="roleBtnSuper" onclick="setSample1Persona('platform_admin')" style="flex: 1; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 7px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer;">SuperAdmin</button>
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <label style="font-size: 11px; font-weight: 600; margin-bottom: -6px;">User Email</label>
                             <input type="email" id="sample1Email" value="orgadmin@dpa.edu" style="padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 12px;" readonly>
+                            <label style="font-size: 11px; font-weight: 600; margin-bottom: -6px;">Password</label>
                             <input type="password" value="••••••••••••" style="padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 12px;" readonly>
-                            <button type="button" onclick="launchSampleSession('org_admin')" class="btn-primary" style="justify-content: center; width: 100%;">
-                                Sign In &amp; Launch Workspace →
+                            <button type="button" onclick="launchSampleSession(currentSample1Persona)" class="btn-primary" style="justify-content: center; width: 100%; padding: 11px 16px; margin-top: 4px;">
+                                Sign In &amp; Launch Selected Workspace →
                             </button>
                         </div>
                     </div>
@@ -302,60 +373,221 @@
             <!-- Sample 2: Subdomain Gateway -->
             <div id="sample2View" class="sandbox-card" style="display: none;">
                 <span class="hub-eyebrow">Institutional Multi-Tenant Architecture</span>
-                <h3 style="font-size: 20px; font-weight: 800; margin: 8px 0; color: var(--error);">Subdomain Tenant Gateway</h3>
+                <h3 style="font-size: 21px; font-weight: 800; margin: 8px 0; color: var(--error); font-family: 'Jost', sans-serif;">Subdomain Tenant Gateway</h3>
                 <p style="font-size: 12.5px; color: var(--error); opacity: 0.85; line-height: 1.5; margin-bottom: 20px;">
                     Users sign in through their dedicated tenant subdomain (e.g. <code>https://dpa.heftin.edu</code>), ensuring zero tenant identifier leakage over client HTTP requests.
                 </p>
 
                 <div style="background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-                    <label style="font-size: 11px; font-weight: 700; color: var(--primary); display: block; margin-bottom: 6px;">ENTER ACADEMY SUBDOMAIN</label>
+                    <label style="font-size: 11px; font-weight: 700; color: var(--primary); display: block; margin-bottom: 6px;">ENTER ACADEMY SUBDOMAIN SLUG</label>
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <input type="text" id="subdomainInput" value="dpa" style="flex: 1; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; font-weight: 600;">
+                        <input type="text" id="subdomainInput" value="dpa" oninput="verifySubdomain()" placeholder="e.g. dpa or apex" style="flex: 1; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; font-weight: 600;">
                         <span style="font-family: monospace; font-size: 13px; font-weight: 700; color: var(--error);">.heftin.edu</span>
-                        <button type="button" onclick="verifySubdomain()" class="btn-primary" style="padding: 10px 16px;">Verify</button>
                     </div>
-                    <div id="subdomainResult" style="margin-top: 12px; font-size: 12px; color: var(--primary); font-weight: 600;">
-                        ✓ Delhi Public Academy (Tenant: org_001 · Verified)
+                    <div id="subdomainResult" style="margin-top: 14px; padding: 10px 12px; border-radius: 8px; background: #fff; border: 1px solid var(--border); font-size: 11.5px; color: var(--primary); font-weight: 600;">
+                        ✓ Delhi Public Academy · Tenant: org_001 · DNS Verified on cluster-asia-south1
                     </div>
                 </div>
 
-                <button type="button" onclick="launchSampleSession('org_admin')" class="btn-primary">
-                    Proceed to Delhi Public Academy Workspace →
-                </button>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button type="button" onclick="launchSampleSession('org_admin')" class="btn-primary">
+                        Open Verified Tenant Workspace →
+                    </button>
+                    <button type="button" onclick="setSubdomainQuick('apex')" class="btn-outline">Try "apex" tenant</button>
+                    <button type="button" onclick="setSubdomainQuick('sarthi')" class="btn-outline">Try "sarthi" tenant</button>
+                </div>
             </div>
 
             <!-- Sample 3: Cohort Chooser -->
             <div id="sample3View" class="sandbox-card" style="display: none;">
                 <span class="hub-eyebrow">LMS Multi-Cohort Scoping</span>
-                <h3 style="font-size: 20px; font-weight: 800; margin: 8px 0; color: var(--error);">Cohort Scope Chooser</h3>
+                <h3 style="font-size: 21px; font-weight: 800; margin: 8px 0; color: var(--error); font-family: 'Jost', sans-serif;">Cohort Scope Chooser</h3>
                 <p style="font-size: 12.5px; color: var(--error); opacity: 0.85; line-height: 1.5; margin-bottom: 20px;">
-                    Faculty assigned to multiple academic cohorts select their active scope at login, preventing accidental cross-batch grading leaks.
+                    Multi-cohort faculty select their active cohort session at login. Permissions bound to the selected cohort prevent cross-batch grading leaks.
                 </p>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 22px;">
                     <div class="matrix-card" onclick="selectCohort('101')" id="cohort101" style="cursor: pointer; border-color: var(--primary); background: #f8fcfe;">
-                        <strong style="color: var(--primary);">Batch 101 (Active)</strong>
-                        <p>GS Paper 1 &amp; Prelims Mock Series · 42 Students</p>
+                        <span style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase;">Active Scope Selected</span>
+                        <strong style="color: var(--primary); font-size: 14px; margin: 4px 0 2px;">Batch 101 - UPSC Prelims 2026</strong>
+                        <p>GS Paper 1 &amp; Prelims Mock Series · 42 Enrolled Learners</p>
                     </div>
                     <div class="matrix-card" onclick="selectCohort('102')" id="cohort102" style="cursor: pointer;">
-                        <strong>Batch 102</strong>
-                        <p>CSAT &amp; Quantitative Aptitude · 38 Students</p>
+                        <span style="font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Parallel Cohort</span>
+                        <strong style="font-size: 14px; margin: 4px 0 2px;">Batch 102 - CSAT Intensive</strong>
+                        <p>Aptitude &amp; Quantitative Papers · 38 Enrolled Learners</p>
                     </div>
                     <div class="matrix-card" onclick="selectCohort('dept')" id="cohortDept" style="cursor: pointer;">
-                        <strong>Department Observer</strong>
-                        <p>Curriculum review and question audit across all batches</p>
+                        <span style="font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Observer Scope</span>
+                        <strong style="font-size: 14px; margin: 4px 0 2px;">Department Observer</strong>
+                        <p>Curriculum review and quality audit across all batches</p>
                     </div>
                 </div>
 
-                <button type="button" onclick="launchSampleSession('teacher')" class="btn-primary">
-                    Launch Batch 101 Faculty Workspace →
+                <div style="margin-bottom: 20px; padding: 12px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px; font-size: 11.5px; color: var(--error); opacity: 0.9;">
+                    <strong>Fail-Closed Guarantee:</strong> Requests to batches other than the active session are automatically blocked by the gateway with HTTP 403 Forbidden.
+                </div>
+
+                <button type="button" id="cohortLaunchBtn" onclick="launchSampleSession('teacher')" class="btn-primary">
+                    Launch Batch 101 Scoped Faculty Workspace →
                 </button>
+            </div>
+
+            <!-- Real-Time Token & Claims Inspector -->
+            <div class="inspector-panel">
+                <div class="inspector-header">
+                    <span>Server-Authoritative Session Token Inspector (Decoded Claims)</span>
+                    <span id="inspectorStatus" style="color: #6ee7b7;">✓ Valid Cryptographic Signature (RS256)</span>
+                </div>
+                <pre id="tokenClaimsOutput" style="margin: 0; font-family: inherit; font-size: 11px; color: #a5f3fc;"></pre>
+            </div>
+        </section>
+
+        <!-- Zero-Trust Tampering & Fail-Closed Defense Testbench -->
+        <section style="margin-bottom: 40px;">
+            <div style="margin-bottom: 16px;">
+                <span class="hub-eyebrow">Zero-Trust Security Sandbox</span>
+                <h2 style="font-size: 20px; font-weight: 800; margin: 4px 0 6px; color: var(--error); font-family: 'Jost', sans-serif;">
+                    Fail-Closed Architecture Attack Simulator
+                </h2>
+                <p style="font-size: 13px; color: var(--error); opacity: 0.85; margin: 0;">
+                    Simulate common client-side tampering attempts to verify that server-authoritative boundaries fail closed.
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 18px;">
+                <button type="button" class="tamper-btn" onclick="runTamperTest('escalation')">
+                    <strong style="color: var(--primary); display: block; font-size: 12.5px; margin-bottom: 3px;">1. Client Privilege Escalation</strong>
+                    <span style="font-size: 11px; opacity: 0.8; display: block; line-height: 1.4;">Client attempts injecting <code>roles.rights.edit</code> into token payload.</span>
+                </button>
+                <button type="button" class="tamper-btn" onclick="runTamperTest('cross_cohort')">
+                    <strong style="color: var(--primary); display: block; font-size: 12.5px; margin-bottom: 3px;">2. Cross-Cohort Leakage</strong>
+                    <span style="font-size: 11px; opacity: 0.8; display: block; line-height: 1.4;">Batch 101 faculty attempts requesting Batch 102 exam submissions.</span>
+                </button>
+                <button type="button" class="tamper-btn" onclick="runTamperTest('ceiling')">
+                    <strong style="color: var(--primary); display: block; font-size: 12.5px; margin-bottom: 3px;">3. Organization Ceiling Breach</strong>
+                    <span style="font-size: 11px; opacity: 0.8; display: block; line-height: 1.4;">Org Admin attempts activating rights exceeding the 70/70 pack limit.</span>
+                </button>
+            </div>
+
+            <!-- Tamper Result Box -->
+            <div id="tamperResultBox" style="display: none; padding: 16px 20px; border-radius: 12px; background: #ffffff; border: 1px solid var(--border); box-shadow: 0 4px 16px rgba(0,26,28,0.06);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <strong id="tamperResultTitle" style="font-size: 13px; color: var(--error);"></strong>
+                    <span id="tamperResultStatus" style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px;"></span>
+                </div>
+                <p id="tamperResultDesc" style="font-size: 12px; margin: 0; line-height: 1.5; color: var(--error); opacity: 0.9;"></p>
+            </div>
+        </section>
+
+        <!-- Architectural Data-Flow Pipeline -->
+        <section>
+            <div style="margin-bottom: 16px;">
+                <span class="hub-eyebrow">Enterprise Pipeline</span>
+                <h2 style="font-size: 20px; font-weight: 800; margin: 4px 0 6px; color: var(--error); font-family: 'Jost', sans-serif;">
+                    Server-Authoritative Request Lifecycle
+                </h2>
+            </div>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <div class="pipeline-step">
+                    <span style="font-family: monospace; font-size: 11px; font-weight: 800; color: var(--primary);">STEP 01</span>
+                    <strong style="display: block; font-size: 13px; margin: 4px 0 6px;">Client Authentication</strong>
+                    <p style="font-size: 11.5px; opacity: 0.85; margin: 0; line-height: 1.4;">User submits credentials. Client sends zero <code>account_id</code> or permission hints.</p>
+                </div>
+                <div class="pipeline-step">
+                    <span style="font-family: monospace; font-size: 11px; font-weight: 800; color: var(--primary);">STEP 02</span>
+                    <strong style="display: block; font-size: 13px; margin: 4px 0 6px;">Tenant DNS Resolution</strong>
+                    <p style="font-size: 11.5px; opacity: 0.85; margin: 0; line-height: 1.4;">Gateway derives tenant cryptographic identity from host domain or verified invitation token.</p>
+                </div>
+                <div class="pipeline-step">
+                    <span style="font-family: monospace; font-size: 11px; font-weight: 800; color: var(--primary);">STEP 03</span>
+                    <strong style="display: block; font-size: 13px; margin: 4px 0 6px;">Server Rights Computation</strong>
+                    <p style="font-size: 11.5px; opacity: 0.85; margin: 0; line-height: 1.4;">Server computes effective permissions, enforcing organization ceiling and active cohort scopes.</p>
+                </div>
+                <div class="pipeline-step">
+                    <span style="font-family: monospace; font-size: 11px; font-weight: 800; color: var(--primary);">STEP 04</span>
+                    <strong style="display: block; font-size: 13px; margin: 4px 0 6px;">Signed Token Issuance</strong>
+                    <p style="font-size: 11.5px; opacity: 0.85; margin: 0; line-height: 1.4;">Issues RS256 token. Client renders authorized UI with zero client-side role arithmetic.</p>
+                </div>
             </div>
         </section>
     </div>
 
+    <!-- Live Script Controller -->
     <script>
+        let currentTab = '1';
+        let currentSample1Persona = 'org_admin';
+        let activeCohort = '101';
+
+        const personaData = {
+            org_admin: {
+                email: 'orgadmin@dpa.edu',
+                rights: 'Full organization administration across users, roles, departments, and batches.',
+                ceilingCount: '70 / 70 Rights (Full Pack)',
+                ceilingPct: 100,
+                token: {
+                    iss: "https://auth.heftin.edu",
+                    sub: "usr_orgadmin_01",
+                    tenant_id: "org_001",
+                    role: "org_admin",
+                    scopes: [{ type: "organization", id: "org_001" }],
+                    rights: ["users.*", "roles.*", "departments.*", "batches.*", "audit.view"],
+                    is_platform_admin: false,
+                    exp: 1791240000
+                }
+            },
+            teacher: {
+                email: 'teacher@dpa.edu',
+                rights: 'View assigned batch exams, grade student submissions, review question analytics.',
+                ceilingCount: '12 / 70 Rights (Assigned Batch)',
+                ceilingPct: 17,
+                token: {
+                    iss: "https://auth.heftin.edu",
+                    sub: "usr_teacher_04",
+                    tenant_id: "org_001",
+                    role: "faculty",
+                    scopes: [{ type: "batch", id: "batch_101" }],
+                    rights: ["batches.view", "exams.grade", "analytics.batch", "submissions.review"],
+                    is_platform_admin: false,
+                    exp: 1791240000
+                }
+            },
+            student: {
+                email: 'sana@dpa.edu',
+                rights: 'Attempt mock tests, view detailed answer keys, track performance percentiles.',
+                ceilingCount: '6 / 70 Rights (Learner Access)',
+                ceilingPct: 9,
+                token: {
+                    iss: "https://auth.heftin.edu",
+                    sub: "usr_student_88",
+                    tenant_id: "org_001",
+                    role: "student",
+                    scopes: [{ type: "batch", id: "batch_101" }],
+                    rights: ["exams.take", "results.view", "solutions.read", "analytics.personal"],
+                    is_platform_admin: false,
+                    exp: 1791240000
+                }
+            },
+            platform_admin: {
+                email: 'admin@heftin.com',
+                rights: 'Platform SuperAdmin: provision tenant academies, manage global rights ceiling.',
+                ceilingCount: 'Platform Root (Ceiling Unbound)',
+                ceilingPct: 100,
+                token: {
+                    iss: "https://auth.heftin.edu",
+                    sub: "usr_superadmin_01",
+                    tenant_id: null,
+                    role: "super_admin",
+                    scopes: [{ type: "platform", id: "central" }],
+                    rights: ["platform.*", "tenants.manage", "ceiling.control", "audit.global"],
+                    is_platform_admin: true,
+                    exp: 1791240000
+                }
+            }
+        };
+
         function showSample(num) {
+            currentTab = num;
             document.getElementById('sample1View').style.display = num === '1' ? 'block' : 'none';
             document.getElementById('sample2View').style.display = num === '2' ? 'block' : 'none';
             document.getElementById('sample3View').style.display = num === '3' ? 'block' : 'none';
@@ -363,66 +595,153 @@
             document.getElementById('tabSample1').classList.toggle('active', num === '1');
             document.getElementById('tabSample2').classList.toggle('active', num === '2');
             document.getElementById('tabSample3').classList.toggle('active', num === '3');
+
+            updateTokenInspector();
         }
-
-        const personaData = {
-            org_admin: {
-                email: 'orgadmin@dpa.edu',
-                rights: 'Full organization administration across users, roles, departments, and batches.'
-            },
-            teacher: {
-                email: 'teacher@dpa.edu',
-                rights: 'View assigned batch exams, grade student submissions, review question analytics.'
-            },
-            student: {
-                email: 'sana@dpa.edu',
-                rights: 'Attempt mock tests, view detailed answer keys, track performance percentiles.'
-            },
-            platform_admin: {
-                email: 'admin@heftin.com',
-                rights: 'Platform SuperAdmin: provision tenant academies, manage global rights ceiling.'
-            }
-        };
-
-        let currentSample1Persona = 'org_admin';
 
         function setSample1Persona(persona) {
             currentSample1Persona = persona;
             const d = personaData[persona];
             document.getElementById('sample1Email').value = d.email;
             document.getElementById('sample1Rights').textContent = d.rights;
+            document.getElementById('sample1CeilingCount').textContent = d.ceilingCount;
+            document.getElementById('sample1CeilingBar').style.width = d.ceilingPct + '%';
+
+            // Active button highlight
+            const btns = {
+                org_admin: 'roleBtnOrg',
+                teacher: 'roleBtnTeach',
+                student: 'roleBtnStud',
+                platform_admin: 'roleBtnSuper'
+            };
+            Object.keys(btns).forEach(k => {
+                const b = document.getElementById(btns[k]);
+                if (k === persona) {
+                    b.style.background = 'var(--primary)';
+                    b.style.color = '#fff';
+                    b.style.borderColor = 'var(--primary)';
+                } else {
+                    b.style.background = '#fff';
+                    b.style.color = 'var(--error)';
+                    b.style.borderColor = 'var(--border)';
+                }
+            });
+
+            updateTokenInspector();
         }
 
         function verifySubdomain() {
-            const input = document.getElementById('subdomainInput').value.trim();
+            const input = document.getElementById('subdomainInput').value.trim().toLowerCase();
             const res = document.getElementById('subdomainResult');
-            if (input === 'dpa') {
-                res.innerHTML = '✓ Delhi Public Academy (Tenant: org_001 · Verified)';
-                res.style.color = 'var(--primary)';
-            } else {
-                res.innerHTML = '✓ ' + input.toUpperCase() + ' Academy (Tenant: custom_tenant · Verified)';
-                res.style.color = 'var(--primary)';
-            }
+            const tenants = {
+                dpa: 'Delhi Public Academy · Tenant: org_001 · DNS Verified on cluster-asia-south1',
+                apex: 'Apex Coaching Institute · Tenant: org_002 · DNS Verified on cluster-asia-south1',
+                sarthi: 'Sarthi Training Academy · Tenant: org_003 · DNS Verified on cluster-asia-south1',
+            };
+            const match = tenants[input] || (input.toUpperCase() + ' Academy · Tenant: custom_' + input + ' · DNS Verified');
+            res.innerHTML = '✓ ' + match;
+            res.style.color = 'var(--primary)';
+            updateTokenInspector();
+        }
+
+        function setSubdomainQuick(slug) {
+            document.getElementById('subdomainInput').value = slug;
+            verifySubdomain();
         }
 
         function selectCohort(id) {
+            activeCohort = id;
             ['cohort101', 'cohort102', 'cohortDept'].forEach(c => {
                 const el = document.getElementById(c);
                 el.style.borderColor = 'var(--border)';
                 el.style.background = 'var(--white)';
+                const badge = el.querySelector('span');
+                if (badge) badge.style.color = 'var(--muted)';
             });
             const sel = document.getElementById(id === '101' ? 'cohort101' : id === '102' ? 'cohort102' : 'cohortDept');
             sel.style.borderColor = 'var(--primary)';
             sel.style.background = '#f8fcfe';
+            const selBadge = sel.querySelector('span');
+            if (selBadge) selBadge.style.color = 'var(--primary)';
+
+            const labels = {
+                '101': 'Batch 101 Scoped Faculty Workspace',
+                '102': 'Batch 102 Scoped Faculty Workspace',
+                'dept': 'Department Observer Scoped Workspace'
+            };
+            document.getElementById('cohortLaunchBtn').textContent = 'Launch ' + labels[id] + ' →';
+            updateTokenInspector();
+        }
+
+        function updateTokenInspector() {
+            let tokenObj;
+            if (currentTab === '1') {
+                tokenObj = personaData[currentSample1Persona].token;
+            } else if (currentTab === '2') {
+                const slug = document.getElementById('subdomainInput').value.trim().toLowerCase() || 'dpa';
+                tokenObj = {
+                    iss: `https://${slug}.heftin.edu`,
+                    sub: `usr_${slug}_admin`,
+                    tenant_id: slug === 'dpa' ? 'org_001' : `org_${slug}`,
+                    role: "org_admin",
+                    scopes: [{ type: "organization", id: slug === 'dpa' ? 'org_001' : `org_${slug}` }],
+                    rights: ["users.*", "roles.*", "batches.*"],
+                    is_platform_admin: false,
+                    origin_verified: true
+                };
+            } else {
+                const cohortScope = activeCohort === 'dept' ? { type: "department", id: "dept_general" } : { type: "batch", id: `batch_${activeCohort}` };
+                tokenObj = {
+                    iss: "https://auth.heftin.edu",
+                    sub: "usr_teacher_04",
+                    tenant_id: "org_001",
+                    role: activeCohort === 'dept' ? "observer" : "faculty",
+                    scopes: [cohortScope],
+                    rights: activeCohort === 'dept' ? ["exams.audit", "curriculum.read"] : ["batches.view", "exams.grade", "analytics.batch"],
+                    is_platform_admin: false
+                };
+            }
+            document.getElementById('tokenClaimsOutput').textContent = JSON.stringify(tokenObj, null, 2);
+        }
+
+        function runTamperTest(type) {
+            const box = document.getElementById('tamperResultBox');
+            const title = document.getElementById('tamperResultTitle');
+            const status = document.getElementById('tamperResultStatus');
+            const desc = document.getElementById('tamperResultDesc');
+            box.style.display = 'block';
+
+            if (type === 'escalation') {
+                title.textContent = 'Attack Test: Client-Side Permission Injection';
+                status.textContent = 'HTTP 403 FORBIDDEN';
+                status.style.background = '#fee2e2';
+                status.style.color = '#991b1b';
+                desc.textContent = 'Server cryptographic signature check failed. The API gateway detected client-tampered claims (attempted addition of "roles.rights.edit"). Session terminated immediately.';
+            } else if (type === 'cross_cohort') {
+                title.textContent = 'Attack Test: Cross-Cohort Data Query';
+                status.textContent = 'HTTP 403 FORBIDDEN';
+                status.style.background = '#fee2e2';
+                status.style.color = '#991b1b';
+                desc.textContent = 'Fail-closed scope violation. Active session is bound strictly to batch_101. Out-of-scope request for batch_102 exam submissions was blocked with zero tenant leakage.';
+            } else if (type === 'ceiling') {
+                title.textContent = 'Attack Test: Organization Ceiling Safeguard Breach';
+                status.textContent = 'HTTP 400 BAD REQUEST';
+                status.style.background = '#fef3c7';
+                status.style.color = '#92400e';
+                desc.textContent = 'Anti-self-escalation triggered. Requested role permissions exceed the purchased institutional ceiling (70/70 maximum). SuperAdmin ceiling protection preserved.';
+            }
         }
 
         function launchSampleSession(persona) {
             try {
                 localStorage.setItem('heftin-phase1-persona', persona);
-                localStorage.setItem('heftinName', persona === 'student' ? 'Sana Khan' : persona === 'teacher' ? 'Rohit Sharma' : persona === 'platform_admin' ? 'SuperAdmin' : 'Dr. R. K. Verma');
+                localStorage.setItem('heftinName', persona === 'student' ? 'Sana Shaikh' : persona === 'teacher' ? 'Dr. Meera Kapoor' : persona === 'platform_admin' ? 'Platform SuperAdmin' : 'Rajesh Sharma (Admin)');
             } catch (e) {}
             window.location.href = 'dashboard/index.html';
         }
+
+        // Initialize Inspector on page load
+        updateTokenInspector();
     </script>
 </body>
 </html>
