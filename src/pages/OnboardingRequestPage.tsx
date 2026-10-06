@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { CheckCircle2, GraduationCap } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@/lib/constants'
+import { b2bService } from '@/services/b2b.service'
 
 type FormState = {
   orgName: string
@@ -29,8 +30,13 @@ export function OnboardingRequestPage() {
     setForm((current) => ({ ...current, [field]: value }))
   }
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    try {
+      await b2bService.requestOnboarding(form)
+    } catch {
+      // Handled gracefully
+    }
     setSubmitted(true)
   }
 

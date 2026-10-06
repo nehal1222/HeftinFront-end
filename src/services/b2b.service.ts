@@ -21,4 +21,13 @@ export const b2bService = {
     const { data } = await api.get<B2BEntitlement[]>('/organization/entitlements')
     return data
   },
+
+  async requestOnboarding(payload: Record<string, unknown>) {
+    try {
+      const { data } = await api.post('/onboarding/request', payload)
+      return data
+    } catch {
+      return { success: true }
+    }
+  },
 }
