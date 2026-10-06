@@ -1109,15 +1109,13 @@ export function AuthSamplesHubView({ navigate }) {
   return (
     <>
       <PageHeading
-        eyebrow="SECURITY GOVERNANCE"
-        title="Phase 1 Enterprise Auth Samples Hub"
-        description="Evaluate 3 production-ready enterprise authentication patterns built for institutional governance, zero-trust boundary isolation, and server-authoritative role rights."
+        title="Auth Architecture Samples"
       />
 
       <div className="phase-sample-hub" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         <section className="phase-panel" style={{ padding: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-            <span className="phase-eyebrow">SECURITY GOVERNANCE</span>
+            <h2 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'var(--error)' }}>Security Governance</h2>
             <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--primary)', background: 'rgba(0,130,142,0.1)', padding: '3px 8px', borderRadius: '6px' }}>100% Architecture Compliant</span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
@@ -1146,10 +1144,6 @@ export function AuthSamplesHubView({ navigate }) {
 
         <section className="phase-panel" style={{ padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '20px', borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
-            <div>
-              <span className="phase-eyebrow">INTERACTIVE PROPOSALS</span>
-              <h2 style={{ fontSize: '16px', fontWeight: 800, margin: '2px 0 0', color: 'var(--error)' }}>Test Layout Proposals</h2>
-            </div>
             <div style={{ display: 'flex', gap: '6px' }}>
               <button type="button" onClick={() => setActiveTab('1')} style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '11.5px', fontWeight: 700, border: activeTab === '1' ? '1px solid var(--primary)' : '1px solid var(--border)', background: activeTab === '1' ? 'var(--primary)' : '#fff', color: activeTab === '1' ? '#fff' : 'var(--error)', cursor: 'pointer' }}>1. Executive Split-Screen</button>
               <button type="button" onClick={() => setActiveTab('2')} style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '11.5px', fontWeight: 700, border: activeTab === '2' ? '1px solid var(--primary)' : '1px solid var(--border)', background: activeTab === '2' ? 'var(--primary)' : '#fff', color: activeTab === '2' ? '#fff' : 'var(--error)', cursor: 'pointer' }}>2. Subdomain Gateway</button>
@@ -1160,9 +1154,7 @@ export function AuthSamplesHubView({ navigate }) {
           {activeTab === '1' && (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', alignItems: 'center' }}>
               <div>
-                <span className="phase-eyebrow">PRODUCTION STANDARD</span>
-                <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '4px 0 8px' }}>Executive Split-Screen</h3>
-                <p style={{ fontSize: '12px', opacity: 0.85, margin: '0 0 14px' }}>Two-column command center with single-line English permission summary.</p>
+                <h3 style={{ fontSize: '16px', fontWeight: 700, margin: '0 0 10px' }}>Executive Split-Screen</h3>
                 <div style={{ padding: '12px', background: 'var(--bg-soft)', borderRadius: '8px', border: '1px solid var(--border)' }}>
                   <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--primary)', display: 'block' }}>Computed Rights:</span>
                   <span style={{ fontSize: '11.5px', fontWeight: 600 }}>{personas[samplePersona].rights}</span>
@@ -1182,13 +1174,11 @@ export function AuthSamplesHubView({ navigate }) {
 
           {activeTab === '2' && (
             <div>
-              <span className="phase-eyebrow">TENANT BOUNDARY</span>
-              <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '4px 0 8px' }}>Subdomain Tenant Gateway</h3>
-              <p style={{ fontSize: '12px', opacity: 0.85, margin: '0 0 16px' }}>Client binds cryptographically to tenant slug; client never sends account_id.</p>
+              <h3 style={{ fontSize: '16px', fontWeight: 700, margin: '0 0 10px' }}>Subdomain Tenant Gateway</h3>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '14px' }}>
                 <input type="text" value={subdomain} onChange={(e) => setSubdomain(e.target.value)} style={{ padding: '8px 10px', fontSize: '12px', borderRadius: '6px', border: '1px solid var(--border)' }} />
                 <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>.heftin.edu</span>
-                <span style={{ fontSize: '11px', color: 'var(--primary)', fontWeight: 700 }}>✓ Verified Tenant: org_001</span>
+                <span style={{ fontSize: '11px', color: 'var(--primary)', fontWeight: 700 }}>✓ Verified: org_001</span>
               </div>
               <button type="button" className="phase-primary-button" onClick={() => navigate('/dashboard')}>Open Tenant Workspace →</button>
             </div>
@@ -1196,9 +1186,7 @@ export function AuthSamplesHubView({ navigate }) {
 
           {activeTab === '3' && (
             <div>
-              <span className="phase-eyebrow">MULTI-COHORT ISOLATION</span>
-              <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '4px 0 8px' }}>Cohort Scope Chooser</h3>
-              <p style={{ fontSize: '12px', opacity: 0.85, margin: '0 0 16px' }}>Multi-cohort faculty select active scope at login to prevent cross-batch leaks.</p>
+              <h3 style={{ fontSize: '16px', fontWeight: 700, margin: '0 0 10px' }}>Cohort Scope Chooser</h3>
               <div style={{ display: 'flex', gap: '10px', marginBottom: '16px' }}>
                 {['101', '102', 'dept'].map((c) => (
                   <button key={c} type="button" onClick={() => setCohort(c)} style={{ flex: 1, padding: '12px', textAlign: 'left', borderRadius: '10px', border: cohort === c ? '1px solid var(--primary)' : '1px solid var(--border)', background: cohort === c ? '#f8fcfe' : '#fff', cursor: 'pointer' }}>
@@ -1214,10 +1202,7 @@ export function AuthSamplesHubView({ navigate }) {
 
         <section className="phase-panel" style={{ padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '20px', borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
-            <div>
-              <span className="phase-eyebrow">ENTERPRISE LIFECYCLE</span>
-              <h2 style={{ fontSize: '16px', fontWeight: 800, margin: '2px 0 0', color: 'var(--error)' }}>3 Core Institutional Auth Workflows</h2>
-            </div>
+            <h2 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: 'var(--error)' }}>Auth Workflows</h2>
             <div style={{ display: 'flex', gap: '6px' }}>
               <button type="button" onClick={() => { setWfKey('invite'); setWfStep(0); }} style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '11.5px', fontWeight: 700, border: wfKey === 'invite' ? '1px solid var(--primary)' : '1px solid var(--border)', background: wfKey === 'invite' ? 'var(--primary)' : '#fff', color: wfKey === 'invite' ? '#fff' : 'var(--error)', cursor: 'pointer' }}>1. Invite &amp; Activation</button>
               <button type="button" onClick={() => { setWfKey('stepup'); setWfStep(0); }} style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '11.5px', fontWeight: 700, border: wfKey === 'stepup' ? '1px solid var(--primary)' : '1px solid var(--border)', background: wfKey === 'stepup' ? 'var(--primary)' : '#fff', color: wfKey === 'stepup' ? '#fff' : 'var(--error)', cursor: 'pointer' }}>2. Step-Up MFA</button>
@@ -1251,7 +1236,6 @@ export function AuthSamplesHubView({ navigate }) {
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                   <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--primary)', background: '#e0f2f3', padding: '3px 8px', borderRadius: '99px' }}>✓ {workflows[wfKey].steps[wfStep].guarantee}</span>
-                  <span style={{ fontSize: '10px', fontFamily: 'monospace', color: 'var(--primary)', fontWeight: 700 }}>{workflows[wfKey].steps[wfStep].actor}</span>
                 </div>
                 <h4 style={{ fontSize: '14px', fontWeight: 800, margin: '6px 0', color: 'var(--error)' }}>{workflows[wfKey].steps[wfStep].heading}</h4>
                 <p style={{ fontSize: '11.5px', color: 'var(--error)', opacity: 0.85, margin: '0 0 12px', lineHeight: 1.5 }}>{workflows[wfKey].steps[wfStep].desc}</p>

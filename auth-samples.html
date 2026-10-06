@@ -377,20 +377,16 @@
             </div>
         </header>
 
-        <!-- Main Heading & Context -->
-        <div>
-            <span class="hub-eyebrow">Executive Architecture Review</span>
-            <h1 class="hub-title">Phase 1 Enterprise Auth Samples Hub</h1>
-            <p class="hub-desc">
-                Evaluate <strong>3 production-ready enterprise authentication patterns</strong> built for institutional governance, zero-trust boundary isolation, and server-authoritative role rights.
-            </p>
+        <!-- Main Heading -->
+        <div style="margin-bottom: 24px;">
+            <h1 class="hub-title" style="margin: 0;">Auth Architecture Samples</h1>
         </div>
 
-        <!-- Compliance Matrix (The 4 Security Governance Pillars) -->
-        <section>
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                <span class="hub-eyebrow">Security Governance</span>
-                <span style="font-size: 11px; font-weight: 800; color: var(--primary); background: rgba(0,130,142,0.1); padding: 4px 10px; border-radius: 99px;">100% Architecture Compliant</span>
+        <!-- Security Governance Pillars -->
+        <section style="margin-bottom: 32px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <h2 style="font-size: 15px; font-weight: 800; margin: 0; color: var(--error);">Security Governance</h2>
+                <span style="font-size: 11px; font-weight: 800; color: var(--primary); background: rgba(0,130,142,0.1); padding: 3px 8px; border-radius: 99px;">100% Architecture Compliant</span>
             </div>
 
             <div class="matrix-grid">
@@ -417,19 +413,13 @@
             </div>
         </section>
 
-        <!-- Live Interactive Sandbox Section -->
+        <!-- Layout Samples Sandbox -->
         <section class="sandbox-section">
-            <div class="sandbox-header">
-                <div>
-                    <span class="hub-eyebrow">Interactive Sandbox</span>
-                    <h2 style="font-size: 18px; font-weight: 800; margin: 4px 0 0; color: var(--error);">
-                        Test the 3 Approved Layout Proposals
-                    </h2>
-                </div>
+            <div class="sandbox-header" style="margin-bottom: 20px;">
                 <div class="tab-group">
-                    <button type="button" class="tab-btn active" id="tabSample1" onclick="showSample('1')">Layout 01: Executive Split-Screen</button>
-                    <button type="button" class="tab-btn" id="tabSample2" onclick="showSample('2')">Layout 02: Subdomain Gateway</button>
-                    <button type="button" class="tab-btn" id="tabSample3" onclick="showSample('3')">Layout 03: Cohort Chooser</button>
+                    <button type="button" class="tab-btn active" id="tabSample1" onclick="showSample('1')">Layout 1: Executive Split-Screen</button>
+                    <button type="button" class="tab-btn" id="tabSample2" onclick="showSample('2')">Layout 2: Subdomain Gateway</button>
+                    <button type="button" class="tab-btn" id="tabSample3" onclick="showSample('3')">Layout 3: Cohort Chooser</button>
                 </div>
             </div>
 
@@ -437,11 +427,7 @@
             <div id="sample1View" class="sandbox-card">
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 28px; align-items: start;">
                     <div style="padding-right: 18px; border-right: 1px solid var(--border);">
-                        <span class="hub-eyebrow">Recommended Production Standard</span>
-                        <h3 style="font-size: 21px; font-weight: 800; margin: 8px 0; color: var(--error); font-family: 'Jost', sans-serif;">Executive Split-Screen</h3>
-                        <p style="font-size: 12.5px; color: var(--error); opacity: 0.85; line-height: 1.5;">
-                            Two-column command center with single-line English permission summary, real-time ceiling meter, and 1-click persona testing.
-                        </p>
+                        <h3 style="font-size: 17px; font-weight: 800; margin: 0 0 14px; color: var(--error);">Executive Split-Screen</h3>
 
                         <!-- Live Ceiling Meter Indicator -->
                         <div style="margin-top: 16px; padding: 12px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px;">
@@ -483,14 +469,10 @@
 
             <!-- Sample 2: Subdomain Gateway -->
             <div id="sample2View" class="sandbox-card" style="display: none;">
-                <span class="hub-eyebrow">Institutional Multi-Tenant Architecture</span>
-                <h3 style="font-size: 21px; font-weight: 800; margin: 8px 0; color: var(--error); font-family: 'Jost', sans-serif;">Subdomain Tenant Gateway</h3>
-                <p style="font-size: 12.5px; color: var(--error); opacity: 0.85; line-height: 1.5; margin-bottom: 20px;">
-                    Users sign in through their dedicated tenant subdomain (e.g. <code>https://dpa.heftin.edu</code>), ensuring zero tenant identifier leakage over client HTTP requests.
-                </p>
+                <h3 style="font-size: 17px; font-weight: 800; margin: 0 0 14px; color: var(--error);">Subdomain Tenant Gateway</h3>
 
                 <div style="background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-                    <label style="font-size: 11px; font-weight: 700; color: var(--primary); display: block; margin-bottom: 6px;">ENTER ACADEMY SUBDOMAIN SLUG</label>
+                    <label style="font-size: 11px; font-weight: 700; color: var(--primary); display: block; margin-bottom: 6px;">Academy Subdomain Slug</label>
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <input type="text" id="subdomainInput" value="dpa" oninput="verifySubdomain()" placeholder="e.g. dpa or apex" style="flex: 1; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; font-weight: 600;">
                         <span style="font-family: monospace; font-size: 13px; font-weight: 700; color: var(--error);">.heftin.edu</span>
@@ -511,11 +493,7 @@
 
             <!-- Sample 3: Cohort Chooser -->
             <div id="sample3View" class="sandbox-card" style="display: none;">
-                <span class="hub-eyebrow">LMS Multi-Cohort Scoping</span>
-                <h3 style="font-size: 21px; font-weight: 800; margin: 8px 0; color: var(--error); font-family: 'Jost', sans-serif;">Cohort Scope Chooser</h3>
-                <p style="font-size: 12.5px; color: var(--error); opacity: 0.85; line-height: 1.5; margin-bottom: 20px;">
-                    Multi-cohort faculty select their active cohort session at login. Permissions bound to the selected cohort prevent cross-batch grading leaks.
-                </p>
+                <h3 style="font-size: 17px; font-weight: 800; margin: 0 0 14px; color: var(--error);">Cohort Scope Chooser</h3>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 22px;">
                     <div class="matrix-card" onclick="selectCohort('101')" id="cohort101" style="cursor: pointer; border-color: var(--primary); background: #f8fcfe;">
@@ -535,10 +513,6 @@
                     </div>
                 </div>
 
-                <div style="margin-bottom: 20px; padding: 12px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px; font-size: 11.5px; color: var(--error); opacity: 0.9;">
-                    <strong>Fail-Closed Guarantee:</strong> Requests to batches other than the active session are automatically blocked by the gateway with HTTP 403 Forbidden.
-                </div>
-
                 <button type="button" id="cohortLaunchBtn" onclick="launchSampleSession('teacher')" class="btn-primary">
                     Launch Batch 101 Scoped Faculty Workspace →
                 </button>
@@ -547,79 +521,67 @@
             <!-- Real-Time Token & Claims Inspector -->
             <div class="inspector-panel">
                 <div class="inspector-header">
-                    <span>Server-Authoritative Session Token Inspector (Decoded Claims)</span>
-                    <span id="inspectorStatus" style="color: #6ee7b7;">✓ Valid Cryptographic Signature (RS256)</span>
+                    <span>Decoded Session Token</span>
+                    <span id="inspectorStatus" style="color: #6ee7b7;">✓ RS256 Verified</span>
                 </div>
                 <pre id="tokenClaimsOutput" style="margin: 0; font-family: inherit; font-size: 11px; color: #a5f3fc;"></pre>
             </div>
         </section>
 
         <!-- Zero-Trust Tampering & Fail-Closed Defense Testbench -->
-        <section style="margin-bottom: 40px;">
-            <div style="margin-bottom: 16px;">
-                <span class="hub-eyebrow">Zero-Trust Security Sandbox</span>
-                <h2 style="font-size: 20px; font-weight: 800; margin: 4px 0 6px; color: var(--error); font-family: 'Jost', sans-serif;">
-                    Fail-Closed Architecture Attack Simulator
+        <section style="margin-bottom: 32px;">
+            <div style="margin-bottom: 14px;">
+                <h2 style="font-size: 15px; font-weight: 800; margin: 0; color: var(--error);">
+                    Attack Simulator
                 </h2>
-                <p style="font-size: 13px; color: var(--error); opacity: 0.85; margin: 0;">
-                    Simulate common client-side tampering attempts to verify that server-authoritative boundaries fail closed.
-                </p>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 18px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-bottom: 14px;">
                 <button type="button" class="tamper-btn" onclick="runTamperTest('escalation')">
-                    <strong style="color: var(--primary); display: block; font-size: 12.5px; margin-bottom: 3px;">1. Client Privilege Escalation</strong>
-                    <span style="font-size: 11px; opacity: 0.8; display: block; line-height: 1.4;">Client attempts injecting <code>roles.rights.edit</code> into token payload.</span>
+                    <strong style="color: var(--primary); display: block; font-size: 12px; margin-bottom: 2px;">1. Privilege Escalation</strong>
+                    <span style="font-size: 11px; opacity: 0.8; display: block;">Inject <code>roles.rights.edit</code> into token</span>
                 </button>
                 <button type="button" class="tamper-btn" onclick="runTamperTest('cross_cohort')">
-                    <strong style="color: var(--primary); display: block; font-size: 12.5px; margin-bottom: 3px;">2. Cross-Cohort Leakage</strong>
-                    <span style="font-size: 11px; opacity: 0.8; display: block; line-height: 1.4;">Batch 101 faculty attempts requesting Batch 102 exam submissions.</span>
+                    <strong style="color: var(--primary); display: block; font-size: 12px; margin-bottom: 2px;">2. Cross-Cohort Query</strong>
+                    <span style="font-size: 11px; opacity: 0.8; display: block;">Request out-of-scope batch submissions</span>
                 </button>
                 <button type="button" class="tamper-btn" onclick="runTamperTest('ceiling')">
-                    <strong style="color: var(--primary); display: block; font-size: 12.5px; margin-bottom: 3px;">3. Organization Ceiling Breach</strong>
-                    <span style="font-size: 11px; opacity: 0.8; display: block; line-height: 1.4;">Org Admin attempts activating rights exceeding the 70/70 pack limit.</span>
+                    <strong style="color: var(--primary); display: block; font-size: 12px; margin-bottom: 2px;">3. Ceiling Breach</strong>
+                    <span style="font-size: 11px; opacity: 0.8; display: block;">Activate rights exceeding 70/70 pack limit</span>
                 </button>
             </div>
 
             <!-- Tamper Result Box -->
-            <div id="tamperResultBox" style="display: none; padding: 16px 20px; border-radius: 12px; background: #ffffff; border: 1px solid var(--border); box-shadow: 0 4px 16px rgba(0,26,28,0.06);">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                    <strong id="tamperResultTitle" style="font-size: 13px; color: var(--error);"></strong>
+            <div id="tamperResultBox" style="display: none; padding: 14px 18px; border-radius: 10px; background: #ffffff; border: 1px solid var(--border); box-shadow: 0 4px 16px rgba(0,26,28,0.06);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                    <strong id="tamperResultTitle" style="font-size: 12.5px; color: var(--error);"></strong>
                     <span id="tamperResultStatus" style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px;"></span>
                 </div>
-                <p id="tamperResultDesc" style="font-size: 12px; margin: 0; line-height: 1.5; color: var(--error); opacity: 0.9;"></p>
+                <p id="tamperResultDesc" style="font-size: 11.5px; margin: 0; line-height: 1.5; color: var(--error); opacity: 0.9;"></p>
             </div>
         </section>
 
         <!-- Interactive Enterprise Authentication Workflows -->
         <section class="workflows-section" id="workflowsSection">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
-                <div>
-                    <span class="hub-eyebrow">Enterprise Lifecycle Simulation</span>
-                    <h2 style="font-size: 21px; font-weight: 800; margin: 4px 0 6px; color: var(--error); font-family: 'Jost', sans-serif;">
-                        3 Core Institutional Auth Workflows
-                    </h2>
-                    <p style="font-size: 13px; color: var(--error); opacity: 0.85; margin: 0;">
-                        Interactive walkthrough of production authentication workflows enforcing zero client arithmetic and fail-closed tenant boundaries.
-                    </p>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <button type="button" id="wfAutoPlayBtn" onclick="toggleWfAutoPlay()" class="btn-outline" style="font-size: 11.5px; padding: 7px 12px;">
-                        ▶ Run Auto-Simulation
-                    </button>
-                </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                <h2 style="font-size: 15px; font-weight: 800; margin: 0; color: var(--error);">
+                    Auth Workflows
+                </h2>
+                <button type="button" id="wfAutoPlayBtn" onclick="toggleWfAutoPlay()" class="btn-outline" style="font-size: 11.5px; padding: 6px 12px;">
+                    ▶ Auto-Play
+                </button>
             </div>
 
             <!-- Workflow Selector Tabs -->
             <div class="wf-tab-bar">
                 <button type="button" class="wf-tab-btn active" id="wfTab_invite" onclick="switchWorkflow('invite')">
-                    Workflow 01: Institutional Invite &amp; Activation
+                    1. Invite &amp; Activation
                 </button>
                 <button type="button" class="wf-tab-btn" id="wfTab_stepup" onclick="switchWorkflow('stepup')">
-                    Workflow 02: High-Privilege Step-Up MFA Challenge
+                    2. Step-Up MFA
                 </button>
                 <button type="button" class="wf-tab-btn" id="wfTab_sso" onclick="switchWorkflow('sso')">
-                    Workflow 03: SAML 2.0 / OIDC SSO Federation
+                    3. SAML 2.0 / SSO
                 </button>
             </div>
 
@@ -633,31 +595,28 @@
                 <!-- Left: Narrative & Security Mechanics -->
                 <div class="wf-detail-card">
                     <div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 6px;">
-                            <span id="wfGuaranteeBadge" style="font-size: 11px; font-weight: 700; color: var(--primary); background: #e0f2f3; padding: 4px 10px; border-radius: 99px;">
-                                Security Guarantee
-                            </span>
-                            <span id="wfActorText" style="font-family: monospace; font-size: 11px; font-weight: 700; color: var(--primary);">
-                                Actor Direction
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                            <span id="wfGuaranteeBadge" style="font-size: 11px; font-weight: 700; color: var(--primary); background: #e0f2f3; padding: 3px 8px; border-radius: 99px;">
+                                Guarantee
                             </span>
                         </div>
-                        <h4 id="wfStepHeading" style="font-size: 18px; font-weight: 800; margin: 0 0 10px; color: var(--error); font-family: 'Jost', sans-serif;">
+                        <h4 id="wfStepHeading" style="font-size: 15px; font-weight: 800; margin: 0 0 6px; color: var(--error);">
                             Step Title
                         </h4>
-                        <p id="wfStepDesc" style="font-size: 12.5px; color: var(--error); opacity: 0.88; line-height: 1.6; margin: 0 0 18px;">
+                        <p id="wfStepDesc" style="font-size: 12px; color: var(--error); opacity: 0.85; line-height: 1.5; margin: 0 0 14px;">
                             Step Description
                         </p>
                     </div>
 
                     <!-- Step Navigation Controls -->
-                    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 16px; margin-top: 12px;">
-                        <button type="button" id="wfPrevBtn" onclick="prevWfStep()" class="btn-outline" style="font-size: 11.5px; padding: 7px 14px;">
-                            ← Previous Step
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 10px;">
+                        <button type="button" id="wfPrevBtn" onclick="prevWfStep()" class="btn-outline" style="font-size: 11px; padding: 6px 12px;">
+                            ← Previous
                         </button>
-                        <span id="wfStepCounter" style="font-size: 11px; font-weight: 700; color: var(--primary); font-family: monospace;">
+                        <span id="wfStepCounter" style="font-size: 10.5px; font-weight: 700; color: var(--primary); font-family: monospace;">
                             STEP 1 OF 4
                         </span>
-                        <button type="button" id="wfNextBtn" onclick="nextWfStep()" class="btn-primary" style="font-size: 11.5px; padding: 7px 14px;">
+                        <button type="button" id="wfNextBtn" onclick="nextWfStep()" class="btn-primary" style="font-size: 11px; padding: 6px 12px;">
                             Next Step →
                         </button>
                     </div>
@@ -665,47 +624,15 @@
 
                 <!-- Right: Live Protocol Exchange Inspector Terminal -->
                 <div class="wf-terminal">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #00363a;">
-                        <span style="font-size: 10.5px; font-weight: 700; color: #80c4cb; text-transform: uppercase; letter-spacing: 0.08em;">
-                            Live Protocol Exchange Inspector
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #00363a;">
+                        <span style="font-size: 10.5px; font-weight: 700; color: #80c4cb; text-transform: uppercase;">
+                            Protocol Inspector
                         </span>
                         <span id="wfTerminalStatus" style="font-size: 10.5px; font-weight: 800; color: #6ee7b7; padding: 2px 6px; border-radius: 4px; background: rgba(110, 231, 183, 0.1);">
                             HTTP 200 OK
                         </span>
                     </div>
                     <pre id="wfTerminalOutput" style="margin: 0; font-family: inherit; font-size: 11px; color: #a5f3fc; white-space: pre-wrap; word-break: break-all; flex: 1;"></pre>
-                </div>
-            </div>
-        </section>
-
-        <!-- Architectural Data-Flow Pipeline -->
-        <section>
-            <div style="margin-bottom: 16px;">
-                <span class="hub-eyebrow">Enterprise Pipeline</span>
-                <h2 style="font-size: 20px; font-weight: 800; margin: 4px 0 6px; color: var(--error); font-family: 'Jost', sans-serif;">
-                    Server-Authoritative Request Lifecycle
-                </h2>
-            </div>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <div class="pipeline-step">
-                    <span style="font-family: monospace; font-size: 11px; font-weight: 800; color: var(--primary);">STEP 01</span>
-                    <strong style="display: block; font-size: 13px; margin: 4px 0 6px;">Client Authentication</strong>
-                    <p style="font-size: 11.5px; opacity: 0.85; margin: 0; line-height: 1.4;">User submits credentials. Client sends zero <code>account_id</code> or permission hints.</p>
-                </div>
-                <div class="pipeline-step">
-                    <span style="font-family: monospace; font-size: 11px; font-weight: 800; color: var(--primary);">STEP 02</span>
-                    <strong style="display: block; font-size: 13px; margin: 4px 0 6px;">Tenant DNS Resolution</strong>
-                    <p style="font-size: 11.5px; opacity: 0.85; margin: 0; line-height: 1.4;">Gateway derives tenant cryptographic identity from host domain or verified invitation token.</p>
-                </div>
-                <div class="pipeline-step">
-                    <span style="font-family: monospace; font-size: 11px; font-weight: 800; color: var(--primary);">STEP 03</span>
-                    <strong style="display: block; font-size: 13px; margin: 4px 0 6px;">Server Rights Computation</strong>
-                    <p style="font-size: 11.5px; opacity: 0.85; margin: 0; line-height: 1.4;">Server computes effective permissions, enforcing organization ceiling and active cohort scopes.</p>
-                </div>
-                <div class="pipeline-step">
-                    <span style="font-family: monospace; font-size: 11px; font-weight: 800; color: var(--primary);">STEP 04</span>
-                    <strong style="display: block; font-size: 13px; margin: 4px 0 6px;">Signed Token Issuance</strong>
-                    <p style="font-size: 11.5px; opacity: 0.85; margin: 0; line-height: 1.4;">Issues RS256 token. Client renders authorized UI with zero client-side role arithmetic.</p>
                 </div>
             </div>
         </section>
@@ -953,42 +880,36 @@
                     {
                         number: '01',
                         shortTitle: 'Token Ingestion',
-                        heading: 'Step 1: Cryptographic Invite Token Resolution',
-                        actor: 'Client → Edge Gateway',
-                        guarantee: 'Zero Client Tenant ID Leakage',
-                        desc: 'The invited faculty member opens an invite URL containing a single-use signed token (e.g. inv_sec_892f). The client application sends zero tenant assumptions; the edge gateway verifies the HMAC-SHA256 signature and resolves the designated institutional tenant and cohort scope.',
+                        heading: 'Invite Resolution',
+                        guarantee: 'Zero Tenant Leakage',
+                        desc: 'Gateway validates HMAC signature and resolves tenant and cohort scope.',
                         status: 'HTTP 200 OK',
                         terminal: {
-                            request: 'GET /api/v1/auth/invites/verify?token=inv_sec_892f HTTP/1.1\nHost: dpa.heftin.edu\nAccept: application/json',
+                            request: 'GET /api/v1/auth/invites/verify?token=inv_sec_892f HTTP/1.1\nHost: dpa.heftin.edu',
                             responseStatus: 'HTTP/1.1 200 OK',
                             responseBody: {
                                 invite_valid: true,
                                 tenant_id: "org_001",
                                 tenant_slug: "dpa",
                                 designated_role: "faculty",
-                                assigned_scope: { type: "batch", id: "batch_101" },
-                                email: "dr.meera@dpa.edu",
-                                expires_in: "172800s"
+                                assigned_scope: { type: "batch", id: "batch_101" }
                             }
                         }
                     },
                     {
                         number: '02',
                         shortTitle: 'Capacity Audit',
-                        heading: 'Step 2: Institutional License Ceiling Verification',
-                        actor: 'Gateway → Central Platform Service',
-                        guarantee: 'Fail-Closed Tenant Ceiling Guardrail',
-                        desc: 'Before allowing credential registration, the central authorization engine conducts a fail-closed license ceiling check against the tenant record. It verifies that adding this faculty member will not breach the purchased active seat allocation (42/50 seats occupied).',
+                        heading: 'Ceiling Verification',
+                        guarantee: 'Ceiling Guardrail',
+                        desc: 'Central platform verifies active user seats against purchased quota.',
                         status: 'HTTP 200 OK',
                         terminal: {
-                            request: 'POST /internal/v1/tenants/org_001/verify-capacity HTTP/1.1\nAuthorization: Bearer m2m_gateway_internal_key\nContent-Type: application/json\n\n{\n  "tenant_id": "org_001",\n  "requested_role": "faculty"\n}',
+                            request: 'POST /internal/v1/tenants/org_001/verify-capacity HTTP/1.1\nHost: dpa.heftin.edu',
                             responseStatus: 'HTTP/1.1 200 OK',
                             responseBody: {
                                 tenant_id: "org_001",
-                                tier: "institutional_standard",
                                 seat_limit: 50,
                                 current_active_seats: 42,
-                                ceiling_breach: false,
                                 allow_activation: true
                             }
                         }
@@ -996,41 +917,36 @@
                     {
                         number: '03',
                         shortTitle: 'Credential Binding',
-                        heading: 'Step 3: Argon2id Hashing & WebAuthn Credential Enrollment',
-                        actor: 'Faculty Client → Auth Authority',
-                        guarantee: 'Hardware Attested Authentication Proof',
-                        desc: 'The faculty member sets a password hashed via Argon2id (memory cost 64MB, parallelism 4) and registers a FIDO2 WebAuthn credential. The cryptographic claim verifies ownership of the invited email address without transmitting plaintext credentials.',
+                        heading: 'Credential Registration',
+                        guarantee: 'Argon2id & FIDO2 Proof',
+                        desc: 'User sets Argon2id password and registers FIDO2 passkey.',
                         status: 'HTTP 201 Created',
                         terminal: {
-                            request: 'POST /api/v1/auth/invites/claim HTTP/1.1\nHost: dpa.heftin.edu\nContent-Type: application/json\n\n{\n  "token": "inv_sec_892f",\n  "argon2id_hash": "$argon2id$v=19$m=65536,t=3,p=4$...",\n  "webauthn_cred_id": "cred_fido_7719a"\n}',
+                            request: 'POST /api/v1/auth/invites/claim HTTP/1.1\nHost: dpa.heftin.edu',
                             responseStatus: 'HTTP/1.1 201 Created',
                             responseBody: {
                                 user_id: "usr_teacher_04",
                                 status: "active",
-                                credential_enrolled: true,
-                                activated_at: "2026-10-06T11:20:00Z"
+                                credential_enrolled: true
                             }
                         }
                     },
                     {
                         number: '04',
                         shortTitle: 'Token Issuance',
-                        heading: 'Step 4: Scoped Session Token Issuance & Workspace Launch',
-                        actor: 'Central Auth Server → Client',
-                        guarantee: 'Server-Authoritative Scoped Token',
-                        desc: 'The authority signs and issues an RS256 token scoped strictly to batch_101. The client receives pre-computed rights. No client-side permission algebra is performed. The user is redirected to their authorized faculty grading cockpit.',
+                        heading: 'Session Issuance',
+                        guarantee: 'Scoped RS256 Token',
+                        desc: 'Gateway issues RS256 token scoped strictly to assigned batch.',
                         status: 'HTTP 200 OK',
                         terminal: {
-                            request: 'HTTP/1.1 200 OK\nSet-Cookie: __Host-heftin_session=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...; Secure; HttpOnly; SameSite=Strict',
-                            responseStatus: 'Issued RS256 Token Claims:',
+                            request: 'HTTP/1.1 200 OK\nSet-Cookie: __Host-heftin_session=jwt_rs256...; Secure; HttpOnly',
+                            responseStatus: 'Claims Issued:',
                             responseBody: {
                                 sub: "usr_teacher_04",
                                 tenant_id: "org_001",
                                 role: "faculty",
                                 scopes: [{ type: "batch", id: "batch_101" }],
-                                rights: ["batches.view", "exams.grade", "analytics.batch"],
-                                is_platform_admin: false,
-                                exp: 1791240000
+                                rights: ["batches.view", "exams.grade"]
                             }
                         }
                     }
@@ -1043,18 +959,16 @@
                     {
                         number: '01',
                         shortTitle: 'Standard Baseline',
-                        heading: 'Step 1: Baseline Session Operational Boundary',
-                        actor: 'Faculty Client → Edge Gateway',
-                        guarantee: 'Principle of Least Privilege',
-                        desc: 'The faculty member performs day-to-day work (reviewing exam submissions) under standard single-factor authentication claims. The session token allows read and grading operations but intentionally lacks high-privilege administrative rights.',
+                        heading: 'Baseline Session',
+                        guarantee: 'Least Privilege',
+                        desc: 'User operates under standard credentials for routine tasks.',
                         status: 'HTTP 200 OK',
                         terminal: {
-                            request: 'GET /api/v1/batches/101/submissions HTTP/1.1\nHost: dpa.heftin.edu\nAuthorization: Bearer jwt_standard_session',
+                            request: 'GET /api/v1/batches/101/submissions HTTP/1.1\nAuthorization: Bearer jwt_standard',
                             responseStatus: 'HTTP/1.1 200 OK',
                             responseBody: {
                                 batch_id: "batch_101",
                                 active_learners: 42,
-                                acr_strength: "urn:heftin:pwd",
                                 elevated: false
                             }
                         }
@@ -1062,55 +976,51 @@
                     {
                         number: '02',
                         shortTitle: 'High-Risk Trigger',
-                        heading: 'Step 2: Sensitive Operation Initiation',
-                        actor: 'Faculty Client → Gateway Boundary',
-                        guarantee: 'High-Risk Operation Interception',
-                        desc: 'The instructor clicks to publish finalized state exam keys (exams.publish_official) or export unmasked student PII. This action requires high assurance under institutional compliance policies.',
-                        status: 'HTTP 401 Intercepted',
+                        heading: 'High-Risk Action',
+                        guarantee: 'Policy Interception',
+                        desc: 'User attempts sensitive operation requiring elevated assurance.',
+                        status: 'Policy Intercepted',
                         terminal: {
-                            request: 'POST /api/v1/exams/prelims-2026/publish-official-key HTTP/1.1\nHost: dpa.heftin.edu\nAuthorization: Bearer jwt_standard_session\nContent-Type: application/json\n\n{\n  "exam_id": "exam_prelims_2026",\n  "action": "publish_irrevocable_key"\n}',
-                            responseStatus: 'Policy Interception Triggered',
+                            request: 'POST /api/v1/exams/prelims-2026/publish-official-key HTTP/1.1\nAuthorization: Bearer jwt_standard',
+                            responseStatus: 'Policy Triggered',
                             responseBody: {
-                                endpoint_classification: "high_risk_administrative",
-                                policy_requirement: "acr_values: urn:heftin:mfa-strong"
+                                classification: "high_risk_admin",
+                                required_acr: "urn:heftin:mfa:strong"
                             }
                         }
                     },
                     {
                         number: '03',
                         shortTitle: 'HTTP 401 Challenge',
-                        heading: 'Step 3: Zero-Trust Gateway Step-Up Challenge',
-                        actor: 'API Gateway → Faculty Client',
-                        guarantee: 'Fail-Closed Authentication Step-Up',
-                        desc: 'The zero-trust gateway blocks execution immediately, issuing an HTTP 401 with WWW-Authenticate header. The client renders an inline biometric or 6-digit TOTP challenge modal without discarding the current page state.',
+                        heading: 'Step-Up Challenge',
+                        guarantee: 'Fail-Closed Gate',
+                        desc: 'Gateway intercepts request and issues 401 challenge header.',
                         status: 'HTTP 401 Unauthorized',
                         terminal: {
-                            request: 'HTTP/1.1 401 Unauthorized\nWWW-Authenticate: StepUp realm="heftin-mfa", acr_values="urn:heftin:mfa:strong"\nX-Elevation-Required: exams.publish_official',
-                            responseStatus: 'HTTP/1.1 401 Step-Up Challenge',
+                            request: 'HTTP/1.1 401 Unauthorized\nWWW-Authenticate: StepUp realm="mfa", acr_values="urn:heftin:mfa:strong"',
+                            responseStatus: 'HTTP/1.1 401 Challenge',
                             responseBody: {
                                 error: "step_up_mfa_required",
                                 challenge_id: "mfa_chal_902bf8",
-                                target_action: "exams.publish_official",
-                                allowed_methods: ["webauthn_fido2", "totp_authenticator"]
+                                allowed_methods: ["webauthn_fido2", "totp"]
                             }
                         }
                     },
                     {
                         number: '04',
                         shortTitle: 'Ephemeral Grant',
-                        heading: 'Step 4: Ephemeral 15-Minute Elevated Scope Grant',
-                        actor: 'Auth Authority → Client',
-                        guarantee: 'Time-Bounded Ephemeral Privilege (15-Min TTL)',
-                        desc: 'User inputs their 6-digit authenticator code. The gateway validates the TOTP HMAC counter and issues a time-bounded elevated token claim (elevated_until: +15m). The exam keys are successfully published while preserving strict batch bounds.',
+                        heading: 'Ephemeral Grant',
+                        guarantee: '15-Minute TTL',
+                        desc: 'User confirms TOTP code; gateway grants 15-minute elevation.',
                         status: 'HTTP 200 OK (Elevated)',
                         terminal: {
-                            request: 'POST /api/v1/auth/step-up/verify HTTP/1.1\nContent-Type: application/json\n\n{\n  "challenge_id": "mfa_chal_902bf8",\n  "totp_code": "821495"\n}',
-                            responseStatus: 'HTTP/1.1 200 OK (Action Executed)',
+                            request: 'POST /api/v1/auth/step-up/verify HTTP/1.1\nPayload: { "code": "821495" }',
+                            responseStatus: 'HTTP/1.1 200 OK',
                             responseBody: {
-                                elevation_granted: true,
+                                elevated: true,
                                 acr: "urn:heftin:mfa:strong",
-                                elevated_until: "2026-10-06T11:45:00Z",
-                                action_result: "Exam keys published successfully. Immutable audit log #aud_9981 created."
+                                elevated_until: "+15m",
+                                audit_trace: "aud_9981"
                             }
                         }
                     }
@@ -1123,83 +1033,69 @@
                     {
                         number: '01',
                         shortTitle: 'Domain Discovery',
-                        heading: 'Step 1: Institutional Email & IdP Discovery',
-                        actor: 'User → Discovery Endpoint',
-                        guarantee: 'Zero Client Tenant ID Leak',
-                        desc: 'A university dean enters their enterprise email (e.g. dean@apex.edu). The client sends solely the domain without internal database identifiers. The gateway discovers the registered SAML 2.0 Identity Provider configuration.',
+                        heading: 'Domain Discovery',
+                        guarantee: 'Zero ID Leak',
+                        desc: 'Gateway resolves IdP configuration using email domain.',
                         status: 'HTTP 200 OK',
                         terminal: {
-                            request: 'POST /api/v1/auth/sso/discover HTTP/1.1\nHost: auth.heftin.edu\nContent-Type: application/json\n\n{\n  "email": "dean@apex.edu"\n}',
+                            request: 'POST /api/v1/auth/sso/discover HTTP/1.1\nPayload: { "email": "dean@apex.edu" }',
                             responseStatus: 'HTTP/1.1 200 OK',
                             responseBody: {
                                 sso_enabled: true,
                                 tenant_id: "org_002",
-                                idp_type: "SAML_2.0",
-                                idp_name: "Apex University Microsoft Entra ID",
-                                sso_endpoint: "https://login.microsoftonline.com/apex-tenant/saml2"
+                                idp_name: "Apex University Entra ID"
                             }
                         }
                     },
                     {
                         number: '02',
                         shortTitle: 'SAML Redirect',
-                        heading: 'Step 2: Cryptographically Signed SAML AuthnRequest',
-                        actor: 'Gateway → University IdP',
-                        guarantee: 'Cryptographic Assertion Nonce Protection',
-                        desc: 'Heftin Gateway constructs and signs a SAML 2.0 AuthnRequest using its private X.509 certificate (RSA-SHA256). The browser is redirected to the university login portal with a high-entropy RelayState token to prevent CSRF attacks.',
+                        heading: 'Signed Redirect',
+                        guarantee: 'Assertion Nonce Protection',
+                        desc: 'Browser redirected to IdP with signed AuthnRequest.',
                         status: 'HTTP 302 Redirect',
                         terminal: {
-                            request: 'GET /saml2?SAMLRequest=fVLLbtswEPwVgvd...&RelayState=sso_ctx_4812a HTTP/1.1\nHost: login.microsoftonline.com',
+                            request: 'GET /saml2?SAMLRequest=...&RelayState=sso_ctx_4812a HTTP/1.1',
                             responseStatus: 'HTTP/1.1 302 Found',
                             responseBody: {
                                 sp_entity_id: "https://auth.heftin.edu/sp",
-                                assertion_consumer_service: "https://auth.heftin.edu/saml/acs",
-                                binding: "HTTP-Redirect",
-                                signature_valid: true
+                                binding: "HTTP-Redirect"
                             }
                         }
                     },
                     {
                         number: '03',
                         shortTitle: 'Assertion Verify',
-                        heading: 'Step 3: SAML Response Assertion Ingestion & Signature Verification',
-                        actor: 'University IdP → Heftin ACS Endpoint',
-                        guarantee: 'X.509 Signature & Time-Window Validation',
-                        desc: 'Upon successful login at the university portal, the IdP sends a signed SAML Response via HTTP-POST. The gateway validates the digital signature against the institutional public key, confirms the assertion validity window, and extracts verified identity attributes.',
+                        heading: 'Assertion Ingestion',
+                        guarantee: 'X.509 Signature Validation',
+                        desc: 'Gateway validates digital signature on returned SAML response.',
                         status: 'HTTP 200 OK',
                         terminal: {
-                            request: 'POST /saml/acs HTTP/1.1\nHost: auth.heftin.edu\nContent-Type: application/x-www-form-urlencoded\n\nSAMLResponse=PHNhbWxwOlJlc3BvbnNl...&RelayState=sso_ctx_4812a',
-                            responseStatus: 'HTTP/1.1 200 OK (Assertion Validated)',
+                            request: 'POST /saml/acs HTTP/1.1\nPayload: SAMLResponse=PHNhbWxw...',
+                            responseStatus: 'HTTP/1.1 200 OK',
                             responseBody: {
                                 name_id: "dean@apex.edu",
-                                attributes: {
-                                    displayName: "Prof. Ananya Sen",
-                                    groups: ["Faculty-AcademicCouncil", "Dean-Engineering"]
-                                },
-                                idp_issuer: "https://sts.windows.net/apex-tenant/"
+                                groups: ["Dean-Engineering"],
+                                signature_valid: true
                             }
                         }
                     },
                     {
                         number: '04',
                         shortTitle: 'JIT Mapping',
-                        heading: 'Step 4: Server-Side JIT Mapping & Ceiling-Bound Token Issuance',
-                        actor: 'Auth Authority → Client',
-                        guarantee: 'Anti-Self-Escalation Ceiling Enforcement',
-                        desc: 'The central authorization engine maps the external group Dean-Engineering to the internal org_admin role. It validates that the granted rights remain bounded within the purchased 70/70 rights ceiling, issuing an RS256 token.',
-                        status: 'HTTP 200 OK (Session Issued)',
+                        heading: 'Ceiling-Bound Mapping',
+                        guarantee: 'Ceiling Enforcement',
+                        desc: 'Server maps enterprise group to role within license ceiling.',
+                        status: 'HTTP 200 OK',
                         terminal: {
-                            request: 'HTTP/1.1 200 OK\nSet-Cookie: __Host-heftin_session=jwt_federated_...; Secure; HttpOnly; SameSite=Strict',
-                            responseStatus: 'Server-Computed Claims Issued:',
+                            request: 'HTTP/1.1 200 OK\nSet-Cookie: __Host-heftin_session=jwt_federated...; Secure; HttpOnly',
+                            responseStatus: 'Claims Issued:',
                             responseBody: {
                                 sub: "usr_dean_ananya",
                                 tenant_id: "org_002",
                                 role: "org_admin",
                                 rights_count: "70/70 Maximum",
-                                mapped_from_group: "Dean-Engineering",
-                                auth_method: "federated_saml2",
-                                is_platform_admin: false,
-                                exp: 1791240000
+                                auth_method: "federated_saml2"
                             }
                         }
                     }
@@ -1239,7 +1135,6 @@
             const st = wf.steps[currentWfStep];
 
             document.getElementById('wfGuaranteeBadge').textContent = '✓ ' + st.guarantee;
-            document.getElementById('wfActorText').textContent = st.actor;
             document.getElementById('wfStepHeading').textContent = st.heading;
             document.getElementById('wfStepDesc').textContent = st.desc;
             document.getElementById('wfStepCounter').textContent = `STEP ${currentWfStep + 1} OF ${wf.steps.length}`;
