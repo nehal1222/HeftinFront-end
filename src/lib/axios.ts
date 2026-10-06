@@ -6,7 +6,7 @@ const api: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 30000,
+  timeout: 2500,
 })
 
 // Request interceptor: attach Authorization Bearer header
