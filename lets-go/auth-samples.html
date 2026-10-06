@@ -448,11 +448,31 @@
                     </div>
 
                     <div>
-                        <div style="display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;">
-                            <button type="button" id="roleBtnOrg" onclick="setSample1Persona('org_admin')" style="flex: 1; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 7px; border: 1px solid var(--primary); background: var(--primary); color: #fff; cursor: pointer;">Org Admin</button>
-                            <button type="button" id="roleBtnTeach" onclick="setSample1Persona('teacher')" style="flex: 1; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 7px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer;">Faculty</button>
-                            <button type="button" id="roleBtnStud" onclick="setSample1Persona('student')" style="flex: 1; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 7px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer;">Student</button>
-                            <button type="button" id="roleBtnSuper" onclick="setSample1Persona('platform_admin')" style="flex: 1; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 7px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer;">SuperAdmin</button>
+                        <!-- 2 Categories: Organisation & Individual -->
+                        <div style="margin-bottom: 16px; display: flex; flex-direction: column; gap: 10px;">
+                            <!-- Category 1: Organisation -->
+                            <div id="catBoxOrg" style="border: 1px solid var(--primary); border-radius: 9px; padding: 10px 12px; background: #fff; box-shadow: 0 1px 4px rgba(0,130,142,0.08); transition: all 0.2s ease;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.04em;">Organisation</span>
+                                    <span id="catBadgeOrg" style="font-size: 9.5px; font-weight: 700; color: var(--primary); background: rgba(0,130,142,0.1); padding: 2px 7px; border-radius: 4px;">Institutional Scope</span>
+                                </div>
+                                <div style="display: flex; gap: 6px;">
+                                    <button type="button" id="roleBtnOrg" onclick="setSample1Persona('org_admin')" style="flex: 1; padding: 7px 8px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--primary); background: var(--primary); color: #fff; cursor: pointer; transition: all 0.2s ease;">Org Admin</button>
+                                    <button type="button" id="roleBtnTeach" onclick="setSample1Persona('teacher')" style="flex: 1; padding: 7px 8px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer; transition: all 0.2s ease;">Faculty</button>
+                                    <button type="button" id="roleBtnSuper" onclick="setSample1Persona('platform_admin')" style="flex: 1; padding: 7px 8px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer; transition: all 0.2s ease;">SuperAdmin</button>
+                                </div>
+                            </div>
+
+                            <!-- Category 2: Individual -->
+                            <div id="catBoxIndiv" style="border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; background: var(--bg-soft); transition: all 0.2s ease;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-size: 11px; font-weight: 800; color: var(--error); text-transform: uppercase; letter-spacing: 0.04em;">Individual</span>
+                                    <span id="catBadgeIndiv" style="font-size: 9.5px; font-weight: 700; color: var(--error); opacity: 0.7; padding: 2px 7px; border-radius: 4px;">Learner Portal</span>
+                                </div>
+                                <div style="display: flex; gap: 6px;">
+                                    <button type="button" id="roleBtnStud" onclick="setSample1Persona('student')" style="flex: 1; padding: 7px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--error); cursor: pointer; transition: all 0.2s ease;">Student</button>
+                                </div>
+                            </div>
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
                             <label style="font-size: 11px; font-weight: 600; margin-bottom: -6px;">User Email</label>
@@ -741,16 +761,58 @@
             };
             Object.keys(btns).forEach(k => {
                 const b = document.getElementById(btns[k]);
-                if (k === persona) {
-                    b.style.background = 'var(--primary)';
-                    b.style.color = '#fff';
-                    b.style.borderColor = 'var(--primary)';
-                } else {
-                    b.style.background = '#fff';
-                    b.style.color = 'var(--error)';
-                    b.style.borderColor = 'var(--border)';
+                if (b) {
+                    if (k === persona) {
+                        b.style.background = 'var(--primary)';
+                        b.style.color = '#fff';
+                        b.style.borderColor = 'var(--primary)';
+                    } else {
+                        b.style.background = '#fff';
+                        b.style.color = 'var(--error)';
+                        b.style.borderColor = 'var(--border)';
+                    }
                 }
             });
+
+            // Update Category Container highlight
+            const isOrg = (persona === 'org_admin' || persona === 'teacher' || persona === 'platform_admin');
+            const catBoxOrg = document.getElementById('catBoxOrg');
+            const catBoxIndiv = document.getElementById('catBoxIndiv');
+            const catBadgeOrg = document.getElementById('catBadgeOrg');
+            const catBadgeIndiv = document.getElementById('catBadgeIndiv');
+            if (catBoxOrg && catBoxIndiv) {
+                if (isOrg) {
+                    catBoxOrg.style.borderColor = 'var(--primary)';
+                    catBoxOrg.style.background = '#fff';
+                    catBoxOrg.style.boxShadow = '0 1px 4px rgba(0,130,142,0.08)';
+                    catBoxIndiv.style.borderColor = 'var(--border)';
+                    catBoxIndiv.style.background = 'var(--bg-soft)';
+                    catBoxIndiv.style.boxShadow = 'none';
+                    if (catBadgeOrg) {
+                        catBadgeOrg.style.background = 'rgba(0,130,142,0.1)';
+                        catBadgeOrg.style.color = 'var(--primary)';
+                    }
+                    if (catBadgeIndiv) {
+                        catBadgeIndiv.style.background = 'transparent';
+                        catBadgeIndiv.style.color = 'var(--error)';
+                    }
+                } else {
+                    catBoxIndiv.style.borderColor = 'var(--primary)';
+                    catBoxIndiv.style.background = '#fff';
+                    catBoxIndiv.style.boxShadow = '0 1px 4px rgba(0,130,142,0.08)';
+                    catBoxOrg.style.borderColor = 'var(--border)';
+                    catBoxOrg.style.background = 'var(--bg-soft)';
+                    catBoxOrg.style.boxShadow = 'none';
+                    if (catBadgeIndiv) {
+                        catBadgeIndiv.style.background = 'rgba(0,130,142,0.1)';
+                        catBadgeIndiv.style.color = 'var(--primary)';
+                    }
+                    if (catBadgeOrg) {
+                        catBadgeOrg.style.background = 'transparent';
+                        catBadgeOrg.style.color = 'var(--error)';
+                    }
+                }
+            }
 
             updateTokenInspector();
         }

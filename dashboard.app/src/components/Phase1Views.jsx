@@ -1160,12 +1160,88 @@ export function AuthSamplesHubView({ navigate }) {
                   <span style={{ fontSize: '11.5px', fontWeight: 600 }}>{personas[samplePersona].rights}</span>
                 </div>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ display: 'flex', gap: '4px' }}>
-                  {Object.keys(personas).map((p) => (
-                    <button key={p} type="button" onClick={() => setSamplePersona(p)} style={{ flex: 1, padding: '6px', fontSize: '10.5px', fontWeight: 700, borderRadius: '6px', border: samplePersona === p ? '1px solid var(--primary)' : '1px solid var(--border)', background: samplePersona === p ? 'var(--primary)' : '#fff', color: samplePersona === p ? '#fff' : 'var(--error)', cursor: 'pointer' }}>{p === 'org_admin' ? 'Admin' : p === 'teacher' ? 'Faculty' : p === 'student' ? 'Student' : 'SuperAdmin'}</button>
-                  ))}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {/* Category 1: Organisation */}
+                <div
+                  style={{
+                    padding: '10px 12px',
+                    borderRadius: '8px',
+                    border: ['org_admin', 'teacher', 'platform_admin'].includes(samplePersona) ? '1px solid var(--primary)' : '1px solid var(--border)',
+                    background: ['org_admin', 'teacher', 'platform_admin'].includes(samplePersona) ? '#fff' : 'var(--bg-soft)',
+                    boxShadow: ['org_admin', 'teacher', 'platform_admin'].includes(samplePersona) ? '0 1px 4px rgba(0,130,142,0.08)' : 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--primary)', letterSpacing: '0.04em' }}>Organisation</span>
+                    <span style={{ fontSize: '9.5px', fontWeight: 700, color: 'var(--primary)', background: 'rgba(0,130,142,0.1)', padding: '2px 6px', borderRadius: '4px' }}>Institutional Scope</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    {[
+                      { key: 'org_admin', label: 'Org Admin' },
+                      { key: 'teacher', label: 'Faculty' },
+                      { key: 'platform_admin', label: 'SuperAdmin' },
+                    ].map(({ key, label }) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setSamplePersona(key)}
+                        style={{
+                          flex: 1,
+                          padding: '7px 8px',
+                          fontSize: '11px',
+                          fontWeight: 700,
+                          borderRadius: '6px',
+                          border: samplePersona === key ? '1px solid var(--primary)' : '1px solid var(--border)',
+                          background: samplePersona === key ? 'var(--primary)' : '#fff',
+                          color: samplePersona === key ? '#fff' : 'var(--error)',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
+
+                {/* Category 2: Individual */}
+                <div
+                  style={{
+                    padding: '10px 12px',
+                    borderRadius: '8px',
+                    border: samplePersona === 'student' ? '1px solid var(--primary)' : '1px solid var(--border)',
+                    background: samplePersona === 'student' ? '#fff' : 'var(--bg-soft)',
+                    boxShadow: samplePersona === 'student' ? '0 1px 4px rgba(0,130,142,0.08)' : 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--error)', letterSpacing: '0.04em' }}>Individual</span>
+                    <span style={{ fontSize: '9.5px', fontWeight: 700, color: 'var(--error)', opacity: 0.7, padding: '2px 6px', borderRadius: '4px' }}>Learner Portal</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    <button
+                      type="button"
+                      onClick={() => setSamplePersona('student')}
+                      style={{
+                        flex: 1,
+                        padding: '7px 8px',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        borderRadius: '6px',
+                        border: samplePersona === 'student' ? '1px solid var(--primary)' : '1px solid var(--border)',
+                        background: samplePersona === 'student' ? 'var(--primary)' : '#fff',
+                        color: samplePersona === 'student' ? '#fff' : 'var(--error)',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      Student
+                    </button>
+                  </div>
+                </div>
+
                 <input type="text" readOnly value={personas[samplePersona].email} style={{ padding: '8px 10px', fontSize: '12px', borderRadius: '6px', border: '1px solid var(--border)' }} />
                 <button type="button" className="phase-primary-button" onClick={() => navigate(samplePersona === 'platform_admin' ? '/platform/organizations' : '/dashboard')}>Launch Selected Session →</button>
               </div>
