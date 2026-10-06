@@ -1,15 +1,16 @@
 const COLOR_SWATCHES = [
-  { name: 'primary', className: 'bg-primary' },
-  { name: 'primary-shade-1', className: 'bg-primary-shade-1' },
-  { name: 'primary-shade-2', className: 'bg-primary-shade-2' },
-  { name: 'primary-shade-3', className: 'bg-primary-shade-3' },
-  { name: 'primary-shade-4', className: 'bg-primary-shade-4' },
-  { name: 'primary-shade-5', className: 'bg-primary-shade-5' },
-  { name: 'primary-tint-1', className: 'bg-primary-tint-1' },
-  { name: 'primary-tint-2', className: 'bg-primary-tint-2' },
-  { name: 'primary-tint-3', className: 'bg-primary-tint-3' },
-  { name: 'primary-tint-4', className: 'bg-primary-tint-4' },
-  { name: 'primary-tint-5', className: 'bg-primary-tint-5' },
+  { name: 'primary', hex: '#00828e', bg: '#00828e' },
+  { name: 'shade-1', hex: '#006f79', bg: '#006f79' },
+  { name: 'shade-2', hex: '#005b63', bg: '#005b63' },
+  { name: 'shade-3', hex: '#00484e', bg: '#00484e' },
+  { name: 'shade-4', hex: '#003439', bg: '#003439' },
+  { name: 'shade-5 (error)', hex: '#001a1c', bg: '#001a1c' },
+  { name: 'tint-1', hex: '#1a8f99', bg: '#1a8f99' },
+  { name: 'tint-2', hex: '#40a1aa', bg: '#40a1aa' },
+  { name: 'tint-3', hex: '#66b4bb', bg: '#66b4bb' },
+  { name: 'tint-4', hex: '#99cdd2', bg: '#99cdd2' },
+  { name: 'tint-5 (border)', hex: '#cce6e8', bg: '#cce6e8' },
+  { name: 'white (surface)', hex: '#ffffff', bg: '#ffffff', border: true },
 ]
 
 const RADIUS_SWATCHES = [
@@ -38,9 +39,16 @@ export default function DesignSystemPage() {
         <h2 className="font-display text-heading-sm font-normal tracking-tight mb-3">Color</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {COLOR_SWATCHES.map((swatch) => (
-            <div key={swatch.name} className="flex flex-col gap-1.5">
-              <div className={`h-14 rounded-lg border border-border ${swatch.className}`} />
-              <span className="text-body-sm text-muted font-mono">{swatch.name}</span>
+            <div key={swatch.name} className="flex flex-col gap-1.5 border border-border rounded-lg p-2.5 bg-white">
+              <div
+                className="h-14 rounded-md"
+                style={{
+                  backgroundColor: swatch.bg,
+                  border: swatch.border ? '1px solid var(--border)' : 'none',
+                }}
+              />
+              <strong className="text-xs font-bold text-error">{swatch.name}</strong>
+              <span className="text-[11px] font-mono text-primary font-semibold">{swatch.hex}</span>
             </div>
           ))}
         </div>

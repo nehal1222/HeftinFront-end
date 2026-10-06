@@ -5,7 +5,6 @@
 @theme {
   --color-*: initial;
   --color-white: #ffffff;
-  --color-black: #000000;
   --color-transparent: transparent;
   --color-current: currentColor;
 
