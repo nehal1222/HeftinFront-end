@@ -5,3 +5,5 @@ REPO_MAP.md
 .aider/
 .kilo/
 upstream-academy/
+__pycache__/
+*.py
