@@ -969,33 +969,37 @@ export function AuthSamplesHubView({ navigate }) {
   return (
     <>
       <PageHeading
-        eyebrow="ARCHITECTURE EVALUATION"
-        title="Enterprise Auth Samples Hub"
-        description="Interactive comparison of 3 production authentication patterns with zero tenant leakage."
+        eyebrow="SECURITY GOVERNANCE"
+        title="Phase 1 Enterprise Auth Samples Hub"
+        description="Evaluate 3 production-ready enterprise authentication patterns built for institutional governance, zero-trust boundary isolation, and server-authoritative role rights."
       />
 
       <div className="phase-sample-hub" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         <section className="phase-panel" style={{ padding: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-            <span className="phase-eyebrow">GOVERNANCE GUARANTEES</span>
+            <span className="phase-eyebrow">SECURITY GOVERNANCE</span>
             <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--primary)', background: 'rgba(0,130,142,0.1)', padding: '3px 8px', borderRadius: '6px' }}>100% Architecture Compliant</span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
             <div style={{ padding: '12px', border: '1px solid var(--border)', borderRadius: '10px' }}>
-              <strong style={{ fontSize: '12px', color: 'var(--primary)', display: 'block' }}>✓ Server-Computed Rights</strong>
-              <p style={{ fontSize: '11px', color: 'var(--error)', margin: '4px 0 0', opacity: 0.85 }}>Permissions derived from authoritative tokens; zero client math.</p>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--primary)', display: 'block' }}>✓ Server-Computed Rights</span>
+              <strong style={{ fontSize: '13px', color: 'var(--error)', display: 'block', margin: '2px 0 4px' }}>Zero Client Arithmetic</strong>
+              <p style={{ fontSize: '11px', color: 'var(--error)', margin: 0, opacity: 0.85 }}>Permissions derive directly from session tokens; client never computes role grants.</p>
             </div>
             <div style={{ padding: '12px', border: '1px solid var(--border)', borderRadius: '10px' }}>
-              <strong style={{ fontSize: '12px', color: 'var(--primary)', display: 'block' }}>✓ Session Scope Isolation</strong>
-              <p style={{ fontSize: '11px', color: 'var(--error)', margin: '4px 0 0', opacity: 0.85 }}>Teachers only access assigned cohorts; fail-closed boundaries.</p>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--primary)', display: 'block' }}>✓ Scope Isolation</span>
+              <strong style={{ fontSize: '13px', color: 'var(--error)', display: 'block', margin: '2px 0 4px' }}>Assigned Batch Scopes</strong>
+              <p style={{ fontSize: '11px', color: 'var(--error)', margin: 0, opacity: 0.85 }}>Teachers access only their assigned cohorts (e.g. batch_101) with fail-closed bounds.</p>
             </div>
             <div style={{ padding: '12px', border: '1px solid var(--border)', borderRadius: '10px' }}>
-              <strong style={{ fontSize: '12px', color: 'var(--primary)', display: 'block' }}>✓ SuperAdmin Boundary</strong>
-              <p style={{ fontSize: '11px', color: 'var(--error)', margin: '4px 0 0', opacity: 0.85 }}>account_id: null; isolated at central platform layer.</p>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--primary)', display: 'block' }}>✓ SuperAdmin Boundary</span>
+              <strong style={{ fontSize: '13px', color: 'var(--error)', display: 'block', margin: '2px 0 4px' }}>account_id: null</strong>
+              <p style={{ fontSize: '11px', color: 'var(--error)', margin: 0, opacity: 0.85 }}>SuperAdmin is isolated at the central platform layer, unbound by tenant ceilings.</p>
             </div>
             <div style={{ padding: '12px', border: '1px solid var(--border)', borderRadius: '10px' }}>
-              <strong style={{ fontSize: '12px', color: 'var(--primary)', display: 'block' }}>✓ Ceiling Safeguards</strong>
-              <p style={{ fontSize: '11px', color: 'var(--error)', margin: '4px 0 0', opacity: 0.85 }}>Organizations cannot exceed their purchased rights ceiling.</p>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--primary)', display: 'block' }}>✓ Ceiling Safeguards</span>
+              <strong style={{ fontSize: '13px', color: 'var(--error)', display: 'block', margin: '2px 0 4px' }}>Anti-Self-Escalation</strong>
+              <p style={{ fontSize: '11px', color: 'var(--error)', margin: 0, opacity: 0.85 }}>Organization admins cannot grant rights that exceed their purchased institutional ceiling.</p>
             </div>
           </div>
         </section>
