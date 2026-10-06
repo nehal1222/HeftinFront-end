@@ -201,31 +201,7 @@
             max-width: 900px;
             margin: 0 auto;
         }
-        .inspector-panel {
-            margin-top: 28px;
-            padding: 20px;
-            background: #001a1c;
-            border-radius: 14px;
-            color: #cce6e8;
-            font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
-            font-size: 11.5px;
-            line-height: 1.6;
-            overflow-x: auto;
-            border: 1px solid #00363a;
-        }
-        .inspector-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #00363a;
-            font-size: 11px;
-            color: #80c4cb;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 700;
-        }
+
         .tamper-btn {
             padding: 8px 12px;
             border-radius: 8px;
@@ -538,14 +514,7 @@
                 </button>
             </div>
 
-            <!-- Real-Time Token & Claims Inspector -->
-            <div class="inspector-panel">
-                <div class="inspector-header">
-                    <span>Decoded Session Token</span>
-                    <span id="inspectorStatus" style="color: #6ee7b7;">✓ RS256 Verified</span>
-                </div>
-                <pre id="tokenClaimsOutput" style="margin: 0; font-family: inherit; font-size: 11px; color: #a5f3fc;"></pre>
-            </div>
+
         </section>
 
         <!-- Zero-Trust Tampering & Fail-Closed Defense Testbench -->
@@ -861,34 +830,7 @@
         }
 
         function updateTokenInspector() {
-            let tokenObj;
-            if (currentTab === '1') {
-                tokenObj = personaData[currentSample1Persona].token;
-            } else if (currentTab === '2') {
-                const slug = document.getElementById('subdomainInput').value.trim().toLowerCase() || 'dpa';
-                tokenObj = {
-                    iss: `https://${slug}.heftin.edu`,
-                    sub: `usr_${slug}_admin`,
-                    tenant_id: slug === 'dpa' ? 'org_001' : `org_${slug}`,
-                    role: "org_admin",
-                    scopes: [{ type: "organization", id: slug === 'dpa' ? 'org_001' : `org_${slug}` }],
-                    rights: ["users.*", "roles.*", "batches.*"],
-                    is_platform_admin: false,
-                    origin_verified: true
-                };
-            } else {
-                const cohortScope = activeCohort === 'dept' ? { type: "department", id: "dept_general" } : { type: "batch", id: `batch_${activeCohort}` };
-                tokenObj = {
-                    iss: "https://auth.heftin.edu",
-                    sub: "usr_teacher_04",
-                    tenant_id: "org_001",
-                    role: activeCohort === 'dept' ? "observer" : "faculty",
-                    scopes: [cohortScope],
-                    rights: activeCohort === 'dept' ? ["exams.audit", "curriculum.read"] : ["batches.view", "exams.grade", "analytics.batch"],
-                    is_platform_admin: false
-                };
-            }
-            document.getElementById('tokenClaimsOutput').textContent = JSON.stringify(tokenObj, null, 2);
+            // Token inspector UI removed as requested
         }
 
         function runTamperTest(type) {
