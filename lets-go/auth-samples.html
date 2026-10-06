@@ -201,142 +201,6 @@
             max-width: 900px;
             margin: 0 auto;
         }
-
-        .tamper-btn {
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: var(--white);
-            color: var(--error);
-            font-size: 11.5px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: left;
-        }
-        .tamper-btn:hover {
-            border-color: var(--primary);
-            background: #f4fbfb;
-        }
-        .pipeline-step {
-            flex: 1;
-            min-width: 200px;
-            padding: 16px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: var(--white);
-        }
-        /* Enterprise Workflows Styles */
-        .workflows-section {
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            background: #ffffff;
-            padding: 32px 24px;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 20px -6px rgba(0, 26, 28, 0.06);
-        }
-        .wf-tab-bar {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 24px;
-        }
-        .wf-tab-btn {
-            padding: 9px 16px;
-            border-radius: 9px;
-            border: 1px solid var(--border);
-            background: var(--bg-soft);
-            color: var(--error);
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .wf-tab-btn.active {
-            background: var(--primary);
-            color: var(--white);
-            border-color: var(--primary);
-        }
-        .wf-stepper {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 24px;
-        }
-        @media (max-width: 768px) {
-            .wf-stepper {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        .wf-step-node {
-            padding: 12px 14px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: var(--bg-soft);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: left;
-        }
-        .wf-step-node:hover {
-            border-color: var(--primary);
-        }
-        .wf-step-node.active {
-            border-color: var(--primary);
-            background: #f0f9fa;
-            box-shadow: 0 2px 8px rgba(0, 130, 142, 0.12);
-        }
-        .wf-step-node.completed {
-            border-color: #80c4cb;
-            background: #ffffff;
-        }
-        .wf-step-number {
-            font-family: monospace;
-            font-size: 10px;
-            font-weight: 800;
-            color: var(--primary);
-            display: block;
-            margin-bottom: 2px;
-        }
-        .wf-step-title {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--error);
-            display: block;
-            line-height: 1.3;
-        }
-        .wf-display-grid {
-            display: grid;
-            grid-template-columns: 1.15fr 1fr;
-            gap: 20px;
-            align-items: stretch;
-        }
-        @media (max-width: 860px) {
-            .wf-display-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        .wf-detail-card {
-            padding: 22px;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            background: var(--bg-soft);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .wf-terminal {
-            background: #001a1c;
-            border: 1px solid #00363a;
-            border-radius: 14px;
-            padding: 18px;
-            color: #cce6e8;
-            font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
-            font-size: 11px;
-            line-height: 1.55;
-            overflow-x: auto;
-            display: flex;
-            flex-direction: column;
-        }
     </style>
 </head>
 <body>
@@ -358,36 +222,6 @@
             <h1 class="hub-title" style="margin: 0;">Auth Architecture Samples</h1>
         </div>
 
-        <!-- Security Governance Pillars -->
-        <section style="margin-bottom: 32px;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
-                <h2 style="font-size: 15px; font-weight: 800; margin: 0; color: var(--error);">Security Governance</h2>
-                <span style="font-size: 11px; font-weight: 800; color: var(--primary); background: rgba(0,130,142,0.1); padding: 3px 8px; border-radius: 99px;">100% Architecture Compliant</span>
-            </div>
-
-            <div class="matrix-grid">
-                <div class="matrix-card">
-                    <span class="matrix-badge">✓ Server-Computed Rights</span>
-                    <strong>Zero Client Arithmetic</strong>
-                    <p>Permissions derive directly from session tokens; client never computes role grants.</p>
-                </div>
-                <div class="matrix-card">
-                    <span class="matrix-badge">✓ Scope Isolation</span>
-                    <strong>Assigned Batch Scopes</strong>
-                    <p>Teachers access only their assigned cohorts (e.g. <code>batch_101</code>) with fail-closed bounds.</p>
-                </div>
-                <div class="matrix-card">
-                    <span class="matrix-badge">✓ SuperAdmin Boundary</span>
-                    <strong>account_id: null</strong>
-                    <p>SuperAdmin is isolated at the central platform layer, unbound by tenant ceilings.</p>
-                </div>
-                <div class="matrix-card">
-                    <span class="matrix-badge">✓ Ceiling Safeguards</span>
-                    <strong>Anti-Self-Escalation</strong>
-                    <p>Organization admins cannot grant rights that exceed their purchased institutional ceiling.</p>
-                </div>
-            </div>
-        </section>
 
         <!-- Layout Samples Sandbox -->
         <section class="sandbox-section">
@@ -513,117 +347,6 @@
                     Launch Batch 101 Scoped Faculty Workspace →
                 </button>
             </div>
-
-
-        </section>
-
-        <!-- Zero-Trust Tampering & Fail-Closed Defense Testbench -->
-        <section style="margin-bottom: 32px;">
-            <div style="margin-bottom: 14px;">
-                <h2 style="font-size: 15px; font-weight: 800; margin: 0; color: var(--error);">
-                    Attack Simulator
-                </h2>
-            </div>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-bottom: 14px;">
-                <button type="button" class="tamper-btn" onclick="runTamperTest('escalation')">
-                    <strong style="color: var(--primary); display: block; font-size: 12px; margin-bottom: 2px;">1. Privilege Escalation</strong>
-                    <span style="font-size: 11px; opacity: 0.8; display: block;">Inject <code>roles.rights.edit</code> into token</span>
-                </button>
-                <button type="button" class="tamper-btn" onclick="runTamperTest('cross_cohort')">
-                    <strong style="color: var(--primary); display: block; font-size: 12px; margin-bottom: 2px;">2. Cross-Cohort Query</strong>
-                    <span style="font-size: 11px; opacity: 0.8; display: block;">Request out-of-scope batch submissions</span>
-                </button>
-                <button type="button" class="tamper-btn" onclick="runTamperTest('ceiling')">
-                    <strong style="color: var(--primary); display: block; font-size: 12px; margin-bottom: 2px;">3. Ceiling Breach</strong>
-                    <span style="font-size: 11px; opacity: 0.8; display: block;">Activate rights exceeding 70/70 pack limit</span>
-                </button>
-            </div>
-
-            <!-- Tamper Result Box -->
-            <div id="tamperResultBox" style="display: none; padding: 14px 18px; border-radius: 10px; background: #ffffff; border: 1px solid var(--border); box-shadow: 0 4px 16px rgba(0,26,28,0.06);">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-                    <strong id="tamperResultTitle" style="font-size: 12.5px; color: var(--error);"></strong>
-                    <span id="tamperResultStatus" style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px;"></span>
-                </div>
-                <p id="tamperResultDesc" style="font-size: 11.5px; margin: 0; line-height: 1.5; color: var(--error); opacity: 0.9;"></p>
-            </div>
-        </section>
-
-        <!-- Interactive Enterprise Authentication Workflows -->
-        <section class="workflows-section" id="workflowsSection">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
-                <h2 style="font-size: 15px; font-weight: 800; margin: 0; color: var(--error);">
-                    Auth Workflows
-                </h2>
-                <button type="button" id="wfAutoPlayBtn" onclick="toggleWfAutoPlay()" class="btn-outline" style="font-size: 11.5px; padding: 6px 12px;">
-                    ▶ Auto-Play
-                </button>
-            </div>
-
-            <!-- Workflow Selector Tabs -->
-            <div class="wf-tab-bar">
-                <button type="button" class="wf-tab-btn active" id="wfTab_invite" onclick="switchWorkflow('invite')">
-                    1. Invite &amp; Activation
-                </button>
-                <button type="button" class="wf-tab-btn" id="wfTab_stepup" onclick="switchWorkflow('stepup')">
-                    2. Step-Up MFA
-                </button>
-                <button type="button" class="wf-tab-btn" id="wfTab_sso" onclick="switchWorkflow('sso')">
-                    3. SAML 2.0 / SSO
-                </button>
-            </div>
-
-            <!-- 4-Step Interactive Stepper -->
-            <div class="wf-stepper" id="wfStepperContainer">
-                <!-- Dynamically populated step cards -->
-            </div>
-
-            <!-- Dual-Pane Workflow Execution View -->
-            <div class="wf-display-grid">
-                <!-- Left: Narrative & Security Mechanics -->
-                <div class="wf-detail-card">
-                    <div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                            <span id="wfGuaranteeBadge" style="font-size: 11px; font-weight: 700; color: var(--primary); background: #e0f2f3; padding: 3px 8px; border-radius: 99px;">
-                                Guarantee
-                            </span>
-                        </div>
-                        <h4 id="wfStepHeading" style="font-size: 15px; font-weight: 800; margin: 0 0 6px; color: var(--error);">
-                            Step Title
-                        </h4>
-                        <p id="wfStepDesc" style="font-size: 12px; color: var(--error); opacity: 0.85; line-height: 1.5; margin: 0 0 14px;">
-                            Step Description
-                        </p>
-                    </div>
-
-                    <!-- Step Navigation Controls -->
-                    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 10px;">
-                        <button type="button" id="wfPrevBtn" onclick="prevWfStep()" class="btn-outline" style="font-size: 11px; padding: 6px 12px;">
-                            ← Previous
-                        </button>
-                        <span id="wfStepCounter" style="font-size: 10.5px; font-weight: 700; color: var(--primary); font-family: monospace;">
-                            STEP 1 OF 4
-                        </span>
-                        <button type="button" id="wfNextBtn" onclick="nextWfStep()" class="btn-primary" style="font-size: 11px; padding: 6px 12px;">
-                            Next Step →
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Right: Live Protocol Exchange Inspector Terminal -->
-                <div class="wf-terminal">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #00363a;">
-                        <span style="font-size: 10.5px; font-weight: 700; color: #80c4cb; text-transform: uppercase;">
-                            Protocol Inspector
-                        </span>
-                        <span id="wfTerminalStatus" style="font-size: 10.5px; font-weight: 800; color: #6ee7b7; padding: 2px 6px; border-radius: 4px; background: rgba(110, 231, 183, 0.1);">
-                            HTTP 200 OK
-                        </span>
-                    </div>
-                    <pre id="wfTerminalOutput" style="margin: 0; font-family: inherit; font-size: 11px; color: #a5f3fc; white-space: pre-wrap; word-break: break-all; flex: 1;"></pre>
-                </div>
-            </div>
         </section>
     </div>
 
@@ -638,65 +361,25 @@
                 email: 'orgadmin@dpa.edu',
                 rights: 'Full organization administration across users, roles, departments, and batches.',
                 ceilingCount: '70 / 70 Rights (Full Pack)',
-                ceilingPct: 100,
-                token: {
-                    iss: "https://auth.heftin.edu",
-                    sub: "usr_orgadmin_01",
-                    tenant_id: "org_001",
-                    role: "org_admin",
-                    scopes: [{ type: "organization", id: "org_001" }],
-                    rights: ["users.*", "roles.*", "departments.*", "batches.*", "audit.view"],
-                    is_platform_admin: false,
-                    exp: 1791240000
-                }
+                ceilingPct: 100
             },
             teacher: {
                 email: 'teacher@dpa.edu',
                 rights: 'View assigned batch exams, grade student submissions, review question analytics.',
                 ceilingCount: '12 / 70 Rights (Assigned Batch)',
-                ceilingPct: 17,
-                token: {
-                    iss: "https://auth.heftin.edu",
-                    sub: "usr_teacher_04",
-                    tenant_id: "org_001",
-                    role: "faculty",
-                    scopes: [{ type: "batch", id: "batch_101" }],
-                    rights: ["batches.view", "exams.grade", "analytics.batch", "submissions.review"],
-                    is_platform_admin: false,
-                    exp: 1791240000
-                }
+                ceilingPct: 17
             },
             student: {
                 email: 'sana@dpa.edu',
                 rights: 'Attempt mock tests, view detailed answer keys, track performance percentiles.',
                 ceilingCount: '6 / 70 Rights (Learner Access)',
-                ceilingPct: 9,
-                token: {
-                    iss: "https://auth.heftin.edu",
-                    sub: "usr_student_88",
-                    tenant_id: "org_001",
-                    role: "student",
-                    scopes: [{ type: "batch", id: "batch_101" }],
-                    rights: ["exams.take", "results.view", "solutions.read", "analytics.personal"],
-                    is_platform_admin: false,
-                    exp: 1791240000
-                }
+                ceilingPct: 9
             },
             platform_admin: {
                 email: 'admin@heftin.com',
                 rights: 'Platform SuperAdmin: provision tenant academies, manage global rights ceiling.',
                 ceilingCount: 'Platform Root (Ceiling Unbound)',
-                ceilingPct: 100,
-                token: {
-                    iss: "https://auth.heftin.edu",
-                    sub: "usr_superadmin_01",
-                    tenant_id: null,
-                    role: "super_admin",
-                    scopes: [{ type: "platform", id: "central" }],
-                    rights: ["platform.*", "tenants.manage", "ceiling.control", "audit.global"],
-                    is_platform_admin: true,
-                    exp: 1791240000
-                }
+                ceilingPct: 100
             }
         };
 
@@ -710,7 +393,6 @@
             document.getElementById('tabSample2').classList.toggle('active', num === '2');
             document.getElementById('tabSample3').classList.toggle('active', num === '3');
 
-            updateTokenInspector();
         }
 
         function setSample1Persona(persona) {
@@ -783,7 +465,6 @@
                 }
             }
 
-            updateTokenInspector();
         }
 
         function verifySubdomain() {
@@ -797,7 +478,6 @@
             const match = tenants[input] || (input.toUpperCase() + ' Academy · Tenant: custom_' + input + ' · DNS Verified');
             res.innerHTML = '✓ ' + match;
             res.style.color = 'var(--primary)';
-            updateTokenInspector();
         }
 
         function setSubdomainQuick(slug) {
@@ -826,40 +506,9 @@
                 'dept': 'Department Observer Scoped Workspace'
             };
             document.getElementById('cohortLaunchBtn').textContent = 'Launch ' + labels[id] + ' →';
-            updateTokenInspector();
         }
 
-        function updateTokenInspector() {
-            // Token inspector UI removed as requested
-        }
 
-        function runTamperTest(type) {
-            const box = document.getElementById('tamperResultBox');
-            const title = document.getElementById('tamperResultTitle');
-            const status = document.getElementById('tamperResultStatus');
-            const desc = document.getElementById('tamperResultDesc');
-            box.style.display = 'block';
-
-            if (type === 'escalation') {
-                title.textContent = 'Attack Test: Client-Side Permission Injection';
-                status.textContent = 'HTTP 403 FORBIDDEN';
-                status.style.background = '#fee2e2';
-                status.style.color = '#991b1b';
-                desc.textContent = 'Server cryptographic signature check failed. The API gateway detected client-tampered claims (attempted addition of "roles.rights.edit"). Session terminated immediately.';
-            } else if (type === 'cross_cohort') {
-                title.textContent = 'Attack Test: Cross-Cohort Data Query';
-                status.textContent = 'HTTP 403 FORBIDDEN';
-                status.style.background = '#fee2e2';
-                status.style.color = '#991b1b';
-                desc.textContent = 'Fail-closed scope violation. Active session is bound strictly to batch_101. Out-of-scope request for batch_102 exam submissions was blocked with zero tenant leakage.';
-            } else if (type === 'ceiling') {
-                title.textContent = 'Attack Test: Organization Ceiling Safeguard Breach';
-                status.textContent = 'HTTP 400 BAD REQUEST';
-                status.style.background = '#fef3c7';
-                status.style.color = '#92400e';
-                desc.textContent = 'Anti-self-escalation triggered. Requested role permissions exceed the purchased institutional ceiling (70/70 maximum). SuperAdmin ceiling protection preserved.';
-            }
-        }
 
         function launchSampleSession(persona) {
             try {
@@ -868,356 +517,6 @@
             } catch (e) {}
             window.location.href = 'dashboard/index.html';
         }
-
-        /* ==========================================================================
-           Interactive Enterprise Authentication Workflows Controller
-           ========================================================================== */
-        let currentWfKey = 'invite';
-        let currentWfStep = 0;
-        let wfAutoPlayTimer = null;
-
-        const workflowsData = {
-            invite: {
-                id: 'invite',
-                title: 'Institutional Invite & Activation',
-                steps: [
-                    {
-                        number: '01',
-                        shortTitle: 'Token Ingestion',
-                        heading: 'Invite Resolution',
-                        guarantee: 'Zero Tenant Leakage',
-                        desc: 'Gateway validates HMAC signature and resolves tenant and cohort scope.',
-                        status: 'HTTP 200 OK',
-                        terminal: {
-                            request: 'GET /api/v1/auth/invites/verify?token=inv_sec_892f HTTP/1.1\nHost: dpa.heftin.edu',
-                            responseStatus: 'HTTP/1.1 200 OK',
-                            responseBody: {
-                                invite_valid: true,
-                                tenant_id: "org_001",
-                                tenant_slug: "dpa",
-                                designated_role: "faculty",
-                                assigned_scope: { type: "batch", id: "batch_101" }
-                            }
-                        }
-                    },
-                    {
-                        number: '02',
-                        shortTitle: 'Capacity Audit',
-                        heading: 'Ceiling Verification',
-                        guarantee: 'Ceiling Guardrail',
-                        desc: 'Central platform verifies active user seats against purchased quota.',
-                        status: 'HTTP 200 OK',
-                        terminal: {
-                            request: 'POST /internal/v1/tenants/org_001/verify-capacity HTTP/1.1\nHost: dpa.heftin.edu',
-                            responseStatus: 'HTTP/1.1 200 OK',
-                            responseBody: {
-                                tenant_id: "org_001",
-                                seat_limit: 50,
-                                current_active_seats: 42,
-                                allow_activation: true
-                            }
-                        }
-                    },
-                    {
-                        number: '03',
-                        shortTitle: 'Credential Binding',
-                        heading: 'Credential Registration',
-                        guarantee: 'Argon2id & FIDO2 Proof',
-                        desc: 'User sets Argon2id password and registers FIDO2 passkey.',
-                        status: 'HTTP 201 Created',
-                        terminal: {
-                            request: 'POST /api/v1/auth/invites/claim HTTP/1.1\nHost: dpa.heftin.edu',
-                            responseStatus: 'HTTP/1.1 201 Created',
-                            responseBody: {
-                                user_id: "usr_teacher_04",
-                                status: "active",
-                                credential_enrolled: true
-                            }
-                        }
-                    },
-                    {
-                        number: '04',
-                        shortTitle: 'Token Issuance',
-                        heading: 'Session Issuance',
-                        guarantee: 'Scoped RS256 Token',
-                        desc: 'Gateway issues RS256 token scoped strictly to assigned batch.',
-                        status: 'HTTP 200 OK',
-                        terminal: {
-                            request: 'HTTP/1.1 200 OK\nSet-Cookie: __Host-heftin_session=jwt_rs256...; Secure; HttpOnly',
-                            responseStatus: 'Claims Issued:',
-                            responseBody: {
-                                sub: "usr_teacher_04",
-                                tenant_id: "org_001",
-                                role: "faculty",
-                                scopes: [{ type: "batch", id: "batch_101" }],
-                                rights: ["batches.view", "exams.grade"]
-                            }
-                        }
-                    }
-                ]
-            },
-            stepup: {
-                id: 'stepup',
-                title: 'High-Privilege Step-Up MFA Challenge',
-                steps: [
-                    {
-                        number: '01',
-                        shortTitle: 'Standard Baseline',
-                        heading: 'Baseline Session',
-                        guarantee: 'Least Privilege',
-                        desc: 'User operates under standard credentials for routine tasks.',
-                        status: 'HTTP 200 OK',
-                        terminal: {
-                            request: 'GET /api/v1/batches/101/submissions HTTP/1.1\nAuthorization: Bearer jwt_standard',
-                            responseStatus: 'HTTP/1.1 200 OK',
-                            responseBody: {
-                                batch_id: "batch_101",
-                                active_learners: 42,
-                                elevated: false
-                            }
-                        }
-                    },
-                    {
-                        number: '02',
-                        shortTitle: 'High-Risk Trigger',
-                        heading: 'High-Risk Action',
-                        guarantee: 'Policy Interception',
-                        desc: 'User attempts sensitive operation requiring elevated assurance.',
-                        status: 'Policy Intercepted',
-                        terminal: {
-                            request: 'POST /api/v1/exams/prelims-2026/publish-official-key HTTP/1.1\nAuthorization: Bearer jwt_standard',
-                            responseStatus: 'Policy Triggered',
-                            responseBody: {
-                                classification: "high_risk_admin",
-                                required_acr: "urn:heftin:mfa:strong"
-                            }
-                        }
-                    },
-                    {
-                        number: '03',
-                        shortTitle: 'HTTP 401 Challenge',
-                        heading: 'Step-Up Challenge',
-                        guarantee: 'Fail-Closed Gate',
-                        desc: 'Gateway intercepts request and issues 401 challenge header.',
-                        status: 'HTTP 401 Unauthorized',
-                        terminal: {
-                            request: 'HTTP/1.1 401 Unauthorized\nWWW-Authenticate: StepUp realm="mfa", acr_values="urn:heftin:mfa:strong"',
-                            responseStatus: 'HTTP/1.1 401 Challenge',
-                            responseBody: {
-                                error: "step_up_mfa_required",
-                                challenge_id: "mfa_chal_902bf8",
-                                allowed_methods: ["webauthn_fido2", "totp"]
-                            }
-                        }
-                    },
-                    {
-                        number: '04',
-                        shortTitle: 'Ephemeral Grant',
-                        heading: 'Ephemeral Grant',
-                        guarantee: '15-Minute TTL',
-                        desc: 'User confirms TOTP code; gateway grants 15-minute elevation.',
-                        status: 'HTTP 200 OK (Elevated)',
-                        terminal: {
-                            request: 'POST /api/v1/auth/step-up/verify HTTP/1.1\nPayload: { "code": "821495" }',
-                            responseStatus: 'HTTP/1.1 200 OK',
-                            responseBody: {
-                                elevated: true,
-                                acr: "urn:heftin:mfa:strong",
-                                elevated_until: "+15m",
-                                audit_trace: "aud_9981"
-                            }
-                        }
-                    }
-                ]
-            },
-            sso: {
-                id: 'sso',
-                title: 'Enterprise SAML 2.0 / OIDC SSO Federation',
-                steps: [
-                    {
-                        number: '01',
-                        shortTitle: 'Domain Discovery',
-                        heading: 'Domain Discovery',
-                        guarantee: 'Zero ID Leak',
-                        desc: 'Gateway resolves IdP configuration using email domain.',
-                        status: 'HTTP 200 OK',
-                        terminal: {
-                            request: 'POST /api/v1/auth/sso/discover HTTP/1.1\nPayload: { "email": "dean@apex.edu" }',
-                            responseStatus: 'HTTP/1.1 200 OK',
-                            responseBody: {
-                                sso_enabled: true,
-                                tenant_id: "org_002",
-                                idp_name: "Apex University Entra ID"
-                            }
-                        }
-                    },
-                    {
-                        number: '02',
-                        shortTitle: 'SAML Redirect',
-                        heading: 'Signed Redirect',
-                        guarantee: 'Assertion Nonce Protection',
-                        desc: 'Browser redirected to IdP with signed AuthnRequest.',
-                        status: 'HTTP 302 Redirect',
-                        terminal: {
-                            request: 'GET /saml2?SAMLRequest=...&RelayState=sso_ctx_4812a HTTP/1.1',
-                            responseStatus: 'HTTP/1.1 302 Found',
-                            responseBody: {
-                                sp_entity_id: "https://auth.heftin.edu/sp",
-                                binding: "HTTP-Redirect"
-                            }
-                        }
-                    },
-                    {
-                        number: '03',
-                        shortTitle: 'Assertion Verify',
-                        heading: 'Assertion Ingestion',
-                        guarantee: 'X.509 Signature Validation',
-                        desc: 'Gateway validates digital signature on returned SAML response.',
-                        status: 'HTTP 200 OK',
-                        terminal: {
-                            request: 'POST /saml/acs HTTP/1.1\nPayload: SAMLResponse=PHNhbWxw...',
-                            responseStatus: 'HTTP/1.1 200 OK',
-                            responseBody: {
-                                name_id: "dean@apex.edu",
-                                groups: ["Dean-Engineering"],
-                                signature_valid: true
-                            }
-                        }
-                    },
-                    {
-                        number: '04',
-                        shortTitle: 'JIT Mapping',
-                        heading: 'Ceiling-Bound Mapping',
-                        guarantee: 'Ceiling Enforcement',
-                        desc: 'Server maps enterprise group to role within license ceiling.',
-                        status: 'HTTP 200 OK',
-                        terminal: {
-                            request: 'HTTP/1.1 200 OK\nSet-Cookie: __Host-heftin_session=jwt_federated...; Secure; HttpOnly',
-                            responseStatus: 'Claims Issued:',
-                            responseBody: {
-                                sub: "usr_dean_ananya",
-                                tenant_id: "org_002",
-                                role: "org_admin",
-                                rights_count: "70/70 Maximum",
-                                auth_method: "federated_saml2"
-                            }
-                        }
-                    }
-                ]
-            }
-        };
-
-        function switchWorkflow(key) {
-            currentWfKey = key;
-            currentWfStep = 0;
-            ['invite', 'stepup', 'sso'].forEach(k => {
-                const btn = document.getElementById('wfTab_' + k);
-                if (btn) btn.classList.toggle('active', k === key);
-            });
-            renderWfStepper();
-            renderWfStepDetails();
-        }
-
-        function renderWfStepper() {
-            const container = document.getElementById('wfStepperContainer');
-            if (!container) return;
-            const wf = workflowsData[currentWfKey];
-            container.innerHTML = wf.steps.map((st, idx) => {
-                const isActive = idx === currentWfStep;
-                const isCompleted = idx < currentWfStep;
-                return `
-                    <div class="wf-step-node ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}" onclick="goToWfStep(${idx})">
-                        <span class="wf-step-number">STEP ${st.number}</span>
-                        <strong class="wf-step-title">${st.shortTitle}</strong>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderWfStepDetails() {
-            const wf = workflowsData[currentWfKey];
-            const st = wf.steps[currentWfStep];
-
-            document.getElementById('wfGuaranteeBadge').textContent = '✓ ' + st.guarantee;
-            document.getElementById('wfStepHeading').textContent = st.heading;
-            document.getElementById('wfStepDesc').textContent = st.desc;
-            document.getElementById('wfStepCounter').textContent = `STEP ${currentWfStep + 1} OF ${wf.steps.length}`;
-
-            // Buttons state
-            const prevBtn = document.getElementById('wfPrevBtn');
-            const nextBtn = document.getElementById('wfNextBtn');
-            if (prevBtn) prevBtn.disabled = currentWfStep === 0;
-            if (prevBtn) prevBtn.style.opacity = currentWfStep === 0 ? '0.5' : '1';
-            if (nextBtn) nextBtn.textContent = currentWfStep === wf.steps.length - 1 ? 'Finish Simulation ✓' : 'Next Step →';
-
-            // Terminal
-            const termStatus = document.getElementById('wfTerminalStatus');
-            const termOutput = document.getElementById('wfTerminalOutput');
-            termStatus.textContent = st.status;
-
-            let terminalText = `=== REQUEST ===\n${st.terminal.request}\n\n=== RESPONSE [${st.terminal.responseStatus}] ===\n`;
-            if (st.terminal.responseBody) {
-                terminalText += JSON.stringify(st.terminal.responseBody, null, 2);
-            }
-            termOutput.textContent = terminalText;
-        }
-
-        function goToWfStep(index) {
-            currentWfStep = index;
-            renderWfStepper();
-            renderWfStepDetails();
-        }
-
-        function nextWfStep() {
-            const wf = workflowsData[currentWfKey];
-            if (currentWfStep < wf.steps.length - 1) {
-                currentWfStep++;
-            } else {
-                currentWfStep = 0;
-            }
-            renderWfStepper();
-            renderWfStepDetails();
-        }
-
-        function prevWfStep() {
-            if (currentWfStep > 0) {
-                currentWfStep--;
-                renderWfStepper();
-                renderWfStepDetails();
-            }
-        }
-
-        function toggleWfAutoPlay() {
-            const btn = document.getElementById('wfAutoPlayBtn');
-            if (wfAutoPlayTimer) {
-                clearInterval(wfAutoPlayTimer);
-                wfAutoPlayTimer = null;
-                btn.innerHTML = '▶ Run Auto-Simulation';
-                btn.style.background = 'var(--white)';
-                btn.style.color = 'var(--error)';
-            } else {
-                btn.innerHTML = '❚❚ Pause Simulation';
-                btn.style.background = 'var(--primary)';
-                btn.style.color = 'var(--white)';
-                wfAutoPlayTimer = setInterval(() => {
-                    const wf = workflowsData[currentWfKey];
-                    if (currentWfStep < wf.steps.length - 1) {
-                        nextWfStep();
-                    } else {
-                        if (currentWfKey === 'invite') switchWorkflow('stepup');
-                        else if (currentWfKey === 'stepup') switchWorkflow('sso');
-                        else {
-                            switchWorkflow('invite');
-                            toggleWfAutoPlay();
-                        }
-                    }
-                }, 2200);
-            }
-        }
-
-        // Initialize Inspector and Workflows on page load
-        updateTokenInspector();
-        switchWorkflow('invite');
     </script>
 </body>
 </html>
