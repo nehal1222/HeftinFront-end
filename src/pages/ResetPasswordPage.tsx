@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, CheckCircle2, KeyRound, ShieldCheck } from 'lucide-react'
+import { CheckCircle2, GraduationCap } from 'lucide-react'
 import { authService } from '@/services/auth.service'
 import { ROUTES } from '@/lib/constants'
 
@@ -17,7 +17,7 @@ export function ResetPasswordPage() {
     event.preventDefault()
     setError('')
     if (password.length < 6) {
-      setError('Password must contain at least 6 characters.')
+      setError('Password must be at least 6 characters.')
       return
     }
     if (password !== confirmPassword) {
@@ -29,7 +29,7 @@ export function ResetPasswordPage() {
     try {
       await authService.resetPassword(token, password)
     } catch {
-      // Graceful fallback for mock/demo
+      // Continue locally
     } finally {
       setLoading(false)
       setSubmitted(true)
@@ -37,98 +37,93 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <main className="min-h-screen bg-surface px-page py-section font-sans text-foreground">
-      <div className="mx-auto max-w-md pt-12">
-        <Link to={ROUTES.LOGIN} className="inline-flex items-center gap-2 text-body-sm font-semibold text-primary hover:text-primary-dark">
-          <ArrowLeft size={16} aria-hidden="true" />
-          Back to sign in
-        </Link>
-
-        <div className="mt-8 rounded-card border border-border bg-surface-elevated p-6 shadow-sm sm:p-8">
-          <div className="mb-6 flex items-center gap-3">
-            <div className="grid size-10 place-items-center rounded-control bg-primary text-primary-foreground">
-              <ShieldCheck size={20} aria-hidden="true" />
-            </div>
-            <div>
-              <p className="text-caption font-semibold uppercase tracking-wider text-muted">Heftin Academy</p>
-              <h1 className="font-display text-heading-md text-foreground-strong">Create new password</h1>
-            </div>
+    <main className="flex min-h-screen items-center justify-center bg-surface px-4 py-8 text-foreground font-sans">
+      <div className="w-full max-w-sm">
+        <div className="mb-6 flex items-center justify-center gap-2.5">
+          <div className="grid size-9 place-items-center rounded-control bg-primary text-primary-foreground shadow-sm">
+            <GraduationCap size={20} aria-hidden="true" />
           </div>
+          <span className="font-display text-heading-sm font-semibold text-foreground-strong">
+            Heftin Academy
+          </span>
+        </div>
+
+        <div className="rounded-card border border-border bg-surface-elevated p-6 shadow-sm">
+          <h1 className="font-display text-heading-sm font-semibold text-foreground-strong">
+            Set New Password
+          </h1>
 
           {submitted ? (
-            <div className="space-y-4">
-              <div className="grid size-12 place-items-center rounded-control bg-primary-soft text-primary-dark">
-                <CheckCircle2 size={24} aria-hidden="true" />
+            <div className="mt-5 space-y-4 text-center">
+              <div className="mx-auto grid size-10 place-items-center rounded-control bg-primary-soft text-primary-dark">
+                <CheckCircle2 size={22} aria-hidden="true" />
               </div>
-              <h2 className="font-display text-heading-sm text-foreground-strong">Password updated</h2>
-              <p className="text-body-sm text-muted">
-                Your credentials have been securely updated. You can now access your workspace with your new password.
-              </p>
-              <div className="pt-4">
+              <h2 className="font-display text-body font-semibold text-foreground-strong">
+                Password Updated
+              </h2>
+              <div className="pt-2">
                 <Link
                   to={ROUTES.LOGIN}
-                  className="flex w-full items-center justify-center gap-2 rounded-control bg-primary px-4 py-2.5 text-body-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark"
+                  className="inline-flex w-full items-center justify-center rounded-control bg-primary py-2 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors"
                 >
-                  Sign in with new password <ArrowRight size={16} aria-hidden="true" />
+                  Sign In
                 </Link>
               </div>
             </div>
           ) : (
-            <form onSubmit={submit} className="space-y-4">
-              <p className="text-body-sm text-muted">
-                Choose a strong password with at least 6 characters for institutional authentication.
-              </p>
-
+            <form onSubmit={submit} className="mt-4 space-y-4">
               {error && (
-                <div className="rounded-control border border-border bg-surface p-3 text-caption font-semibold text-primary-dark">
+                <div className="rounded-control bg-primary-soft p-2.5 text-caption font-semibold text-primary-dark">
                   {error}
                 </div>
               )}
 
-              <label className="block text-body-sm font-medium text-foreground-strong">
-                New password
-                <div className="relative mt-1.5">
-                  <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted">
-                    <KeyRound size={16} aria-hidden="true" />
-                  </span>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    placeholder="••••••••"
-                    className="w-full rounded-control border border-border bg-surface py-2.5 pl-9 pr-3 text-body-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
-                  />
-                </div>
-              </label>
+              <div>
+                <label htmlFor="reset-pass" className="block text-caption font-semibold text-foreground-strong">
+                  New Password
+                </label>
+                <input
+                  id="reset-pass"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="mt-1 w-full rounded-control border border-border bg-surface px-3 py-2 text-body-sm outline-none focus:border-primary"
+                />
+              </div>
 
-              <label className="block text-body-sm font-medium text-foreground-strong">
-                Confirm new password
-                <div className="relative mt-1.5">
-                  <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted">
-                    <KeyRound size={16} aria-hidden="true" />
-                  </span>
-                  <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    placeholder="••••••••"
-                    className="w-full rounded-control border border-border bg-surface py-2.5 pl-9 pr-3 text-body-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
-                  />
-                </div>
-              </label>
+              <div>
+                <label htmlFor="confirm-pass" className="block text-caption font-semibold text-foreground-strong">
+                  Confirm Password
+                </label>
+                <input
+                  id="confirm-pass"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="mt-1 w-full rounded-control border border-border bg-surface px-3 py-2 text-body-sm outline-none focus:border-primary"
+                />
+              </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-control bg-primary px-4 py-3 text-body-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark disabled:opacity-60"
+                className="w-full rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors disabled:opacity-60"
               >
-                {loading ? 'Updating password...' : 'Update password'}
-                <ArrowRight size={16} aria-hidden="true" />
+                {loading ? 'Saving...' : 'Update Password'}
               </button>
             </form>
           )}
+
+          <div className="mt-5 border-t border-border pt-3 text-center">
+            <Link
+              to={ROUTES.LOGIN}
+              className="text-caption font-medium text-muted hover:text-primary transition-colors"
+            >
+              Back to Sign In
+            </Link>
+          </div>
         </div>
       </div>
     </main>
