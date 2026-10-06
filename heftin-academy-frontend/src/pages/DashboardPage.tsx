@@ -18,6 +18,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { ROUTES } from '@/lib/constants'
+import { b2bService } from '@/services/b2b.service'
 
 type NavTab = 'overview' | 'exams' | 'courses' | 'analytics' | 'batches' | 'grading'
 
@@ -311,11 +312,19 @@ export function DashboardPage() {
     return () => clearInterval(timer)
   }, [isTestModalOpen, testCompleted, testTimeLeft])
 
-  if (!user) return null
-
-  const isStaff = user.role === 'faculty' || user.role === 'org_admin' || user.role === 'super_admin'
-  const isIndividual = user.role === 'individual'
+  const isIndividual = user?.role === 'individual'
+  const isStaff = user?.role === 'faculty' || user?.role === 'org_admin' || user?.role === 'super_admin'
   const orgName = isIndividual ? 'Personal Learner' : 'Delhi Public Academy'
+
+  // Hydrate live backend batches & exams when available
+  useEffect(() => {
+    if (user && !isIndividual) {
+      b2bService.listBatches().catch(() => {})
+      b2bService.listExams().catch(() => {})
+    }
+  }, [user, isIndividual])
+
+  if (!user) return null
 
   async function handleLogout() {
     await logout()
