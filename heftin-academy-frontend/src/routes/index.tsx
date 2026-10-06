@@ -5,6 +5,7 @@ import { DashboardPage } from '@/pages/DashboardPage'
 import { LoginPage } from '@/pages/LoginPage'
 import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage'
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
+import { SessionErrorPage } from '@/pages/SessionErrorPage'
 import { OnboardingRequestPage } from '@/pages/OnboardingRequestPage'
 import { SuperAdminPage } from '@/pages/SuperAdminPage'
 import { OrgAdminPage } from '@/pages/OrgAdminPage'
@@ -19,6 +20,7 @@ export function AppRouter() {
       <Route path={ROUTES.LOGIN} element={<LoginPage />} />
       <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
       <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
+      <Route path={ROUTES.SESSION_ERROR} element={<SessionErrorPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path={ROUTES.WORKSPACE} element={<DashboardPage />} />
         <Route path={ROUTES.DASHBOARD} element={<Navigate to={ROUTES.WORKSPACE} replace />} />
