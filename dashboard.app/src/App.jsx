@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import Sidebar from './components/Sidebar.jsx'
 import TopBar from './components/TopBar.jsx'
@@ -67,6 +67,54 @@ export default function App() {
   const [submissions, setSubmissions] = useState(SUBMISSIONS)
   const [reviewing, setReviewing] = useState(null)
   const copy = VIEW_COPY[view]
+
+  useEffect(() => {
+    const token = localStorage.getItem('heftin_access_token')
+    if (!token) return
+
+    const baseUrl = window.HEFTIN_API_BASE || localStorage.getItem('heftin_api_base') || 'http://localhost:8001/api/v1'
+    fetch(`${baseUrl}/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (res.ok) return res.json()
+        if (res.status === 401) {
+          const refreshToken = localStorage.getItem('heftin_refresh_token')
+          if (refreshToken) {
+            return fetch(`${baseUrl}/auth/refresh`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ refresh_token: refreshToken }),
+            })
+              .then((r) => (r.ok ? r.json() : null))
+              .then((data) => {
+                if (data?.access_token) {
+                  localStorage.setItem('heftin_access_token', data.access_token)
+                  return fetch(`${baseUrl}/auth/me`, {
+                    headers: { Authorization: `Bearer ${data.access_token}` },
+                  }).then((r) => (r.ok ? r.json() : null))
+                }
+                return null
+              })
+          }
+        }
+        return null
+      })
+      .then((profile) => {
+        if (profile) {
+          localStorage.setItem('heftin_user_profile', JSON.stringify(profile))
+          if (profile.name) localStorage.setItem('heftinName', profile.name)
+          if (profile.role) {
+            const roleKey = profile.role === 'org_admin' ? 'org_admin' : profile.role
+            localStorage.setItem('heftinRole', roleKey)
+            setRole(roleKey)
+          }
+        }
+      })
+      .catch(() => {
+        // Fallback: keep existing offline/demo session
+      })
+  }, [])
 
   function toggleRole() {
     setRole((current) => {

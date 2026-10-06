@@ -1,7 +1,36 @@
 import { motion } from 'framer-motion'
 
 export default function TopBar({ title, subtitle, role = 'student' }) {
-  const user = role === 'organization' ? { initials: 'OA', name: 'Organization Admin' } : role === 'super_admin' ? { initials: 'SA', name: 'Heftin Super Admin' } : role === 'teacher' ? { initials: 'SK', name: 'Prof. Sanjay K.' } : { initials: 'AR', name: 'Ananya R.' }
+  const storedName = (() => {
+    try {
+      return localStorage.getItem('heftinName')
+    } catch (e) {
+      return null
+    }
+  })()
+
+  const defaultUser =
+    role === 'organization' || role === 'org_admin'
+      ? { initials: 'OA', name: 'Organization Admin' }
+      : role === 'super_admin'
+      ? { initials: 'SA', name: 'Heftin Super Admin' }
+      : role === 'teacher' || role === 'faculty'
+      ? { initials: 'SK', name: 'Prof. Sanjay K.' }
+      : { initials: 'AR', name: 'Ananya R.' }
+
+  const user = storedName
+    ? {
+        initials:
+          storedName
+            .split(' ')
+            .map((p) => p[0])
+            .filter(Boolean)
+            .slice(0, 2)
+            .join('')
+            .toUpperCase() || defaultUser.initials,
+        name: storedName,
+      }
+    : defaultUser
 
   return (
     <motion.header

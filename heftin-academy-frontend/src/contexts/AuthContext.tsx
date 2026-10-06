@@ -1,12 +1,43 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { createAccessProfile } from '@/lib/access'
-import { getStoredUser, setStoredUser, setTokens } from '@/lib/storage'
+import { getAccessToken, getStoredUser, setStoredUser, setTokens } from '@/lib/storage'
 import { AuthContext } from '@/contexts/auth-context'
 import { authService } from '@/services/auth.service'
 import type { AccessProfile, SubscriptionPlan, UserRole } from '@/types/access'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AccessProfile | null>(() => getStoredUser())
+
+  useEffect(() => {
+    const token = getAccessToken()
+    if (!token || token === 'demo-access-token') return
+
+    let isMounted = true
+    authService
+      .getMe()
+      .then((me) => {
+        if (!isMounted || !me) return
+        const current = getStoredUser()
+        const updated = createAccessProfile(
+          me.name || current?.displayName || 'User',
+          me.email || current?.email || '',
+          me.role || current?.role || 'student',
+          current?.plan || 'scholar',
+        )
+        setStoredUser(updated)
+        setUser(updated)
+      })
+      .catch(() => {
+        // If 401 and refresh also failed, storage was cleared by interceptor
+        if (!getAccessToken()) {
+          if (isMounted) setUser(null)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   async function login(details: { displayName: string; email: string; role: UserRole; plan: SubscriptionPlan; password?: string }) {
     try {

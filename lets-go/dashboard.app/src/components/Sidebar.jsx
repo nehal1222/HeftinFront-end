@@ -50,12 +50,27 @@ const SUPER_ADMIN_NAV = [
 export default function Sidebar({ view, onNavigate, role, onToggleRole }) {
   const items = role === 'super_admin' ? SUPER_ADMIN_NAV : role === 'organization' || role === 'org_admin' ? ORGANIZATION_NAV : role === 'teacher' || role === 'faculty' ? TEACHER_NAV : STUDENT_NAV
 
-  function signOut() {
+  async function signOut() {
+    const token = localStorage.getItem('heftin_access_token')
+    const baseUrl = window.HEFTIN_API_BASE || localStorage.getItem('heftin_api_base') || 'http://localhost:8001/api/v1'
+    if (token) {
+      try {
+        await fetch(`${baseUrl}/auth/logout`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      } catch (e) {}
+    }
     try {
       localStorage.removeItem('heftinRole')
       localStorage.removeItem('heftinName')
+      localStorage.removeItem('heftin_access_token')
+      localStorage.removeItem('heftin_refresh_token')
+      localStorage.removeItem('heftin_user_profile')
+      localStorage.removeItem('heftin_auth_mode')
+      localStorage.removeItem('heftin-phase1-persona')
     } catch (e) {}
-    window.location.href = '../index.html'
+    window.location.href = '../login.html'
   }
 
   return (

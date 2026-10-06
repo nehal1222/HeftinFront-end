@@ -91,6 +91,34 @@ export default function Phase1Shell({ auth, persona, path, navigate, onPersonaCh
               <span className="phase-avatar">{persona.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</span>
               <span><strong>{persona.name}</strong><small>{auth.profile.role ?? 'Platform administrator'}</small></span>
             </div>
+            <button
+              type="button"
+              className="phase-button phase-button-outline"
+              style={{ fontSize: '12px', padding: '6px 12px', cursor: 'pointer' }}
+              title="Sign out of workspace"
+              onClick={async () => {
+                const token = localStorage.getItem('heftin_access_token')
+                const baseUrl = window.HEFTIN_API_BASE || localStorage.getItem('heftin_api_base') || 'http://localhost:8001/api/v1'
+                if (token) {
+                  try {
+                    await fetch(`${baseUrl}/auth/logout`, {
+                      method: 'POST',
+                      headers: { Authorization: `Bearer ${token}` },
+                    })
+                  } catch (e) {}
+                }
+                localStorage.removeItem('heftin_access_token')
+                localStorage.removeItem('heftin_refresh_token')
+                localStorage.removeItem('heftin_user_profile')
+                localStorage.removeItem('heftin_auth_mode')
+                localStorage.removeItem('heftin-phase1-persona')
+                localStorage.removeItem('heftinRole')
+                localStorage.removeItem('heftinName')
+                window.location.href = '/login.html'
+              }}
+            >
+              Sign out
+            </button>
           </div>
         </header>
         <div className="phase-content" key={path}>
