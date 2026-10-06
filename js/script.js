@@ -24,6 +24,95 @@ const buttonArrow = document.getElementById("buttonArrow");
 
 const loader = document.getElementById("loader");
 
+/* ==========================================================================
+   HEFTIN BACKEND AUTH CLIENT (POST /login, POST /refresh, GET /me)
+   Supports live backend endpoints with automatic fallback to local session.
+   ========================================================================== */
+const HEFTIN_AUTH_API = {
+    getBaseUrl() {
+        return window.HEFTIN_API_BASE || localStorage.getItem("heftin_api_base") || "http://localhost:8001/api/v1";
+    },
+
+    async login(email, password) {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2000);
+            const res = await fetch(`${this.getBaseUrl()}/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({ email, password }),
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
+            if (res.ok) {
+                const data = await res.json();
+                if (data.access_token) {
+                    localStorage.setItem("heftin_access_token", data.access_token);
+                }
+                if (data.refresh_token) {
+                    localStorage.setItem("heftin_refresh_token", data.refresh_token);
+                }
+                localStorage.setItem("heftin_auth_mode", "live");
+
+                // Attempt fetching live /auth/me when BE-10 is available
+                await this.fetchMe(data.access_token);
+                return { success: true, live: true, data };
+            }
+        } catch (e) {
+            // Backend offline or timeout -> proceed with fallback
+        }
+        return { success: false, live: false };
+    },
+
+    async refresh() {
+        const token = localStorage.getItem("heftin_refresh_token");
+        if (!token) return null;
+        try {
+            const res = await fetch(`${this.getBaseUrl()}/auth/refresh`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ refresh_token: token })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (data.access_token) {
+                    localStorage.setItem("heftin_access_token", data.access_token);
+                    return data.access_token;
+                }
+            }
+        } catch (e) {}
+        return null;
+    },
+
+    async fetchMe(token) {
+        if (!token) return null;
+        try {
+            const res = await fetch(`${this.getBaseUrl()}/auth/me`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const profile = await res.json();
+                localStorage.setItem("heftin_user_profile", JSON.stringify(profile));
+                return profile;
+            }
+        } catch (e) {}
+        return null;
+    },
+
+    logout() {
+        localStorage.removeItem("heftin_access_token");
+        localStorage.removeItem("heftin_refresh_token");
+        localStorage.removeItem("heftin_user_profile");
+        localStorage.removeItem("heftin_auth_mode");
+    }
+};
+
+window.HEFTIN_AUTH_API = HEFTIN_AUTH_API;
+
 function showWorkspaceWelcome(role, name) {
     const labels = {
         student: ["Student", "Delhi Public Academy"],
@@ -256,24 +345,19 @@ loginForm.addEventListener("submit", function (event) {
     loader.classList.remove("hidden");
 
 
-    /* DEMO BACKEND DELAY */
-
-    setTimeout(function () {
-
-        formMessage.textContent =
-            "Demo access ready — opening the workspace...";
+    /* BACKEND LOGIN OR SEAMLESS LOCAL FALLBACK */
+    HEFTIN_AUTH_API.login(email, password).then(function (result) {
+        if (result.live) {
+            formMessage.textContent = "Live backend authenticated — opening workspace...";
+        } else {
+            formMessage.textContent = "Demo access ready — opening the workspace...";
+        }
 
         formMessage.classList.add("success");
         formMessage.dataset.state = "success";
         formMessage.setAttribute("role", "status");
 
-
-        /* No real backend here — this demos a successful login by
-           sending the user into the dashboard app after a short pause
-           so the success message is actually visible first. */
-
         setTimeout(function () {
-
             try {
                 localStorage.setItem("heftin-phase1-persona", selectedPersona);
                 localStorage.removeItem("heftinRole");
@@ -301,11 +385,8 @@ loginForm.addEventListener("submit", function (event) {
                 formMessage.dataset.state = "error";
                 formMessage.setAttribute("role", "alert");
             }
-
         }, 700);
-
-
-    }, 1200);
+    });
 
 });
 
