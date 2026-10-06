@@ -110,22 +110,18 @@ A conflict on the backend side, found while checking [PR #6](https://github.com/
 | G6 | Errors are `{ code, message, fields }`; a stale ceiling revision shows a reload prompt | FE-01; API conventions |
 | G7 | The client never sends `account_id`; tenant comes from the token. UI hiding is convenience, and the server's `require_right` is the real check | architecture §3.3; `CLAUDE.md` §5 |
 
-## 4. Backend readiness, 2026-09-30
+## 4. Backend readiness (Updated Endpoint Status)
 
-Read from GitHub. `origin/dev` is `db63bd8`.
+| Endpoint | Ticket / PR | Status | Frontend Impact |
+|---|---|---|---|
+| `POST /api/v1/auth/login` | BE-05, BE-07 | **Merged** | Login credentials and token ingestion ready for live backend connection |
+| `POST /api/v1/auth/refresh` | BE-08 (PR #13) | **Merged** | Access token renewal flow unblocked |
+| `GET /api/v1/auth/me` | BE-10 (Apurv) | **Not started** (no branch yet) | **Primary Blocker:** Live profile/rights hydration unavailable; frontend continues using mock spec-compliant profiles |
+| `POST /api/v1/auth/logout` | BE-09 (Sravan) | **Not started** (no branch yet) | Frontend executes client-side token/storage purge on logout |
+| `POST /api/v1/auth/forgot-password`<br>`POST /api/v1/auth/reset-password` | BE-11 (PR #8) | **Open PR, not merged** | Depends on PR #7 (mail service), which currently conflicts with `dev` |
 
-| Frontend needs | State |
-|---|---|
-| `accounts`, `organizations` | **Merged** ([PR #4](https://github.com/heftinai/heftin-academy-backend/pull/4), 2026-09-29) |
-| `users` | **Merged** ([PR #5](https://github.com/heftinai/heftin-academy-backend/pull/5), BE-03; migration `7c1e5a9d3b20`) |
-| Password hashing and auth core | [PR #6](https://github.com/heftinai/heftin-academy-backend/pull/6) open (BE-06; see C6, C7) |
-| Login endpoint (BE-07) | No branch. BE-05's branch has auth files but no PR |
-| `/auth/me` (BE-10) | No branch |
-| Rights tables, ceiling, `require_right`, scopes (HAC02) | No HAC02 branch on the remote |
-
-There is no login, no `/auth/me` and no rights model to integrate with yet, and the spec says HAC02
-frontend work waits until HAC01 login works. Until then the prototype can only be rebuilt against
-mock data shaped like the spec.
+### Key Takeaway for Frontend
+`POST /api/v1/auth/login` and `POST /api/v1/auth/refresh` are now merged and available. However, because `GET /api/v1/auth/me` (BE-10) is not started, the frontend cannot yet fetch server-computed `rights` or `scopes` dynamically after token issuance. Until BE-10 lands, the frontend client persists session state locally and uses mock authorization profiles matching the contract.
 
 ## 5. Open question
 
