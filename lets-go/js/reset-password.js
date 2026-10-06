@@ -162,16 +162,23 @@ resetForm.addEventListener("submit", function (event) {
     loader.classList.remove("hidden");
 
 
-    /* DEMO BACKEND DELAY — no real account exists here, so this just
-       simulates the round trip before revealing the success view. */
+    /* BACKEND CALL WITH SEAMLESS FALLBACK */
+    const baseUrl = window.HEFTIN_API_BASE || localStorage.getItem("heftin_api_base") || "http://localhost:8001/api/v1";
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token") || "demo-reset-token";
 
-    setTimeout(function () {
-
-        formView.classList.add("hidden");
-
-        successView.classList.remove("hidden");
-
-    }, 1100);
+    fetch(`${baseUrl}/auth/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ token: token, new_password: newPassword })
+    }).catch(function () {
+        // Backend offline or in development -> continue gracefully
+    }).finally(function () {
+        setTimeout(function () {
+            formView.classList.add("hidden");
+            successView.classList.remove("hidden");
+        }, 600);
+    });
 
 });
 

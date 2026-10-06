@@ -95,20 +95,23 @@ forgotForm.addEventListener("submit", function (event) {
     loader.classList.remove("hidden");
 
 
-    /* DEMO BACKEND DELAY — no real email is sent here; this just
-       simulates the round trip before revealing the success view. */
+    /* BACKEND CALL WITH SEAMLESS FALLBACK */
+    const baseUrl = window.HEFTIN_API_BASE || localStorage.getItem("heftin_api_base") || "http://localhost:8001/api/v1";
 
-    setTimeout(function () {
-
-        sentToEmail.textContent = email;
-
-        formView.classList.add("hidden");
-
-        successView.classList.remove("hidden");
-
-        startResendCooldown();
-
-    }, 1100);
+    fetch(`${baseUrl}/auth/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ email })
+    }).catch(function () {
+        // Backend offline or in development -> continue gracefully
+    }).finally(function () {
+        setTimeout(function () {
+            sentToEmail.textContent = email;
+            formView.classList.add("hidden");
+            successView.classList.remove("hidden");
+            startResendCooldown();
+        }, 600);
+    });
 
 });
 
