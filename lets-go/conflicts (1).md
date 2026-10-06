@@ -22,9 +22,8 @@ backend side (C6, C7), and the backend has nothing yet for a frontend to integra
 
 - **One word: rights.** The report replaces `permissions` with `rights` and drops the separate
   entitlement layer (Sprint 2 §2; architecture §3.1).
-- **Plans are not authorization.** The plan selector and `SubscriptionPlan` are to be removed. Plans
-  are Phase 2 (D2).
-- **No `individual` role.** Phase 1 creates only organization accounts.
+- **Plans are not authorization.** The plan selector and `SubscriptionPlan` are to be removed.
+- **No `individual` role.** The system creates only organization accounts.
 - **Dynamic roles.** Org-defined roles (HOD, Subject Head, Teacher) replace the fixed `faculty` role.
 - **Ceiling model.** Role rights bounded by the organization's rights.
 - **Gate on codes, not roles.** `requiredRight="…"` on routes and navigation (FE-03).

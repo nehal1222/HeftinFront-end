@@ -261,7 +261,7 @@ loginForm.addEventListener("submit", function (event) {
     setTimeout(function () {
 
         formMessage.textContent =
-            "Demo access ready — opening the Phase 1 workspace...";
+            "Demo access ready — opening the workspace...";
 
         formMessage.classList.add("success");
         formMessage.dataset.state = "success";

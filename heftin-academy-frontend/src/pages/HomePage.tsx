@@ -41,7 +41,7 @@ export function HomePage() {
               A secure exam platform built for client organizations and their cohorts.
             </h1>
             <p className="mt-5 max-w-xl text-body text-muted">
-              This frontend reflects the Phase 1 proposal: onboarding front door, org-level rights ceilings,
+              This frontend reflects the core proposal: onboarding front door, org-level rights ceilings,
               role-based access, and a clear separation between public requests, super admin review, and org-managed work.
             </p>
 

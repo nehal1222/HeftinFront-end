@@ -97,19 +97,19 @@
             ================================= -->
             <div style="display: flex; gap: 6px; margin-bottom: 20px; padding: 4px; border: 1px solid var(--border); border-radius: 12px; background: var(--white);">
                 <button type="button" id="tabOrg" onclick="switchLoginMode('org')" style="flex: 1; padding: 8px 10px; border-radius: 8px; border: none; background: var(--primary); color: var(--white); font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                    <span>Organization (Phase 1)</span>
+                    <span>Organization</span>
                 </button>
                 <button type="button" id="tabInd" onclick="switchLoginMode('ind')" style="flex: 1; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--white); color: var(--error); font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                    <span>Individual (Phase 2)</span>
+                    <span>Individual</span>
                 </button>
             </div>
 
-            <!-- Phase 2 Individual Notice Container (Hidden by default) -->
+            <!-- Individual Notice Container (Hidden by default) -->
             <div id="individualContainer" style="display: none; text-align: center; padding: 24px 16px; border: 1px solid var(--border); border-radius: 14px; background: var(--white); margin-bottom: 20px;">
-                <span style="display: inline-block; padding: 3px 10px; border-radius: 99px; background: rgba(0, 130, 142, 0.1); color: var(--primary); font-size: 10px; font-weight: 700; text-transform: uppercase;">Phase 2 Architecture</span>
+                <span style="display: inline-block; padding: 3px 10px; border-radius: 99px; background: rgba(0, 130, 142, 0.1); color: var(--primary); font-size: 10px; font-weight: 700; text-transform: uppercase;">Individual Portal</span>
                 <h3 style="margin: 8px 0 4px; font-size: 16px; font-weight: 700; color: var(--error);">Individual Learner Portal</h3>
                 <p style="margin: 0 auto; font-size: 11.5px; color: var(--error); line-height: 1.5; max-width: 320px;">
-                    Individual accounts and personal UPSC mock test series are cleanly scheduled for Phase 2. Phase 1 is strictly dedicated to Organization-managed access.
+                    Individual accounts and personal test series are scheduled for general release. Heftin is currently configured for organization-managed access.
                 </p>
                 <button type="button" onclick="switchLoginMode('org')" class="primary-button" style="margin-top: 16px; width: 100%;">
                     ← Back to Organization Login
@@ -439,13 +439,13 @@
             ================================= -->
 
             <p class="bottom-text">
-                Phase 1 accounts are provisioned by your organization administrator. <a href="signup.html">Activate an invite token</a>
+                Organization accounts are provisioned by your organization administrator. <a href="signup.html">Activate an invite token</a>
             </p>
 
-            <!-- Evaluator Test Deck: The 4 Organization Roles (Phase 1) -->
+            <!-- Evaluator Test Deck: The 4 Organization Roles -->
             <div id="reviewerTestDeck" style="margin-top: 24px; padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--white); text-align: left;">
                 <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-                    <span style="font-size: 11px; font-weight: 700; color: var(--error);">The 4 Organization Roles (Phase 1 Simulation)</span>
+                    <span style="font-size: 11px; font-weight: 700; color: var(--error);">The 4 Organization Roles (Simulation Deck)</span>
                     <span style="font-size: 10px; font-weight: 700; color: var(--primary);">1-Click Test</span>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px;">

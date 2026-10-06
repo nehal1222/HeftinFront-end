@@ -906,7 +906,7 @@ export function DesignSamplesPage({ navigate }) {
       <PageHeading
         eyebrow="ARCHITECTURE"
         title="Architecture Blueprints"
-        description="The 3 Phase 1 access-control designs."
+        description="The 3 access-control architecture designs."
       />
 
       <section className="phase-sample-grid-3">

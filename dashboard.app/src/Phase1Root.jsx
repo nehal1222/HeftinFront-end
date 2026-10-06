@@ -151,7 +151,7 @@ export default function Phase1Root() {
     return <AsyncState state="notFound" />
   }
 
-  if (loading) return <main className="phase-loading-screen"><AsyncState state="loading" title="Loading access..." description="Preparing the Phase 1 demo profile." /></main>
+  if (loading) return <main className="phase-loading-screen"><AsyncState state="loading" title="Loading access..." description="Preparing the demo profile." /></main>
 
   return (
     <Phase1Shell auth={{ profile: auth }} persona={persona} path={path} navigate={navigate} onPersonaChange={changePersona}>

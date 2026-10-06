@@ -1,9 +1,9 @@
 /* ==========================================================================
    HEFTIN ACADEMY — SIGNUP & ONBOARDING CONTROLLER
    Supports:
-   1. Phase 1 Activate Invite / Role Signup (with 1-click test fill)
+   1. Activate Invite / Role Signup (with 1-click test fill)
    2. B2B Request Organization Access (Super Admin review queue)
-   3. Phase 2 Individual Learner Waitlist
+   3. Individual Learner Waitlist
    ========================================================================== */
 
 const signupForm = document.getElementById("signupForm");
@@ -348,7 +348,7 @@ function joinWaitlist() {
         return;
     }
 
-    msg.textContent = "✓ You are on the Phase 2 waitlist! We will notify you at launch.";
+    msg.textContent = "✓ You are on the waitlist! We will notify you at launch.";
     msg.style.color = "var(--primary)";
     input.value = "";
 }

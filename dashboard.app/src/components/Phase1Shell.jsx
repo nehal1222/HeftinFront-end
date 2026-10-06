@@ -47,7 +47,7 @@ export default function Phase1Shell({ auth, persona, path, navigate, onPersonaCh
           <small>{isPlatformAdmin(auth.profile) ? 'Platform Administration' : auth.profile.scopes.length ? 'Scoped Access' : 'Institutional Workspace'}</small>
         </div>
 
-        <nav className="phase-nav" aria-label="Phase 1 navigation">
+        <nav className="phase-nav" aria-label="Main navigation">
           <span className="phase-nav-label">{isPlatformAdmin(auth.profile) ? 'PLATFORM' : 'ORGANIZATION'}</span>
           {navigation.map((item) => (
             <a
