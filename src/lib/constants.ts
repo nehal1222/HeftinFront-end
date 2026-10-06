@@ -14,6 +14,7 @@ export const ROUTES = {
   RESET_PASSWORD: '/reset-password',
   DASHBOARD: '/dashboard',
   WORKSPACE: '/workspace',
+  SESSION_ERROR: '/session-error',
   SUPER_ADMIN: '/super-admin',
   ORG_ADMIN: '/org-admin',
   DESIGN_SYSTEM: '/design-system',
