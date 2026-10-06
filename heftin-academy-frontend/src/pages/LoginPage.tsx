@@ -1,16 +1,9 @@
 import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowRight, Building2, Check, LockKeyhole, ShieldCheck, User } from 'lucide-react'
+import { ArrowRight, Building2, Eye, EyeOff, ShieldCheck, User } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
-import { PLAN_LABELS, ROLE_DESCRIPTIONS, ROLE_LABELS } from '@/lib/access'
 import { ROUTES } from '@/lib/constants'
 import type { SubscriptionPlan, UserRole } from '@/types/access'
-
-const ORGANIZATIONAL_ROLES: UserRole[] = ['student', 'faculty', 'org_admin', 'super_admin']
-const INDIVIDUAL_ROLES: UserRole[] = ['individual']
-
-const INDIVIDUAL_PLANS: SubscriptionPlan[] = ['free', 'scholar', 'pro']
-const ORGANIZATIONAL_PLANS: SubscriptionPlan[] = ['institution', 'pro']
 
 export function LoginPage() {
   const { isAuthenticated, login } = useAuth()
@@ -23,19 +16,21 @@ export function LoginPage() {
 
   const [category, setCategory] = useState<'organizational' | 'individual'>(initialCategory)
   const [role, setRole] = useState<UserRole>(() => {
-    if (requestedRole && (ORGANIZATIONAL_ROLES.includes(requestedRole) || INDIVIDUAL_ROLES.includes(requestedRole))) {
+    if (requestedRole && ['student', 'faculty', 'org_admin', 'super_admin', 'individual'].includes(requestedRole)) {
       return requestedRole
     }
     return 'student'
   })
   const [displayName, setDisplayName] = useState(() => (role === 'individual' ? 'Ananya Sharma' : 'Arjun Kumar'))
   const [email, setEmail] = useState(() => (role === 'individual' ? 'ananya.learner@gmail.com' : 'student@dpa.edu'))
-  const [password, setPassword] = useState('••••••••')
+  const [password, setPassword] = useState('password123')
+  const [showPassword, setShowPassword] = useState(false)
   const [plan, setPlan] = useState<SubscriptionPlan>(() => (category === 'individual' ? 'scholar' : 'institution'))
+  const [loading, setLoading] = useState(false)
 
   if (isAuthenticated) return <Navigate to={ROUTES.WORKSPACE} replace />
 
-  function handleCategorySwitch(nextCategory: 'organizational' | 'individual') {
+  function switchCategory(nextCategory: 'organizational' | 'individual') {
     setCategory(nextCategory)
     if (nextCategory === 'individual') {
       setRole('individual')
@@ -50,223 +45,201 @@ export function LoginPage() {
     }
   }
 
-  function handleRoleSelect(selectedRole: UserRole) {
+  function pickDemoRole(selectedRole: UserRole) {
     setRole(selectedRole)
     if (selectedRole === 'student') {
       setDisplayName('Arjun Kumar')
       setEmail('student@dpa.edu')
+      setPlan('institution')
     } else if (selectedRole === 'faculty') {
       setDisplayName('Dr. Meera Patel')
       setEmail('dr.meera@dpa.edu')
+      setPlan('institution')
     } else if (selectedRole === 'org_admin') {
       setDisplayName('Vikram Malhotra')
       setEmail('admin@dpa.edu')
+      setPlan('institution')
     } else if (selectedRole === 'super_admin') {
-      setDisplayName('Heftin Platform Lead')
+      setDisplayName('Platform Administrator')
       setEmail('lead@heftin.com')
+      setPlan('pro')
     }
   }
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    login({ displayName, email, role, plan, password })
-    const destination = (location.state as { from?: string } | null)?.from ?? ROUTES.WORKSPACE
-    navigate(destination, { replace: true })
+    setLoading(true)
+    try {
+      await login({ displayName, email, role, plan, password })
+      const destination = (location.state as { from?: string } | null)?.from ?? ROUTES.WORKSPACE
+      navigate(destination, { replace: true })
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const currentRoles = category === 'organizational' ? ORGANIZATIONAL_ROLES : INDIVIDUAL_ROLES
-  const currentPlans = category === 'organizational' ? ORGANIZATIONAL_PLANS : INDIVIDUAL_PLANS
-
   return (
-    <main className="min-h-screen bg-surface px-page py-section font-sans text-foreground">
-      <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-5xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-        <section>
-          <div className="mb-8 flex items-center gap-3">
-            <div className="grid size-10 place-items-center rounded-control bg-primary text-primary-foreground">
-              <ShieldCheck size={21} aria-hidden="true" />
-            </div>
-            <span className="font-display text-heading-sm text-foreground-strong">Heftin Academy</span>
+    <main className="flex min-h-screen items-center justify-center bg-surface px-4 py-12 text-foreground">
+      <div className="w-full max-w-md">
+        <div className="mb-8 text-center">
+          <div className="mx-auto mb-3 grid size-12 place-items-center rounded-control bg-primary text-primary-foreground shadow-sm">
+            <ShieldCheck size={26} aria-hidden="true" />
           </div>
+          <h1 className="font-display text-heading-md text-foreground-strong">Heftin Academy</h1>
+          <p className="mt-1 text-body-sm text-muted">Sign in to your learning dashboard</p>
+        </div>
 
-          <p className="text-eyebrow font-bold uppercase tracking-wider text-primary">Two Access Categories</p>
-          <h1 className="mt-3 max-w-lg font-display text-display font-light tracking-tight text-foreground-strong">
-            Sign in to your learning workspace.
-          </h1>
-          <p className="mt-4 max-w-lg text-body text-muted">
-            Heftin supports both institutional academy operations and dedicated self-paced individual learners.
-          </p>
-
-          <div className="mt-8 space-y-3">
-            <div className="rounded-card border border-border bg-surface-elevated p-4">
-              <div className="flex items-center gap-2">
-                <Building2 size={16} className="text-primary" aria-hidden="true" />
-                <span className="text-body-sm font-semibold text-foreground-strong">Organizational Category</span>
-              </div>
-              <p className="mt-1 text-caption text-muted">
-                Cohort batches, faculty grading, institutional ceilings, and admin privileges.
-              </p>
-            </div>
-
-            <div className="rounded-card border border-border bg-surface-elevated p-4">
-              <div className="flex items-center gap-2">
-                <User size={16} className="text-primary" aria-hidden="true" />
-                <span className="text-body-sm font-semibold text-foreground-strong">Individual Category</span>
-              </div>
-              <p className="mt-1 text-caption text-muted">
-                Self-paced learning, personal test series drills, and individual subscription tiers.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link to={ROUTES.HOME} className="inline-flex items-center gap-2 text-body-sm font-semibold text-primary hover:text-primary-dark">
-              Back to home <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-            <Link to={ROUTES.REQUEST_ACCESS} className="inline-flex items-center gap-2 text-body-sm font-semibold text-muted hover:text-primary">
-              Need organizational access? Request onboarding
-            </Link>
-          </div>
-        </section>
-
-        <form onSubmit={submit} className="rounded-card border border-border bg-surface-elevated p-6 shadow-sm sm:p-8">
-          <div className="mb-6">
-            <p className="text-eyebrow font-bold uppercase tracking-wider text-muted">Authentication Portal</p>
-            <h2 className="mt-1 font-display text-heading-md text-foreground-strong">Select account category</h2>
-            <p className="mt-2 text-body-sm text-muted">Choose between organizational and individual access.</p>
-          </div>
-
-          {/* TWO CATEGORIES SWITCHER */}
-          <div className="mb-6 grid grid-cols-2 gap-2 rounded-control border border-border bg-surface p-1">
+        <div className="rounded-card border border-border bg-surface-elevated p-6 shadow-sm sm:p-8">
+          {/* Segmented Category Switcher */}
+          <div className="mb-6 grid grid-cols-2 gap-1 rounded-control border border-border bg-surface p-1">
             <button
               type="button"
-              onClick={() => handleCategorySwitch('organizational')}
-              className={`flex items-center justify-center gap-2 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
+              onClick={() => switchCategory('organizational')}
+              className={`flex items-center justify-center gap-2 rounded-control py-2 text-body-sm font-semibold transition-colors ${
                 category === 'organizational'
                   ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted hover:bg-primary-soft hover:text-primary-dark'
+                  : 'text-muted hover:text-foreground'
               }`}
             >
-              <Building2 size={16} aria-hidden="true" />
+              <Building2 size={15} aria-hidden="true" />
               Organizational
             </button>
             <button
               type="button"
-              onClick={() => handleCategorySwitch('individual')}
-              className={`flex items-center justify-center gap-2 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
+              onClick={() => switchCategory('individual')}
+              className={`flex items-center justify-center gap-2 rounded-control py-2 text-body-sm font-semibold transition-colors ${
                 category === 'individual'
                   ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted hover:bg-primary-soft hover:text-primary-dark'
+                  : 'text-muted hover:text-foreground'
               }`}
             >
-              <User size={16} aria-hidden="true" />
+              <User size={15} aria-hidden="true" />
               Individual
             </button>
           </div>
 
-          <div className="space-y-4">
-            <label className="block text-body-sm font-medium text-foreground-strong">
-              Name
-              <input
-                value={displayName}
-                onChange={(event) => setDisplayName(event.target.value)}
-                required
-                className="mt-1.5 w-full rounded-control border border-border bg-surface px-3 py-2.5 text-body-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
-              />
-            </label>
+          {/* Quick Account Fill */}
+          <div className="mb-5 rounded-control border border-border bg-surface p-3">
+            <span className="text-caption font-semibold uppercase tracking-wider text-muted">
+              {category === 'organizational' ? 'Quick Switch Role:' : 'Account Profile:'}
+            </span>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {category === 'organizational' ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => pickDemoRole('student')}
+                    className={`rounded-control px-2.5 py-1 text-caption font-semibold transition-colors ${
+                      role === 'student' ? 'bg-primary text-primary-foreground' : 'border border-border text-muted hover:text-foreground'
+                    }`}
+                  >
+                    Student
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => pickDemoRole('faculty')}
+                    className={`rounded-control px-2.5 py-1 text-caption font-semibold transition-colors ${
+                      role === 'faculty' ? 'bg-primary text-primary-foreground' : 'border border-border text-muted hover:text-foreground'
+                    }`}
+                  >
+                    Faculty
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => pickDemoRole('org_admin')}
+                    className={`rounded-control px-2.5 py-1 text-caption font-semibold transition-colors ${
+                      role === 'org_admin' ? 'bg-primary text-primary-foreground' : 'border border-border text-muted hover:text-foreground'
+                    }`}
+                  >
+                    Org Admin
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => pickDemoRole('super_admin')}
+                    className={`rounded-control px-2.5 py-1 text-caption font-semibold transition-colors ${
+                      role === 'super_admin' ? 'bg-primary text-primary-foreground' : 'border border-border text-muted hover:text-foreground'
+                    }`}
+                  >
+                    Platform Admin
+                  </button>
+                </>
+              ) : (
+                <span className="text-body-sm font-medium text-foreground-strong">
+                  Personal Learner · Ananya Sharma
+                </span>
+              )}
+            </div>
+          </div>
 
-            <label className="block text-body-sm font-medium text-foreground-strong">
-              Email
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-body-sm font-medium text-foreground-strong">
+                Email address
+              </label>
               <input
+                id="email"
                 type="email"
                 value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 className="mt-1.5 w-full rounded-control border border-border bg-surface px-3 py-2.5 text-body-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
               />
-            </label>
+            </div>
 
-            <label className="block text-body-sm font-medium text-foreground-strong">
+            <div>
               <div className="flex items-center justify-between">
-                <span>Password</span>
-                <Link to={ROUTES.FORGOT_PASSWORD} className="text-caption font-semibold text-primary hover:text-primary-dark">
+                <label htmlFor="password" className="block text-body-sm font-medium text-foreground-strong">
+                  Password
+                </label>
+                <Link
+                  to={ROUTES.FORGOT_PASSWORD}
+                  className="text-caption font-semibold text-primary hover:text-primary-dark"
+                >
                   Forgot password?
                 </Link>
               </div>
               <div className="relative mt-1.5">
-                <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted">
-                  <LockKeyhole size={15} aria-hidden="true" />
-                </span>
                 <input
-                  type="password"
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  className="w-full rounded-control border border-border bg-surface py-2.5 pl-9 pr-3 text-body-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full rounded-control border border-border bg-surface py-2.5 pl-3 pr-10 text-body-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
-            </label>
+            </div>
 
-            <fieldset>
-              <legend className="text-body-sm font-medium text-foreground-strong">
-                {category === 'organizational' ? 'Organizational role' : 'Individual profile'}
-              </legend>
-              <div className={`mt-2 grid gap-2 ${category === 'organizational' ? 'sm:grid-cols-2' : 'grid-cols-1'}`}>
-                {currentRoles.map((option) => {
-                  const selected = role === option
-                  return (
-                    <button
-                      key={option}
-                      type="button"
-                      onClick={() => handleRoleSelect(option)}
-                      className={`flex min-h-20 items-start gap-2 rounded-control border p-3 text-left transition-colors ${
-                        selected
-                          ? 'border-primary bg-primary-soft'
-                          : 'border-border bg-surface hover:border-primary-tint-3'
-                      }`}
-                    >
-                      <span
-                        className={`mt-0.5 grid size-4 shrink-0 place-items-center rounded-full border ${
-                          selected ? 'border-primary bg-primary text-primary-foreground' : 'border-border'
-                        }`}
-                      >
-                        {selected && <Check size={11} aria-hidden="true" />}
-                      </span>
-                      <span>
-                        <span className="block text-body-sm font-semibold text-foreground-strong">
-                          {ROLE_LABELS[option]}
-                        </span>
-                        <span className="mt-1 block text-caption leading-relaxed text-muted">
-                          {ROLE_DESCRIPTIONS[option]}
-                        </span>
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
-            </fieldset>
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-control bg-primary px-4 py-2.5 text-body-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark disabled:opacity-60"
+            >
+              {loading ? 'Signing in...' : 'Sign in'}
+              <ArrowRight size={16} aria-hidden="true" />
+            </button>
+          </form>
 
-            <label className="block text-body-sm font-medium text-foreground-strong">
-              Subscription plan
-              <select
-                value={plan}
-                onChange={(event) => setPlan(event.target.value as SubscriptionPlan)}
-                className="mt-1.5 w-full rounded-control border border-border bg-surface px-3 py-2.5 text-body-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
-              >
-                {currentPlans.map((option) => (
-                  <option key={option} value={option}>
-                    {PLAN_LABELS[option]} plan
-                  </option>
-                ))}
-              </select>
-            </label>
+          <div className="mt-6 border-t border-border pt-4 text-center text-caption text-muted">
+            <Link to={ROUTES.REQUEST_ACCESS} className="hover:text-primary">
+              Need institutional access? Request onboarding
+            </Link>
           </div>
+        </div>
 
-          <button
-            type="submit"
-            className="mt-7 flex w-full items-center justify-center gap-2 rounded-control bg-primary px-4 py-3 text-body-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark"
-          >
-            Continue to workspace <ArrowRight size={17} aria-hidden="true" />
-          </button>
-        </form>
+        <div className="mt-6 text-center">
+          <Link to={ROUTES.HOME} className="text-caption font-semibold text-muted hover:text-primary">
+            ← Back to home
+          </Link>
+        </div>
       </div>
     </main>
   )

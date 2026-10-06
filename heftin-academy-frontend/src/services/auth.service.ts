@@ -25,10 +25,6 @@ export interface AuthUserProfile {
 }
 
 export const authService = {
-  /**
-   * POST /api/v1/auth/login
-   * Authenticates user against backend or returns tokens.
-   */
   async login(payload: LoginPayload): Promise<AuthTokens> {
     const { data } = await api.post<AuthTokens>('/auth/login', payload)
     if (data.access_token && data.refresh_token) {
@@ -37,10 +33,6 @@ export const authService = {
     return data
   },
 
-  /**
-   * POST /api/v1/auth/refresh
-   * Refreshes JWT access token using the stored refresh token.
-   */
   async refresh(refreshToken: string): Promise<AuthTokens> {
     const { data } = await api.post<AuthTokens>('/auth/refresh', { refresh_token: refreshToken })
     if (data.access_token) {
@@ -49,40 +41,26 @@ export const authService = {
     return data
   },
 
-  /**
-   * GET /api/v1/auth/me (BE-10)
-   * Fetches the current authenticated user profile and permissions.
-   */
   async getMe(): Promise<AuthUserProfile> {
     const { data } = await api.get<AuthUserProfile>('/auth/me')
     return data
   },
 
-  /**
-   * POST /api/v1/auth/logout (BE-09)
-   * Invalidates token server-side and clears client storage.
-   */
   async logout(): Promise<void> {
     try {
       await api.post('/auth/logout')
     } catch {
-      // Gracefully continue even if backend endpoint is in development
+      // Continue even if network fails
     } finally {
       clearAuthStorage()
     }
   },
 
-  /**
-   * POST /api/v1/auth/forgot-password (PR #8)
-   */
   async forgotPassword(email: string): Promise<{ message: string }> {
     const { data } = await api.post<{ message: string }>('/auth/forgot-password', { email })
     return data
   },
 
-  /**
-   * POST /api/v1/auth/reset-password (PR #8)
-   */
   async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
     const { data } = await api.post<{ message: string }>('/auth/reset-password', {
       token,

@@ -1,264 +1,522 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
   BarChart3,
   BookOpen,
-  Building2,
-  CheckSquare,
-  Check,
-  ChevronRight,
-  Clock3,
-  Crown,
+  Calendar,
+  CheckCircle2,
+  Clock,
   FileText,
   GraduationCap,
   LayoutDashboard,
-  Library,
-  ListChecks,
   LogOut,
-  LockKeyhole,
-  ShieldCheck,
   Sparkles,
   Users,
-  type LucideIcon,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
-import { B2BServicesPage } from '@/pages/B2BServicesPage'
-import { canAccess, getVisibleNavigation, NAVIGATION_ITEMS, PLAN_LABELS, ROLE_LABELS } from '@/lib/access'
 import { ROUTES } from '@/lib/constants'
-import { cn } from '@/lib/utils'
 
-const ICONS: Record<string, LucideIcon> = {
-  overview: LayoutDashboard,
-  exams: FileText,
-  learning: BookOpen,
-  microtasks: ListChecks,
-  knowledge: Library,
-  analytics: BarChart3,
-  content: Sparkles,
-  assignments: CheckSquare,
-  people: Users,
-  organization: Building2,
-  subscriptions: Crown,
+type NavTab = 'overview' | 'exams' | 'courses' | 'analytics' | 'batches' | 'grading'
+
+interface ExamItem {
+  id: string
+  title: string
+  subject: string
+  duration: string
+  questions: number
+  date: string
+  status: 'live' | 'upcoming' | 'completed'
+  score?: string
 }
 
-const NAV_GROUP_LABELS = { learn: 'Learn', manage: 'Manage', platform: 'Platform' } as const
+interface SubmissionItem {
+  id: string
+  student: string
+  batch: string
+  paper: string
+  submittedAt: string
+  status: 'pending' | 'graded'
+  score?: string
+}
 
-const ROLE_HOME = {
-  individual: { eyebrow: 'Individual plan', title: 'Build your learning rhythm.', description: 'A personal workspace that grows with your subscription, from first practice set to full exam analytics.', stats: [['3', 'Active courses', 'Keep your momentum'], ['12', 'Microtasks', 'Ready to practise'], ['78%', 'Weekly progress', 'Up 8% this week']] },
-  student: { eyebrow: 'Student workspace', title: 'Your next best study move.', description: 'Find UPSC exams, learning material, and focused practice in one calm place.', stats: [['04', 'Open UPSC exams', 'Two due this week'], ['18', 'Lessons left', 'Across 3 subjects'], ['6 days', 'Study streak', 'Keep it going']] },
-  faculty: { eyebrow: 'Faculty workspace', title: 'Turn expertise into progress.', description: 'Create material, guide assignments, and see where your learners need support.', stats: [['24', 'Assigned learners', 'Across 2 batches'], ['08', 'Pending reviews', 'Due this week'], ['92%', 'Class engagement', 'Above target']] },
-  org_admin: { eyebrow: 'Organization workspace', title: 'Run a focused learning operation.', description: 'Manage people, rights, and the exam experience your organization has purchased.', stats: [['06', 'Active batches', 'Across your org'], ['148', 'Learners', '12 new this month'], ['11', 'Rights enabled', 'From the org pack']] },
-  super_admin: { eyebrow: 'Heftin platform', title: 'See the whole learning network.', description: 'Control organizations, subscription plans, and platform capabilities available to every workspace.', stats: [['42', 'Organizations', '3 awaiting review'], ['8.4k', 'Active learners', 'Across all plans'], ['12', 'Live capabilities', 'Available platform-wide']] },
-} as const
+const UPCOMING_EXAMS: ExamItem[] = [
+  {
+    id: 'ex-01',
+    title: 'UPSC GS Paper I - Full Length Mock 04',
+    subject: 'General Studies I',
+    duration: '120 mins',
+    questions: 100,
+    date: 'Today, 2:00 PM',
+    status: 'live',
+  },
+  {
+    id: 'ex-02',
+    title: 'CSAT Aptitude & Comprehension Drill 02',
+    subject: 'CSAT Paper II',
+    duration: '60 mins',
+    questions: 50,
+    date: 'Tomorrow, 10:00 AM',
+    status: 'upcoming',
+  },
+  {
+    id: 'ex-03',
+    title: 'Indian Polity & Constitutional Framework',
+    subject: 'Sectional Drill',
+    duration: '45 mins',
+    questions: 35,
+    date: 'Oct 9, 2026',
+    status: 'upcoming',
+  },
+  {
+    id: 'ex-04',
+    title: 'Modern Indian History & Freedom Struggle',
+    subject: 'Sectional Drill',
+    duration: '60 mins',
+    questions: 50,
+    date: 'Oct 4, 2026',
+    status: 'completed',
+    score: '78 / 100',
+  },
+]
+
+const FACULTY_SUBMISSIONS: SubmissionItem[] = [
+  {
+    id: 'sub-01',
+    student: 'Arjun Kumar',
+    batch: 'Batch 101 · Prelims 2026',
+    paper: 'GS Mains Ethics Case Study Essay',
+    submittedAt: 'Today, 11:30 AM',
+    status: 'pending',
+  },
+  {
+    id: 'sub-02',
+    student: 'Priya Sharma',
+    batch: 'Batch 101 · Prelims 2026',
+    paper: 'Geography Sectional Mains Test',
+    submittedAt: 'Today, 9:15 AM',
+    status: 'pending',
+  },
+  {
+    id: 'sub-03',
+    student: 'Rahul Verma',
+    batch: 'Batch 102 · Foundation',
+    paper: 'Governance & Constitution Answer Sheet',
+    submittedAt: 'Yesterday',
+    status: 'graded',
+    score: '74 / 100',
+  },
+]
 
 export function DashboardPage() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState('overview')
+  const [activeTab, setActiveTab] = useState<NavTab>('overview')
 
-  const visibleNavigation = useMemo(() => (user ? getVisibleNavigation(user) : []), [user])
   if (!user) return null
-  const activeItem = visibleNavigation.find((item) => item.id === activeTab) ?? visibleNavigation[0]
-  const ActiveIcon = ICONS[activeItem?.id ?? 'overview']
-  const home = ROLE_HOME[user.role]
 
-  function handleLogout() {
-    logout()
+  const isStaff = user.role === 'faculty' || user.role === 'org_admin' || user.role === 'super_admin'
+  const isIndividual = user.role === 'individual'
+  const orgName = isIndividual ? 'Personal Learning' : 'Delhi Public Academy'
+
+  async function handleLogout() {
+    await logout()
     navigate(ROUTES.LOGIN, { replace: true })
   }
 
   return (
-    <div className="min-h-screen bg-surface font-sans text-foreground">
-      <div className="mx-auto flex min-h-screen max-w-[96rem]">
-        <aside className="hidden w-72 shrink-0 flex-col border-r border-border bg-surface-elevated p-6 lg:flex">
-          <div className="flex items-center gap-3 border-b border-border pb-6">
-            <div className="grid size-10 place-items-center rounded-control bg-primary text-primary-foreground"><GraduationCap size={21} aria-hidden="true" /></div>
-            <div><p className="font-display text-heading-sm text-foreground-strong">Heftin</p><p className="text-caption uppercase tracking-wider text-muted">Academy OS</p></div>
+    <div className="flex min-h-screen bg-surface font-sans text-foreground">
+      {/* Sidebar */}
+      <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-surface-elevated md:flex">
+        <div className="flex h-16 items-center gap-3 border-b border-border px-6">
+          <div className="grid size-9 place-items-center rounded-control bg-primary text-primary-foreground shadow-sm">
+            <GraduationCap size={20} aria-hidden="true" />
           </div>
-          <div className="flex flex-1 flex-col pt-8">
-            <p className="mb-3 text-eyebrow font-bold uppercase tracking-wider text-muted">Workspace</p>
-            <nav className="space-y-5" aria-label="Workspace navigation">
-              {(['learn', 'manage', 'platform'] as const).map((group) => {
-                const groupItems = visibleNavigation.filter((item) => item.group === group)
-                if (!groupItems.length) return null
-                return <div key={group}><p className="mb-2 px-3 text-eyebrow font-bold uppercase tracking-wider text-muted">{NAV_GROUP_LABELS[group]}</p><div className="space-y-1">{groupItems.map((item) => {
-                  const Icon = ICONS[item.id]
-                  const selected = activeItem?.id === item.id
-                  return <button key={item.id} type="button" onClick={() => setActiveTab(item.id)} className={cn('flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-left text-body-sm transition-colors', selected ? 'bg-primary text-primary-foreground' : 'text-muted hover:bg-primary-soft hover:text-primary-dark')}><Icon size={17} aria-hidden="true" /><span className="min-w-0 flex-1 truncate">{item.label}</span>{selected && <ChevronRight size={15} aria-hidden="true" />}</button>
-                })}</div></div>
-              })}
-            </nav>
-            <div className="mt-auto rounded-card border border-border bg-surface p-4"><p className="text-caption font-semibold uppercase tracking-wider text-muted">Access snapshot</p><p className="mt-2 text-body-sm text-foreground-strong">{user.permissions.length} permissions</p><p className="text-body-sm text-muted">{user.entitlements.length} capabilities visible</p></div>
+          <div>
+            <span className="font-display text-heading-sm font-semibold text-foreground-strong">Heftin</span>
+            <span className="ml-1 text-caption text-primary">Academy</span>
           </div>
-        </aside>
+        </div>
 
-        <main className="min-w-0 flex-1 p-page">
-          <header className="flex flex-col gap-6 border-b border-border pb-6 xl:flex-row xl:items-end xl:justify-between">
-            <div><p className="text-eyebrow font-bold uppercase tracking-wider text-primary">{home.eyebrow}</p><h1 className="mt-2 max-w-3xl font-display text-display font-light tracking-tight text-foreground-strong">{home.title}</h1><p className="mt-3 max-w-2xl text-body text-muted">{home.description}</p></div>
-            <div className="flex items-center gap-3"><div className="text-right"><p className="text-body-sm font-semibold text-foreground-strong">{user.displayName}</p><p className="text-caption text-muted">{ROLE_LABELS[user.role]} · {PLAN_LABELS[user.plan]}</p></div><button type="button" onClick={handleLogout} aria-label="Sign out" title="Sign out" className="grid size-10 place-items-center rounded-control border border-border bg-surface-elevated text-muted hover:bg-primary-soft hover:text-primary-dark"><LogOut size={17} aria-hidden="true" /></button></div>
-          </header>
+        <div className="flex flex-1 flex-col justify-between p-4">
+          <nav className="space-y-1">
+            <button
+              type="button"
+              onClick={() => setActiveTab('overview')}
+              className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
+                activeTab === 'overview'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-muted hover:bg-surface hover:text-foreground'
+              }`}
+            >
+              <LayoutDashboard size={17} />
+              Dashboard
+            </button>
 
-          <div className="mt-6 rounded-card border border-border bg-surface-elevated p-3 lg:hidden">
-            <label htmlFor="mobile-workspace-nav" className="text-eyebrow font-bold uppercase tracking-wider text-muted">Jump to</label>
-            <select id="mobile-workspace-nav" value={activeItem?.id ?? ''} onChange={(event) => setActiveTab(event.target.value)} className="mt-2 w-full rounded-control border border-border bg-surface px-3 py-2.5 text-body-sm font-medium text-foreground-strong outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft">
-              {visibleNavigation.map((item) => <option key={item.id} value={item.id}>{NAV_GROUP_LABELS[item.group]} / {item.label}</option>)}
-            </select>
-          </div>
+            <button
+              type="button"
+              onClick={() => setActiveTab('exams')}
+              className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
+                activeTab === 'exams'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-muted hover:bg-surface hover:text-foreground'
+              }`}
+            >
+              <FileText size={17} />
+              Test Series
+            </button>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            {user.role === 'super_admin' && (
-              <button type="button" onClick={() => navigate(ROUTES.SUPER_ADMIN)} className="rounded-control bg-primary px-4 py-2 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark">
-                Open onboarding queue
-              </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('courses')}
+              className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
+                activeTab === 'courses'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-muted hover:bg-surface hover:text-foreground'
+              }`}
+            >
+              <BookOpen size={17} />
+              Study Material
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('analytics')}
+              className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
+                activeTab === 'analytics'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-muted hover:bg-surface hover:text-foreground'
+              }`}
+            >
+              <BarChart3 size={17} />
+              Performance
+            </button>
+
+            {isStaff && (
+              <>
+                <div className="pt-4 pb-1">
+                  <span className="px-3 text-caption font-semibold uppercase tracking-wider text-muted">
+                    Management
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('batches')}
+                  className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
+                    activeTab === 'batches'
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'text-muted hover:bg-surface hover:text-foreground'
+                  }`}
+                >
+                  <Users size={17} />
+                  Batches & Cohorts
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('grading')}
+                  className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
+                    activeTab === 'grading'
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'text-muted hover:bg-surface hover:text-foreground'
+                  }`}
+                >
+                  <CheckCircle2 size={17} />
+                  Paper Grading
+                </button>
+              </>
             )}
-            {(user.role === 'org_admin' || user.role === 'faculty') && (
-              <button type="button" onClick={() => navigate(ROUTES.ORG_ADMIN)} className="rounded-control border border-border bg-surface-elevated px-4 py-2 text-body-sm font-semibold text-foreground-strong hover:border-primary hover:text-primary-dark">
-                Open org management
-              </button>
-            )}
+          </nav>
+
+          <div className="rounded-control border border-border bg-surface p-3">
+            <span className="text-caption font-semibold text-muted">Organization</span>
+            <p className="mt-1 truncate text-body-sm font-semibold text-foreground-strong">{orgName}</p>
+            <p className="text-caption text-primary font-medium capitalize">{user.role.replace('_', ' ')}</p>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Top Header */}
+        <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-surface-elevated px-6">
+          <div className="flex items-center gap-3">
+            <span className="text-body-sm font-medium text-muted">Dashboard</span>
+            <span className="text-muted">/</span>
+            <span className="text-body-sm font-semibold capitalize text-foreground-strong">
+              {activeTab}
+            </span>
           </div>
 
-          <section className="mt-8 grid gap-3 sm:grid-cols-3">{home.stats.map(([value, label, note]) => <article key={label} className="rounded-card border border-border bg-surface-elevated p-card"><p className="font-display text-heading-md text-foreground-strong">{value}</p><p className="mt-1 text-body-sm font-medium text-foreground">{label}</p><p className="mt-2 text-caption text-muted">{note}</p></article>)}</section>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2.5 rounded-control border border-border bg-surface px-3 py-1.5">
+              <span className="grid size-7 place-items-center rounded-full bg-primary-soft text-caption font-bold text-primary-dark">
+                {user.displayName.slice(0, 2).toUpperCase()}
+              </span>
+              <div className="text-left leading-tight">
+                <span className="block text-body-sm font-semibold text-foreground-strong">
+                  {user.displayName}
+                </span>
+                <span className="block text-caption text-muted capitalize">
+                  {user.role.replace('_', ' ')}
+                </span>
+              </div>
+            </div>
 
-          {activeItem?.id === 'organization' && <B2BServicesPage />}
-          {renderRoleSpecificPanel(user.role, activeItem?.id ?? 'overview')}
+            <button
+              type="button"
+              onClick={handleLogout}
+              title="Sign out"
+              className="flex items-center gap-1.5 rounded-control border border-border bg-surface px-3 py-1.5 text-body-sm font-medium text-muted transition-colors hover:border-primary hover:text-primary-dark"
+            >
+              <LogOut size={15} />
+              <span className="hidden sm:inline">Sign out</span>
+            </button>
+          </div>
+        </header>
 
-          <section className="mt-8 grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
-            <article className="rounded-card border border-border bg-surface-elevated p-card"><div className="flex items-start justify-between gap-4"><div><div className="mb-3 inline-flex rounded-full bg-primary-soft p-2 text-primary-dark"><ActiveIcon size={19} aria-hidden="true" /></div><p className="text-eyebrow font-bold uppercase tracking-wider text-muted">Active view</p><h2 className="mt-1 font-display text-heading-md text-foreground-strong">{activeItem?.label}</h2><p className="mt-2 max-w-xl text-body-sm text-muted">{activeItem?.description}. This shared panel is filled by the active microtask or service.</p></div><span className="rounded-full bg-primary-soft px-3 py-1 text-caption font-semibold text-primary-dark">{PLAN_LABELS[user.plan]}</span></div><div className="mt-8 grid gap-3 sm:grid-cols-2">{getFeatureCards(user.role, activeItem?.id ?? 'overview').map(([title, copy]) => <div key={title} className="rounded-control border border-border bg-surface p-4"><p className="text-body-sm font-semibold text-foreground-strong">{title}</p><p className="mt-1 text-caption leading-relaxed text-muted">{copy}</p></div>)}</div></article>
-            <article className="rounded-card bg-primary-shade-4 p-card text-white"><ShieldCheck size={23} aria-hidden="true" /><p className="mt-8 text-eyebrow font-bold uppercase tracking-wider text-primary-tint-3">Permission-aware</p><h2 className="mt-2 font-display text-heading-md">Only relevant work appears.</h2><p className="mt-3 text-body-sm leading-relaxed text-primary-tint-4">Navigation requires both a permission code and an enabled entitlement. Org Admins can only work inside the pack selected by Heftin.</p><div className="mt-8 border-t border-primary-shade-3 pt-4 text-caption text-primary-tint-4">Role: <strong className="text-white">{ROLE_LABELS[user.role]}</strong><br />Visible: <strong className="text-white">{visibleNavigation.length} of 11 modules</strong></div></article>
+        {/* Dashboard Body */}
+        <main className="flex-1 overflow-y-auto p-6 md:p-8">
+          {/* Welcome Message */}
+          <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+            <div>
+              <h1 className="font-display text-heading-md font-semibold text-foreground-strong">
+                Welcome back, {user.displayName.split(' ')[0]}
+              </h1>
+              <p className="mt-0.5 text-body-sm text-muted">
+                {isStaff
+                  ? 'Overview of assigned batches, upcoming exams, and student submissions.'
+                  : 'Track your UPSC preparation, attempt scheduled mocks, and review performance.'}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-elevated px-3 py-1 text-caption font-medium text-muted">
+                <Calendar size={13} className="text-primary" />
+                Session 2026
+              </span>
+            </div>
+          </div>
+
+          {/* Metric Stats Cards */}
+          <section className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {!isStaff ? (
+              <>
+                <StatCard title="Scheduled Tests" value="3 Upcoming" subtitle="Next in 4 hours" />
+                <StatCard title="Tests Completed" value="14 Attempted" subtitle="+2 this week" />
+                <StatCard title="Average Score" value="76.4%" subtitle="+3.2% vs last month" />
+                <StatCard title="Study Streak" value="5 Days" subtitle="Personal best: 12 days" />
+              </>
+            ) : user.role === 'faculty' ? (
+              <>
+                <StatCard title="Assigned Batches" value="2 Cohorts" subtitle="Batch 101 & 102" />
+                <StatCard title="Pending Reviews" value="8 Papers" subtitle="3 due today" />
+                <StatCard title="Active Students" value="54 Learners" subtitle="98% attendance" />
+                <StatCard title="Class Average" value="71.8%" subtitle="UPSC GS Paper I" />
+              </>
+            ) : (
+              <>
+                <StatCard title="Active Batches" value="6 Batches" subtitle="All cohorts live" />
+                <StatCard title="Total Enrolled" value="148 Learners" subtitle="+12 this month" />
+                <StatCard title="Faculty Members" value="12 Active" subtitle="4 evaluating" />
+                <StatCard title="License Utilization" value="70 / 70" subtitle="Pack capacity full" />
+              </>
+            )}
           </section>
 
-          <section className="mt-8 rounded-card border border-border bg-surface-elevated p-card">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div><p className="text-eyebrow font-bold uppercase tracking-wider text-muted">All capabilities</p><h2 className="mt-1 font-display text-heading-md text-foreground-strong">Access matrix</h2></div>
-              <p className="text-body-sm text-muted">Visible for {ROLE_LABELS[user.role]} · {PLAN_LABELS[user.plan]}</p>
+          {/* Main Grid: Left Primary List & Right Sidebar */}
+          <div className="grid gap-6 lg:grid-cols-3">
+            {/* Primary Panel */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Exams / Tasks Table */}
+              <div className="rounded-card border border-border bg-surface-elevated p-5 shadow-sm">
+                <div className="mb-4 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-body font-semibold text-foreground-strong">
+                      {isStaff ? 'Pending Submissions for Review' : 'Active & Upcoming Test Series'}
+                    </h2>
+                    <p className="text-caption text-muted">
+                      {isStaff
+                        ? 'Student mains papers awaiting evaluation and grading.'
+                        : 'Scheduled full-length UPSC mock tests and sectional drills.'}
+                    </p>
+                  </div>
+                  <span className="text-caption font-semibold text-primary">View all</span>
+                </div>
+
+                <div className="divide-y divide-border">
+                  {!isStaff
+                    ? UPCOMING_EXAMS.map((exam) => (
+                        <div
+                          key={exam.id}
+                          className="flex flex-col gap-3 py-3.5 sm:flex-row sm:items-center sm:justify-between"
+                        >
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-body-sm text-foreground-strong">
+                                {exam.title}
+                              </span>
+                              {exam.status === 'live' && (
+                                <span className="rounded-full bg-primary text-primary-foreground px-2 py-0.5 text-caption font-bold">
+                                  LIVE
+                                </span>
+                              )}
+                            </div>
+                            <div className="mt-1 flex items-center gap-3 text-caption text-muted">
+                              <span>{exam.subject}</span>
+                              <span>·</span>
+                              <span className="flex items-center gap-1">
+                                <Clock size={12} /> {exam.duration}
+                              </span>
+                              <span>·</span>
+                              <span>{exam.questions} Questions</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-3">
+                            {exam.status === 'completed' ? (
+                              <span className="text-caption font-semibold text-muted">
+                                Score: {exam.score}
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                className={`rounded-control px-3.5 py-1.5 text-caption font-semibold transition-colors ${
+                                  exam.status === 'live'
+                                    ? 'bg-primary text-primary-foreground hover:bg-primary-dark shadow-sm'
+                                    : 'border border-border bg-surface text-foreground hover:border-primary hover:text-primary'
+                                }`}
+                              >
+                                {exam.status === 'live' ? 'Start Test' : 'View Schedule'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    : FACULTY_SUBMISSIONS.map((sub) => (
+                        <div
+                          key={sub.id}
+                          className="flex flex-col gap-3 py-3.5 sm:flex-row sm:items-center sm:justify-between"
+                        >
+                          <div>
+                            <span className="font-medium text-body-sm text-foreground-strong">
+                              {sub.student}
+                            </span>
+                            <div className="mt-1 flex items-center gap-3 text-caption text-muted">
+                              <span>{sub.batch}</span>
+                              <span>·</span>
+                              <span>{sub.paper}</span>
+                              <span>·</span>
+                              <span>{sub.submittedAt}</span>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            className={`rounded-control px-3.5 py-1.5 text-caption font-semibold transition-colors ${
+                              sub.status === 'pending'
+                                ? 'bg-primary text-primary-foreground hover:bg-primary-dark'
+                                : 'border border-border bg-surface text-muted'
+                            }`}
+                          >
+                            {sub.status === 'pending' ? 'Evaluate Paper' : `Reviewed (${sub.score})`}
+                          </button>
+                        </div>
+                      ))}
+                </div>
+              </div>
+
+              {/* Study Materials / Reference List */}
+              <div className="rounded-card border border-border bg-surface-elevated p-5 shadow-sm">
+                <h3 className="text-body font-semibold text-foreground-strong">
+                  Latest Study Modules & Notes
+                </h3>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-control border border-border bg-surface p-3">
+                    <p className="text-body-sm font-semibold text-foreground-strong">
+                      Indian Polity: Key Judicial Precedents
+                    </p>
+                    <p className="mt-1 text-caption text-muted">
+                      Updated summary of 2026 landmark Supreme Court judgments.
+                    </p>
+                  </div>
+                  <div className="rounded-control border border-border bg-surface p-3">
+                    <p className="text-body-sm font-semibold text-foreground-strong">
+                      CSAT Logical Reasoning Short Methods
+                    </p>
+                    <p className="mt-1 text-caption text-muted">
+                      Essential formulas and shortcuts for paper II aptitude.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="mt-5 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-              {NAVIGATION_ITEMS.map((item) => {
-                const enabled = canAccess(user, item)
-                return <div key={item.id} className={cn('flex items-center gap-3 rounded-control border p-3', enabled ? 'border-primary-tint-4 bg-primary-soft' : 'border-border bg-surface')}><span className={cn('grid size-7 shrink-0 place-items-center rounded-full', enabled ? 'bg-primary text-primary-foreground' : 'bg-border text-muted')}>{enabled ? <Check size={15} aria-hidden="true" /> : <LockKeyhole size={14} aria-hidden="true" />}</span><span className="min-w-0"><span className={cn('block truncate text-body-sm font-semibold', enabled ? 'text-primary-dark' : 'text-muted')}>{item.label}</span><span className="block truncate text-caption text-muted">{enabled ? 'Enabled' : 'Requires access'}</span></span></div>
-              })}
+
+            {/* Right Sidebar: Subject Progress & Notices */}
+            <div className="space-y-6">
+              {/* Performance Breakdown */}
+              <div className="rounded-card border border-border bg-surface-elevated p-5 shadow-sm">
+                <h3 className="text-body font-semibold text-foreground-strong">Subject Accuracy</h3>
+                <p className="text-caption text-muted">Based on your recent sectional attempts</p>
+
+                <div className="mt-4 space-y-3.5">
+                  <ProgressBar label="Indian Polity" percent={82} />
+                  <ProgressBar label="Modern History" percent={68} />
+                  <ProgressBar label="Indian Economy" percent={74} />
+                  <ProgressBar label="Geography & Environment" percent={61} />
+                </div>
+              </div>
+
+              {/* Notice Board */}
+              <div className="rounded-card border border-border bg-surface-elevated p-5 shadow-sm">
+                <div className="flex items-center gap-2 text-body font-semibold text-foreground-strong">
+                  <Sparkles size={16} className="text-primary" />
+                  Important Notices
+                </div>
+
+                <div className="mt-3 space-y-3 text-caption">
+                  <div className="border-l-2 border-primary pl-2.5">
+                    <p className="font-semibold text-foreground-strong">GS Mains Answer Key Released</p>
+                    <p className="text-muted">Reviewed by Dr. Meera Patel for Batch 101.</p>
+                  </div>
+                  <div className="border-l-2 border-border pl-2.5">
+                    <p className="font-semibold text-foreground-strong">Live Doubt Clearing Session</p>
+                    <p className="text-muted">Scheduled for Friday at 4:00 PM via portal.</p>
+                  </div>
+                  <div className="border-l-2 border-border pl-2.5">
+                    <p className="font-semibold text-foreground-strong">UPSC Prelims Strategy Webinar</p>
+                    <p className="text-muted">Recording available in the reference library.</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </section>
+          </div>
         </main>
       </div>
     </div>
   )
 }
 
-function renderRoleSpecificPanel(role: keyof typeof ROLE_HOME, activeTab: string) {
-  if (role === 'super_admin') {
-    return (
-      <section className="mt-8 rounded-card border border-border bg-surface-elevated p-card">
-        <div className="flex items-end justify-between gap-3">
-          <div>
-            <p className="text-eyebrow font-bold uppercase tracking-wider text-muted">Platform queue</p>
-            <h2 className="mt-1 font-display text-heading-md text-foreground-strong">Onboarding requests</h2>
-          </div>
-          <span className="rounded-full bg-primary-soft px-3 py-1 text-caption font-semibold text-primary-dark">3 pending</span>
-        </div>
-
-        <div className="mt-5 grid gap-3 md:grid-cols-3">
-          {[
-            ['Apex Coaching', 'UPSC • New request', 'Needs approval'],
-            ['Sarthi Institute', 'SSC • In review', 'Reviewing bundle'],
-            ['Dharma Academy', 'NEET • Approved', 'Org admin created'],
-          ].map(([org, meta, status]) => (
-            <div key={org} className="rounded-control border border-border bg-surface p-4">
-              <p className="text-body-sm font-semibold text-foreground-strong">{org}</p>
-              <p className="mt-1 text-caption text-muted">{meta}</p>
-              <div className="mt-4 flex items-center justify-between gap-3">
-                <span className="rounded-full bg-primary-soft px-2 py-1 text-caption font-semibold text-primary-dark">{status}</span>
-                <Clock3 size={14} className="text-muted" aria-hidden="true" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-    )
-  }
-
-  if (role === 'org_admin' || role === 'faculty') {
-    const currentTab = activeTab === 'people' || activeTab === 'organization' || activeTab === 'overview' ? 'access' : activeTab
-
-    return (
-      <section className="mt-8 grid gap-6 lg:grid-cols-2">
-        <article className="rounded-card border border-border bg-surface-elevated p-card">
-          <p className="text-eyebrow font-bold uppercase tracking-wider text-muted">Org operations</p>
-          <h2 className="mt-1 font-display text-heading-md text-foreground-strong">Roles and ceiling</h2>
-          <div className="mt-5 space-y-3">
-            {[
-              ['Org Admin', '70 / 70 rights', 'Full ceiling'],
-              ['Faculty Manager', '18 / 70 rights', 'Scope: Department'],
-              ['Student Role', '6 / 70 rights', 'Basic student access'],
-            ].map(([name, rights, note]) => (
-              <div key={name} className="flex items-center justify-between gap-3 rounded-control border border-border bg-surface p-3">
-                <div>
-                  <p className="text-body-sm font-semibold text-foreground-strong">{name}</p>
-                  <p className="mt-1 text-caption text-muted">{note}</p>
-                </div>
-                <span className="rounded-full bg-primary-soft px-2 py-1 text-caption font-semibold text-primary-dark">{rights}</span>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="rounded-card border border-border bg-surface-elevated p-card">
-          <p className="text-eyebrow font-bold uppercase tracking-wider text-muted">Current focus</p>
-          <h2 className="mt-1 font-display text-heading-md text-foreground-strong">{currentTab === 'people' ? 'User assignment' : 'Org overview'}</h2>
-          <div className="mt-5 space-y-3">
-            {[
-              ['Departments', '4 active units'],
-              ['Batches', '6 enrolled cohorts'],
-              ['Faculty', '12 assigned to batches'],
-              ['Students', '148 active learners'],
-            ].map(([label, value]) => (
-              <div key={label} className="flex items-center justify-between gap-3 rounded-control border border-border bg-surface p-3">
-                <span className="text-body-sm font-medium text-foreground-strong">{label}</span>
-                <span className="text-caption font-semibold text-primary-dark">{value}</span>
-              </div>
-            ))}
-          </div>
-        </article>
-      </section>
-    )
-  }
-
-  if (role === 'student' || role === 'individual') {
-    return (
-      <section className="mt-8 grid gap-6 lg:grid-cols-3">
-        {[
-          ['My tests', 'UPSC Prelims Mock 04 • Due in 2 days'],
-          ['Subjects', 'Polity, History, Geography'],
-          ['Results', 'Review last mock and improve weak areas'],
-        ].map(([label, detail]) => (
-          <article key={label} className="rounded-card border border-border bg-surface-elevated p-card">
-            <p className="text-eyebrow font-bold uppercase tracking-wider text-muted">{label}</p>
-            <h2 className="mt-2 font-display text-heading-md text-foreground-strong">Ready to act</h2>
-            <p className="mt-3 text-body-sm text-muted">{detail}</p>
-          </article>
-        ))}
-      </section>
-    )
-  }
-
-  return null
+function StatCard({ title, value, subtitle }: { title: string; value: string; subtitle: string }) {
+  return (
+    <div className="rounded-card border border-border bg-surface-elevated p-4 shadow-sm">
+      <span className="text-caption font-medium text-muted">{title}</span>
+      <p className="mt-1 font-display text-heading-md font-semibold text-foreground-strong">{value}</p>
+      <p className="mt-0.5 text-caption text-primary">{subtitle}</p>
+    </div>
+  )
 }
 
-function getFeatureCards(role: keyof typeof ROLE_HOME, activeTab: string) {
-  const cards: Record<string, [string, string][]> = {
-    overview: [['Today\'s focus', 'A prioritized view of the next action for this workspace.'], ['Recent activity', 'Latest exams, lessons, or administration actions in one timeline.']],
-    exams: [['UPSC exam queue', 'Start scheduled UPSC tests and revisit completed attempts.'], ['UPSC readiness signal', 'Use recent results to choose the next useful challenge.']],
-    learning: [['Continue learning', 'Pick up lessons and materials from the last active session.'], ['Recommended material', 'Content is selected from the user or organization context.']],
-    microtasks: [['Quick practice', 'Short tasks make it easier to build a daily study habit.'], ['Weak-area drill', 'Turn performance signals into a focused next exercise.']],
-    knowledge: [['Reference library', 'Search the shared knowledge base without leaving the workspace.'], ['New material', 'See what faculty or platform admins have recently published.']],
-    analytics: [['Progress view', 'Compare activity and outcomes across the current period.'], ['Actionable signal', 'Translate performance into the next assignment or lesson.']],
-    content: [['Material builder', 'Create structured learning material with reusable tokens.'], ['Publishing queue', 'Review what is ready for learners and what needs attention.']],
-    assignments: [['Assignment queue', 'Set, distribute, and review work for assigned learners.'], ['Feedback loop', 'Surface the learners who need a timely intervention.']],
-    people: [['People directory', 'Manage users and see their current organization access.'], ['Rights matrix', 'Assign only permission codes available in the org pack.']],
-    organization: [['Org pack', 'Review capabilities selected by Heftin for this workspace.'], ['Workspace health', 'Keep batches, faculty, and learners organized.']],
-    subscriptions: [['Plan catalog', 'Define what each subscription makes available.'], ['Entitlement control', 'Connect paid capabilities to visible product areas.']],
-  }
-  const note = role === 'student' ? 'Student defaults keep the focus on exams and learning.' : role === 'super_admin' ? 'Platform controls are visible because this role governs Heftin.' : 'This view is filtered to the role, organization pack, and plan.'
-  return [...(cards[activeTab] ?? cards.overview), ['Access rule', note]]
+function ProgressBar({ label, percent }: { label: string; percent: number }) {
+  return (
+    <div>
+      <div className="flex items-center justify-between text-caption font-medium">
+        <span className="text-foreground-strong">{label}</span>
+        <span className="text-muted">{percent}%</span>
+      </div>
+      <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-surface">
+        <div className="h-full rounded-full bg-primary" style={{ width: `${percent}%` }} />
+      </div>
+    </div>
+  )
 }
