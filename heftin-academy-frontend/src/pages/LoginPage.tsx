@@ -247,12 +247,19 @@ export function LoginPage() {
           </div>
         </div>
 
-        <div className="mt-4 text-center">
+        <div className="mt-4 flex items-center justify-center gap-4 text-center">
           <Link
             to={ROUTES.HOME}
             className="text-caption font-medium text-muted hover:text-foreground"
           >
             Back to Home
+          </Link>
+          <span className="text-muted text-caption">&middot;</span>
+          <Link
+            to="/unified"
+            className="text-caption font-semibold text-primary hover:underline"
+          >
+            All-in-One Suite &rarr;
           </Link>
         </div>
       </div>

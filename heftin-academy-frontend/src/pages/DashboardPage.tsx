@@ -8,6 +8,7 @@ import {
   Download,
   FileText,
   GraduationCap,
+  Layers,
   LayoutDashboard,
   LogOut,
   Sparkles,
@@ -15,7 +16,7 @@ import {
   Users,
   X,
 } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { ROUTES } from '@/lib/constants'
 import { b2bService } from '@/services/b2b.service'
@@ -608,6 +609,14 @@ export function DashboardPage() {
                 </span>
               </div>
             </div>
+
+            <Link
+              to="/unified"
+              className="flex items-center gap-1.5 rounded-control bg-primary-soft text-primary-dark px-3 py-1.5 text-body-sm font-semibold hover:bg-primary hover:text-white transition-colors"
+            >
+              <Layers size={15} />
+              <span className="hidden sm:inline">All-in-One Suite</span>
+            </Link>
 
             <button
               type="button"
