@@ -1,13 +1,15 @@
-import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 import { APP_NAME, ROUTES } from '@/lib/constants'
 
-type AuthLayoutProps = {
-  children: ReactNode
-  eyebrow?: string
-}
+export function AuthLayout() {
+  const { pathname } = useLocation()
+  if (
+    pathname === ROUTES.HOME ||
+    pathname === ROUTES.LOGIN ||
+    pathname === ROUTES.FORGOT_PASSWORD ||
+    pathname === ROUTES.RESET_PASSWORD
+  ) return <Outlet />
 
-export function AuthLayout({ children, eyebrow = 'Exam preparation, made focused' }: AuthLayoutProps) {
   return (
     <main className="min-h-screen bg-surface px-5 py-8 text-foreground sm:px-8">
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-6xl overflow-hidden rounded-3xl border border-border bg-card shadow-xl lg:grid-cols-[0.9fr_1.1fr]">
@@ -30,8 +32,8 @@ export function AuthLayout({ children, eyebrow = 'Exam preparation, made focused
             <Link className="mb-10 inline-block text-lg font-semibold tracking-tight text-primary lg:hidden" to={ROUTES.HOME}>
               {APP_NAME}
             </Link>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-primary">{eyebrow}</p>
-            {children}
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-primary">Account recovery</p>
+            <Outlet />
           </div>
         </section>
       </div>

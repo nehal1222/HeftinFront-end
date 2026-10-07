@@ -1,8 +1,12 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { AuthLayout } from '@/layouts/AuthLayout'
+import { useEffect } from 'react'
+import { Eye, EyeOff, Lock } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
+import { NetlifyBadge } from '@/components/ui/NetlifyBadge'
 import { ROUTES } from '@/lib/constants'
-import { getErrorMessage } from '@/lib/axios'
+import { getErrorMessage, getFieldErrors } from '@/lib/axios'
 import { authService } from '@/services/auth.service'
 
 export function ResetPasswordPage() {
@@ -10,25 +14,37 @@ export function ResetPasswordPage() {
   const token = searchParams.get('token') ?? ''
   const [password, setPassword] = useState('')
   const [confirmation, setConfirmation] = useState('')
-  const [error, setError] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [serverError, setServerError] = useState('')
   const [success, setSuccess] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  useEffect(() => {
+    const previousTitle = document.title
+    document.title = 'Reset Password — Heftin Academy'
+    return () => {
+      document.title = previousTitle
+    }
+  }, [])
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setError('')
+    setErrors({})
+    setFieldErrors({})
     setServerError('')
     if (!token) {
-      setError('This reset link is missing its token. Request a new link.')
+      setServerError('This reset link is missing its token. Request a new link.')
       return
     }
     if (password.length < 8) {
-      setError('Your password must be at least 8 characters.')
+      setErrors({ password: 'Your password must be at least 8 characters.' })
       return
     }
     if (password !== confirmation) {
-      setError('Passwords do not match.')
+      setErrors({ password_confirmation: 'Passwords do not match.' })
       return
     }
     setIsSubmitting(true)
@@ -37,29 +53,118 @@ export function ResetPasswordPage() {
       setSuccess(true)
     } catch (requestError) {
       setServerError(getErrorMessage(requestError, 'This reset link is invalid or has expired.'))
+      const errors = getFieldErrors(requestError)
+      if (errors.confirmation && !errors.password_confirmation) {
+        errors.password_confirmation = errors.confirmation
+      }
+      setFieldErrors(errors)
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <AuthLayout eyebrow="Account recovery">
-      <h1 className="text-3xl font-semibold tracking-tight text-foreground-strong">Create a new password</h1>
-      <p className="mt-2 text-sm text-muted">Choose a strong password you have not used before.</p>
-      <form className="mt-8 space-y-5" onSubmit={handleSubmit} noValidate>
-        {serverError && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{serverError}</div>}
-        {success && <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700" role="status">Your password has been reset successfully.</div>}
-        {!token && <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800" role="alert">This page needs a reset token from your email link.</div>}
-        <label className="block text-sm font-medium text-foreground" htmlFor="new-password">New password
-          <input className="mt-2 block w-full rounded-xl border border-border bg-surface-elevated px-4 py-3 outline-none transition focus:border-primary focus:ring-2 focus:ring-ring/20" id="new-password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} aria-invalid={Boolean(error)} />
-        </label>
-        <label className="block text-sm font-medium text-foreground" htmlFor="password-confirmation">Confirm new password
-          <input className="mt-2 block w-full rounded-xl border border-border bg-surface-elevated px-4 py-3 outline-none transition focus:border-primary focus:ring-2 focus:ring-ring/20" id="password-confirmation" type="password" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} aria-invalid={Boolean(error)} />
-          {error && <span className="mt-1 block text-xs text-red-600">{error}</span>}
-        </label>
-        <button className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60" disabled={isSubmitting || success} type="submit">{isSubmitting ? 'Resetting...' : 'Reset password'}</button>
-      </form>
-      <Link className="mt-6 block text-center text-sm font-medium text-primary hover:underline" to={ROUTES.LOGIN}>Back to sign in</Link>
-    </AuthLayout>
+    <main className="login-page">
+      <div className="login-background" aria-hidden="true">
+        <span className="login-background-circle login-background-circle-one" />
+        <span className="login-background-circle login-background-circle-two" />
+        <span className="login-background-circle login-background-circle-three" />
+      </div>
+      <section className="login-card reset-password-card" aria-labelledby="reset-password-heading">
+        <Link className="login-brand" to={ROUTES.HOME} aria-label="Heftin Academy home">
+          <img className="login-brand-mark" src="/heftin-logo.png" alt="" />
+          <span>Heftin Academy</span>
+        </Link>
+
+        {success ? (
+          <div className="reset-password-success" role="status">
+            <span className="reset-password-success-mark" aria-hidden="true">✓</span>
+            <h1 id="reset-password-heading">Password updated</h1>
+            <p>Your password has been changed successfully. You can now sign in with your new password.</p>
+            <Link className="login-submit reset-password-success-link" to={ROUTES.LOGIN}>
+              <span>Continue to sign in</span>
+              <span className="login-submit-arrow" aria-hidden="true">→</span>
+            </Link>
+          </div>
+        ) : (
+          <>
+            <header className="login-heading reset-password-heading">
+              <h1 id="reset-password-heading">
+                <span>Reset</span>
+                <strong>password</strong>
+              </h1>
+              <p>Choose a new password for your account.</p>
+            </header>
+
+            {serverError && <div className="login-alert" role="alert">{serverError}</div>}
+
+            <form className="reset-password-form" onSubmit={handleSubmit} noValidate>
+              <label className="login-field reset-password-field" htmlFor="new-password">
+                <span className="login-label">New password</span>
+                <span className="login-input-wrap">
+                  <Lock className="login-input-icon" size={19} strokeWidth={2} aria-hidden="true" />
+                  <Input
+                    id="new-password"
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="new-password"
+                    required
+                    placeholder="Enter new password"
+                    value={password}
+                    onChange={(event) => {
+                      setPassword(event.target.value)
+                      setErrors((current) => ({ ...current, password: '' }))
+                      setFieldErrors((current) => ({ ...current, password: '' }))
+                    }}
+                    aria-invalid={Boolean(errors.password || fieldErrors.password)}
+                    aria-describedby={errors.password || fieldErrors.password ? 'new-password-error' : undefined}
+                  />
+                  <button className="login-password-toggle" type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? 'Hide new password' : 'Show new password'} aria-controls="new-password">
+                    {showPassword ? <EyeOff size={19} strokeWidth={2} /> : <Eye size={19} strokeWidth={2} />}
+                  </button>
+                </span>
+                {(errors.password || fieldErrors.password) && <span className="login-field-error" id="new-password-error">{errors.password || fieldErrors.password}</span>}
+              </label>
+
+              <label className="login-field reset-password-field" htmlFor="password-confirmation">
+                <span className="login-label">Confirm new password</span>
+                <span className="login-input-wrap">
+                  <Lock className="login-input-icon" size={19} strokeWidth={2} aria-hidden="true" />
+                  <Input
+                    id="password-confirmation"
+                    type={showConfirmation ? 'text' : 'password'}
+                    autoComplete="new-password"
+                    required
+                    placeholder="Re-enter new password"
+                    value={confirmation}
+                    onChange={(event) => {
+                      setConfirmation(event.target.value)
+                      setErrors((current) => ({ ...current, password_confirmation: '' }))
+                      setFieldErrors((current) => ({ ...current, password_confirmation: '' }))
+                    }}
+                    aria-invalid={Boolean(errors.password_confirmation || fieldErrors.password_confirmation)}
+                    aria-describedby={errors.password_confirmation || fieldErrors.password_confirmation ? 'password-confirmation-error' : undefined}
+                  />
+                  <button className="login-password-toggle" type="button" onClick={() => setShowConfirmation((visible) => !visible)} aria-label={showConfirmation ? 'Hide confirmation password' : 'Show confirmation password'} aria-controls="password-confirmation">
+                    {showConfirmation ? <EyeOff size={19} strokeWidth={2} /> : <Eye size={19} strokeWidth={2} />}
+                  </button>
+                </span>
+                {(errors.password_confirmation || fieldErrors.password_confirmation) && <span className="login-field-error" id="password-confirmation-error">{errors.password_confirmation || fieldErrors.password_confirmation}</span>}
+              </label>
+
+              <Button className="login-submit reset-password-submit" disabled={isSubmitting} type="submit">
+                <span>{isSubmitting ? 'Resetting...' : 'Reset password'}</span>
+                <span className="login-submit-arrow" aria-hidden="true">→</span>
+              </Button>
+            </form>
+
+            <p className="reset-password-return">
+              <Link to={ROUTES.LOGIN}>Back to sign in</Link>
+            </p>
+          </>
+        )}
+      </section>
+
+      <NetlifyBadge />
+    </main>
   )
 }
