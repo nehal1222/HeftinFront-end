@@ -538,8 +538,9 @@ export function LoginPage() {
 
               {/* SIGN UP / ONBOARDING */}
               <p className="bottom-text">
-                Organization accounts are provisioned by your organization administrator.{' '}
-                <Link to={ROUTES.REQUEST_ACCESS}>Activate an invite token</Link>
+                Organization accounts are provisioned by your administrator.{' '}
+                <Link to={ROUTES.SIGNUP}>Activate invite token</Link> &middot;{' '}
+                <Link to={ROUTES.REQUEST_ACCESS}>Request org access</Link>
               </p>
 
               {/* Evaluator Test Deck: The 4 Organization Roles */}

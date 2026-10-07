@@ -3,10 +3,10 @@ import { HomePage } from '@/pages/HomePage'
 import { DesignSystemPage } from '@/pages/DesignSystemPage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { LoginPage } from '@/pages/LoginPage'
+import { SignupPage } from '@/pages/SignupPage'
 import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage'
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
 import { SessionErrorPage } from '@/pages/SessionErrorPage'
-import { OnboardingRequestPage } from '@/pages/OnboardingRequestPage'
 import { SuperAdminPage } from '@/pages/SuperAdminPage'
 import { OrgAdminPage } from '@/pages/OrgAdminPage'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
@@ -20,7 +20,8 @@ export function AppRouter() {
       <Route path="/auth-suite" element={<Navigate to={ROUTES.LOGIN} replace />} />
       <Route path="/auth-samples" element={<Navigate to={ROUTES.LOGIN} replace />} />
       <Route path="/session-lifecycle" element={<Navigate to={ROUTES.SESSION_ERROR} replace />} />
-      <Route path={ROUTES.REQUEST_ACCESS} element={<OnboardingRequestPage />} />
+      <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
+      <Route path={ROUTES.REQUEST_ACCESS} element={<SignupPage defaultMode="b2b" />} />
       <Route path={ROUTES.LOGIN} element={<LoginPage />} />
       <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
       <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
