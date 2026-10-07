@@ -1,7 +1,9 @@
 import { useState, type ReactNode } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { useAuth } from '@/hooks/useAuth'
+import { ROUTES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 type AppLayoutProps = {
@@ -9,6 +11,13 @@ type AppLayoutProps = {
   nav?: ReactNode
   profile?: ReactNode
   className?: string
+}
+
+const PAGE_TITLES: Record<string, string> = {
+  [ROUTES.DASHBOARD]: 'Dashboard',
+  [ROUTES.USERS]: 'Users',
+  [ROUTES.ROLES]: 'Roles',
+  [ROUTES.DESIGN_SYSTEM]: 'Design System',
 }
 
 export function AppLayout({
@@ -19,6 +28,9 @@ export function AppLayout({
 }: AppLayoutProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const { profile: authProfile, personaId, setPersona } = useAuth()
+  const location = useLocation()
+
+  const pageTitle = PAGE_TITLES[location.pathname] ?? 'Heftin Academy'
 
   const demoPersonaSelector = (
     <div className="mt-3">
@@ -55,7 +67,7 @@ export function AppLayout({
         User Profile
       </p>
 
-      {demoPersonaSelector}
+      {import.meta.env.DEV && demoPersonaSelector}
     </Card>
   )
 
@@ -134,7 +146,7 @@ export function AppLayout({
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-card px-4 md:px-6">
           <h2 className="text-base font-semibold text-foreground-strong">
-            Dashboard
+            {pageTitle}
           </h2>
 
           <div className="md:hidden">

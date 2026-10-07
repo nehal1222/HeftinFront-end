@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { ROUTES } from '@/lib/constants'
+import { RIGHTS } from '@/lib/rights'
 import type { RightCode } from '@/types/auth'
 
 type NavItem = {
@@ -14,15 +15,15 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Dashboard',
     to: ROUTES.DASHBOARD,
   },
- {
-  label: 'Users',
-  to: ROUTES.USERS,
-  requiredRight: 'users.view',
-},
+  {
+    label: 'Users',
+    to: ROUTES.USERS,
+    requiredRight: RIGHTS.USERS_VIEW,
+  },
   {
     label: 'Roles',
     to: ROUTES.ROLES,
-    requiredRight: 'roles.view',
+    requiredRight: RIGHTS.ROLES_VIEW,
   },
 ]
 

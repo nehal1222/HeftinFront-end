@@ -6,6 +6,7 @@ import { UsersPage } from '@/pages/UsersPage'
 import { RolesPage } from '@/pages/RolesPage'
 import { DesignSystemPage } from '@/pages/DesignSystemPage'
 import { ROUTES } from '@/lib/constants'
+import { RIGHTS } from '@/lib/rights'
 
 export function AppRouter() {
   return (
@@ -23,7 +24,7 @@ export function AppRouter() {
       <Route
         path={ROUTES.USERS}
         element={
-          <ProtectedRoute requiredRight="users.view">
+          <ProtectedRoute requiredRight={RIGHTS.USERS_VIEW}>
             <UsersPage />
           </ProtectedRoute>
         }
@@ -32,7 +33,7 @@ export function AppRouter() {
       <Route
         path={ROUTES.ROLES}
         element={
-          <ProtectedRoute requiredRight="roles.view">
+          <ProtectedRoute requiredRight={RIGHTS.ROLES_VIEW}>
             <RolesPage />
           </ProtectedRoute>
         }
@@ -55,4 +56,3 @@ export function AppRouter() {
     </Routes>
   )
 }
-
