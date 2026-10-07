@@ -1,67 +1,44 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { FormField } from '@/components/ui/FormField'
 import { Input } from '@/components/ui/Input'
 import { AuthLayout } from '@/layouts/AuthLayout'
-import { ROUTES, STORAGE_KEYS } from '@/lib/constants'
+import { ROUTES } from '@/lib/constants'
 import { getErrorMessage } from '@/lib/axios'
-import { authService } from '@/services/auth.service'
+import { useAuth } from '@/contexts/useAuth'
 
 export function LoginPage() {
   const navigate = useNavigate()
+  const { login: authenticate } = useAuth()
+
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [serverError, setServerError] = useState('')
+  const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setError('')
 
-    const nextErrors: Record<string, string> = {}
-
-    if (!login.trim()) {
-      nextErrors.login = 'Enter your email or mobile number.'
-    }
-
-    if (!password) {
-      nextErrors.password = 'Enter your password.'
-    }
-
-    setErrors(nextErrors)
-    setServerError('')
-
-    if (Object.keys(nextErrors).length > 0) {
+    if (!login.trim() || !password) {
+      setError('Login and password are required.')
       return
     }
 
     setIsSubmitting(true)
 
     try {
-      const response = await authService.login({
+      await authenticate({
         login: login.trim(),
         password,
       })
 
-      if (response.access_token) {
-        localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, response.access_token)
-      }
-
-      if (response.refresh_token) {
-        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refresh_token)
-      }
-
       navigate(ROUTES.HOME)
-    } catch (error) {
-      setServerError(
-        getErrorMessage(
-          error,
-          'We could not sign you in. Check your details and try again.',
-        ),
-      )
+    } catch (submitError) {
+      setError(getErrorMessage(submitError, 'Unable to sign in.'))
     } finally {
       setIsSubmitting(false)
     }
@@ -69,47 +46,40 @@ export function LoginPage() {
 
   return (
     <AuthLayout>
-      <Card>
+      <Card className="p-6">
         <div className="mb-6">
-          <p className="text-sm font-medium text-primary">
-            Heftin Academy
-          </p>
-
-          <h1 className="mt-2 text-2xl font-semibold text-foreground-strong">
+          <h1 className="text-2xl font-semibold text-foreground">
             Sign in
           </h1>
 
           <p className="mt-1 text-sm text-muted">
-            Sign in to continue your preparation.
+            Sign in to continue to Heftin Academy.
           </p>
         </div>
 
-        {serverError && (
+        {error && (
           <Alert
             variant="error"
-            className="mb-6"
+            className="mb-4"
           >
-            {serverError}
+            {error}
           </Alert>
         )}
 
         <form
           onSubmit={handleSubmit}
           className="space-y-4"
-          noValidate
         >
           <FormField
-            label="Email or mobile number"
+            label="Login"
             htmlFor="login"
-            error={errors.login}
           >
             <Input
               id="login"
-              type="text"
               value={login}
               onChange={(event) => setLogin(event.target.value)}
               autoComplete="username"
-              aria-invalid={Boolean(errors.login)}
+              placeholder="Email or mobile"
               disabled={isSubmitting}
             />
           </FormField>
@@ -117,7 +87,6 @@ export function LoginPage() {
           <FormField
             label="Password"
             htmlFor="password"
-            error={errors.password}
           >
             <Input
               id="password"
@@ -125,19 +94,10 @@ export function LoginPage() {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               autoComplete="current-password"
-              aria-invalid={Boolean(errors.password)}
+              placeholder="Password"
               disabled={isSubmitting}
             />
           </FormField>
-
-          <div className="flex justify-end">
-            <Link
-              className="text-sm font-medium text-primary hover:underline"
-              to={ROUTES.FORGOT_PASSWORD}
-            >
-              Forgot password?
-            </Link>
-          </div>
 
           <Button
             type="submit"
@@ -147,6 +107,18 @@ export function LoginPage() {
             Sign in
           </Button>
         </form>
+
+        <div className="mt-4 text-center">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(ROUTES.FORGOT_PASSWORD)}
+            disabled={isSubmitting}
+          >
+            Forgot password?
+          </Button>
+        </div>
       </Card>
     </AuthLayout>
   )

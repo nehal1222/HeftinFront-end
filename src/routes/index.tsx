@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { PublicOnlyRoute } from '@/components/auth/PublicOnlyRoute'
 import { DesignSystemPage } from '@/pages/DesignSystemPage'
 import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage'
@@ -10,30 +11,34 @@ import { ROUTES } from '@/lib/constants'
 export function AppRouter() {
   return (
     <Routes>
-      <Route
-        path={ROUTES.HOME}
-        element={<Navigate to={ROUTES.DASHBOARD} replace />}
-      />
+      <Route element={<ProtectedRoute />}>
+        <Route
+          path={ROUTES.HOME}
+          element={<Navigate to={ROUTES.DASHBOARD} replace />}
+        />
 
-      <Route
-        path={ROUTES.DASHBOARD}
-        element={<HomePage />}
-      />
+        <Route
+          path={ROUTES.DASHBOARD}
+          element={<HomePage />}
+        />
 
-      <Route
-        path={ROUTES.DESIGN_SYSTEM}
-        element={<DesignSystemPage />}
-      />
+        <Route
+          path={ROUTES.DESIGN_SYSTEM}
+          element={<DesignSystemPage />}
+        />
+      </Route>
 
       <Route element={<PublicOnlyRoute />}>
         <Route
           path={ROUTES.LOGIN}
           element={<LoginPage />}
         />
+
         <Route
           path={ROUTES.FORGOT_PASSWORD}
           element={<ForgotPasswordPage />}
         />
+
         <Route
           path={ROUTES.RESET_PASSWORD}
           element={<ResetPasswordPage />}
@@ -42,7 +47,7 @@ export function AppRouter() {
 
       <Route
         path={ROUTES.NOT_FOUND}
-        element={<Navigate to={ROUTES.DASHBOARD} replace />}
+        element={<Navigate to={ROUTES.HOME} replace />}
       />
     </Routes>
   )
