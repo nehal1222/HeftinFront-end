@@ -1,17 +1,19 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { FormField } from '@/components/ui/FormField'
 import { Input } from '@/components/ui/Input'
 import { AuthLayout } from '@/layouts/AuthLayout'
-import { ROUTES, STORAGE_KEYS } from '@/lib/constants'
+import { ROUTES } from '@/lib/constants'
 import { getErrorMessage } from '@/lib/axios'
 import { authService } from '@/services/auth.service'
+import { setStoredUser, setTokens } from '@/lib/storage'
 
 export function LoginPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -46,15 +48,18 @@ export function LoginPage() {
         password,
       })
 
-      if (response.access_token) {
-        localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, response.access_token)
-      }
+      setTokens(response.access_token, response.refresh_token)
+setStoredUser(response.user)
 
-      if (response.refresh_token) {
-        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refresh_token)
-      }
+const params = new URLSearchParams(location.search)
+const returnUrl = params.get('returnUrl')
 
-      navigate(ROUTES.HOME)
+const destination =
+  returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('//')
+    ? returnUrl
+    : ROUTES.DASHBOARD
+
+navigate(destination, { replace: true })
     } catch (error) {
       setServerError(
         getErrorMessage(
