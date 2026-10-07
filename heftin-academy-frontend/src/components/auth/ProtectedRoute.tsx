@@ -9,9 +9,7 @@ export function ProtectedRoute() {
     isLoadingSession,
     sessionError,
     retrySession,
-    clearSessionError,
     logout,
-    switchRole,
   } = useAuth()
   const location = useLocation()
 
@@ -27,7 +25,7 @@ export function ProtectedRoute() {
             Restoring Session
           </h1>
           <p className="mt-1 text-caption text-muted">
-            Verifying authentication token and permissions...
+            Verifying authentication token and permissions with authorization gateway...
           </p>
         </div>
       </main>
@@ -57,14 +55,14 @@ export function ProtectedRoute() {
             {sessionError}
           </div>
 
-          <div className="mt-6 flex flex-col gap-2">
+          <div className="mt-6 flex flex-col gap-2.5">
             <button
               type="button"
               onClick={retrySession}
-              className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors"
+              className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm cursor-pointer"
             >
               <RefreshCw size={15} />
-              Retry Session
+              <span>Retry Session Handshake</span>
             </button>
 
             <button
@@ -72,21 +70,10 @@ export function ProtectedRoute() {
               onClick={async () => {
                 await logout()
               }}
-              className="flex items-center justify-center gap-2 rounded-control border border-border bg-surface py-2.5 text-body-sm font-semibold text-foreground-strong hover:border-primary transition-colors"
+              className="flex items-center justify-center gap-2 rounded-control border border-border bg-surface py-2.5 text-body-sm font-semibold text-foreground-strong hover:border-primary transition-colors cursor-pointer"
             >
               <LogOut size={15} />
-              Return to Sign In
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                clearSessionError()
-                switchRole('student')
-              }}
-              className="mt-1 text-center text-caption font-medium text-primary hover:underline"
-            >
-              Continue with demo profile &rarr;
+              <span>Return to Sign In</span>
             </button>
           </div>
         </div>

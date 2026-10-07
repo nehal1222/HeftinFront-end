@@ -275,7 +275,7 @@ const INITIAL_SUBMISSIONS: FacultySubmission[] = [
 ]
 
 export function DashboardPage() {
-  const { user, logout, switchRole, triggerSessionError } = useAuth()
+  const { user, logout, triggerSessionError } = useAuth()
   const navigate = useNavigate()
 
   const [activeTab, setActiveTab] = useState<NavTab>('overview')
@@ -608,46 +608,6 @@ export function DashboardPage() {
             <span className="text-body-sm font-semibold capitalize text-foreground-strong">
               {activeTab}
             </span>
-
-            {/* Interactive Role Switcher Pill Bar for seamless reviewer testing */}
-            <div className="ml-2 hidden lg:flex items-center gap-1 rounded-control border border-border bg-surface p-1 text-caption font-medium">
-              <span className="px-2 text-muted">Test Role:</span>
-              <button
-                type="button"
-                onClick={() => switchRole('student')}
-                className={`rounded-control px-2 py-0.5 transition-colors ${
-                  user.role === 'student' ? 'bg-primary text-primary-foreground font-semibold' : 'text-muted hover:text-foreground'
-                }`}
-              >
-                Student
-              </button>
-              <button
-                type="button"
-                onClick={() => switchRole('faculty')}
-                className={`rounded-control px-2 py-0.5 transition-colors ${
-                  user.role === 'faculty' ? 'bg-primary text-primary-foreground font-semibold' : 'text-muted hover:text-foreground'
-                }`}
-              >
-                Faculty
-              </button>
-              <button
-                type="button"
-                onClick={() => switchRole('individual')}
-                className={`rounded-control px-2 py-0.5 transition-colors ${
-                  user.role === 'individual' ? 'bg-primary text-primary-foreground font-semibold' : 'text-muted hover:text-foreground'
-                }`}
-              >
-                Individual
-              </button>
-              <button
-                type="button"
-                onClick={() => triggerSessionError('Session verification failed: Authentication token has expired or is invalid.')}
-                title="Simulate error loading session"
-                className="rounded-control border border-border px-2 py-0.5 transition-colors text-muted hover:text-foreground hover:border-primary"
-              >
-                Test Error Session
-              </button>
-            </div>
           </div>
 
           <div className="flex items-center gap-3">
