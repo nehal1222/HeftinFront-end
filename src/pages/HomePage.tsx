@@ -4,63 +4,8 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import '@/landing.css'
 
-type RoleKey = 'admin' | 'hod' | 'teacher' | 'student' | 'superadmin'
-
-interface RoleDetail {
-  title: string
-  scope: string
-  intro: string
-  permissions: string
-  route: string
-  actionLabel: string
-}
-
-const ROLE_DATA: Record<RoleKey, RoleDetail> = {
-  admin: {
-    title: 'Organization Admin',
-    scope: 'Delhi Public Academy',
-    intro: 'Manages staff accounts, dynamic roles, academic departments, and audit logs.',
-    permissions: 'Permissions: View and create users, manage roles and permissions, configure org profile.',
-    route: `${ROUTES.LOGIN}?role=org_admin`,
-    actionLabel: 'Launch Admin View',
-  },
-  hod: {
-    title: 'Department HOD',
-    scope: 'General Studies Department',
-    intro: 'Oversees department curriculum, question bank audits, and faculty performance.',
-    permissions: 'Permissions: View department faculties, review question banks, approve exam papers.',
-    route: `${ROUTES.LOGIN}?role=faculty`,
-    actionLabel: 'Launch HOD View',
-  },
-  teacher: {
-    title: 'Faculty / Teacher',
-    scope: 'Batch 101 Faculty',
-    intro: 'Builds mock tests, reviews question analytics, and tracks batch test rankings.',
-    permissions: 'Permissions: View users and manage assigned batch exams.',
-    route: `${ROUTES.LOGIN}?role=faculty`,
-    actionLabel: 'Launch Teacher View',
-  },
-  student: {
-    title: 'Student Aspirant',
-    scope: 'UPSC & SSC Candidate',
-    intro: 'Attempts high-fidelity mock tests, analyses test scores, and tracks ranking percentiles.',
-    permissions: 'Permissions: Attempt mock exams, view performance reports, track streaks.',
-    route: `${ROUTES.LOGIN}?role=student`,
-    actionLabel: 'Launch Student View',
-  },
-  superadmin: {
-    title: 'Platform SuperAdmin',
-    scope: 'Heftin Platform Central',
-    intro: 'Oversees tenant academies, manages platform rights catalog, and enforces ceiling constraints.',
-    permissions: 'Permissions: Full platform ceiling, provision organizations, manage system catalog.',
-    route: `${ROUTES.LOGIN}?role=super_admin`,
-    actionLabel: 'Launch SuperAdmin View',
-  },
-}
-
 export function HomePage() {
   const { isAuthenticated, logout } = useAuth()
-  const [activeRole, setActiveRole] = useState<RoleKey>('admin')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [preloaderHidden, setPreloaderHidden] = useState(false)
 
@@ -112,8 +57,6 @@ export function HomePage() {
     }
   }, [])
 
-  const currentRole = ROLE_DATA[activeRole]
-
   return (
     <div className="landing-page-root">
       {/* Preloader */}
@@ -149,11 +92,11 @@ export function HomePage() {
 
           <div className={`navbar-collapse ${isMobileMenuOpen ? 'is-open' : ''}`} id="navCollapse">
             <ul>
-              <li><a href="#exams" style={{ whiteSpace: 'nowrap' }}>Explore</a></li>
-              <li><Link to={ROUTES.REQUEST_ACCESS} style={{ whiteSpace: 'nowrap' }}>For Institutes</Link></li>
-              <li><a href="#blueprints" style={{ whiteSpace: 'nowrap' }}>Blueprints</a></li>
-              <li><a href="#roles" style={{ whiteSpace: 'nowrap' }}>Roles</a></li>
-              <li><Link to={ROUTES.CONTACT} style={{ whiteSpace: 'nowrap' }}>Contact</Link></li>
+              <li><a href="#exams" style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>Explore</a></li>
+              <li><Link to={ROUTES.REQUEST_ACCESS} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>For Institutes</Link></li>
+              <li><a href="#about" style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>About</a></li>
+              <li><a href="#product" style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>Product</a></li>
+              <li><Link to={ROUTES.CONTACT} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>Contact</Link></li>
             </ul>
             <div className="nav-actions-inner" style={{ whiteSpace: 'nowrap' }}>
               <Link to={ROUTES.REQUEST_ACCESS} className="go-premium" style={{ whiteSpace: 'nowrap' }}>Go Premium</Link>
@@ -316,8 +259,8 @@ export function HomePage() {
           </div>
         </section>
 
-        {/* 5. Why Section */}
-        <section className="why">
+        {/* 5. About / Why Section */}
+        <section className="why" id="about">
           <video className="section-bg-video reveal is-visible" data-pool="fixed" autoPlay muted loop playsInline aria-hidden="true">
             <source src="/videos/gemini.mp4" type="video/mp4" />
           </video>
@@ -325,9 +268,9 @@ export function HomePage() {
 
           <div className="why-inner reveal is-visible">
             <div className="why-copy">
-              <p className="eyebrow">THE HEFTIN DIFFERENCE</p>
+              <p className="eyebrow">ABOUT US &bull; THE HEFTIN DIFFERENCE</p>
               <h2 className="split-heading">
-                <span className="split-heading-lead">Why</span>
+                <span className="split-heading-lead">Why </span>
                 <span className="split-heading-bold">Heftin Academy</span>
               </h2>
               <p>
@@ -459,8 +402,8 @@ export function HomePage() {
           </div>
         </section>
 
-        {/* 8. Features Section */}
-        <section className="features">
+        {/* 8. Product Intro / Features Section */}
+        <section className="features" id="product">
           <div className="features-inner reveal is-visible">
             <div className="features-media corner-marks">
               <video className="features-video reveal is-visible" data-pool="random" autoPlay muted loop playsInline aria-hidden="true">
@@ -469,9 +412,9 @@ export function HomePage() {
             </div>
 
             <div className="features-copy">
-              <p className="eyebrow">WHY IT WORKS</p>
+              <p className="eyebrow">PRODUCT TOUR &bull; WHY IT WORKS</p>
               <h2 className="split-heading">
-                <span className="split-heading-lead">Everything you need,</span>
+                <span className="split-heading-lead">Everything you need, </span>
                 <span className="split-heading-bold">Nothing you don't.</span>
               </h2>
 
@@ -515,370 +458,7 @@ export function HomePage() {
           </div>
         </section>
 
-        {/* 9. Blueprints Section */}
-        <section
-          className="blueprints-section"
-          id="blueprints"
-          style={{
-            padding: '80px 0',
-            background: 'var(--primary)',
-            borderTop: '1px solid var(--border)',
-            borderBottom: '1px solid var(--border)',
-            position: 'relative',
-          }}
-        >
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-            <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 48px' }}>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '4px 14px',
-                  borderRadius: '9999px',
-                  background: 'rgba(255, 255, 255, 0.15)',
-                  border: '1px solid rgba(204, 230, 232, 0.4)',
-                  marginBottom: '12px',
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: '11px',
-                    fontWeight: 800,
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                    color: '#ffffff',
-                    fontFamily: 'monospace',
-                  }}
-                >
-                  Architecture Blueprints
-                </span>
-              </div>
-              <h2
-                style={{
-                  fontSize: 'clamp(26px, 4vw, 36px)',
-                  fontWeight: 800,
-                  color: '#ffffff',
-                  letterSpacing: '-0.02em',
-                  margin: '4px 0 10px',
-                  lineHeight: 1.15,
-                }}
-              >
-                <span style={{ color: 'var(--primary-tint-5)', fontWeight: 500 }}>The 3 Core </span>
-                <span>Blueprints</span>
-              </h2>
-              <div style={{ width: '48px', height: '2px', background: 'var(--primary-tint-5)', margin: '14px auto', borderRadius: '9999px' }}></div>
-              <p style={{ fontSize: '13.5px', color: '#ffffff', opacity: 0.95, margin: '0 auto', lineHeight: 1.6 }}>
-                Strict rights-based navigation, immutable ceilings, and zero-trust role boundaries.
-              </p>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
-              {/* Blueprint 01 */}
-              <div
-                style={{
-                  border: '1px solid var(--border)',
-                  borderRadius: '20px',
-                  padding: '28px 24px',
-                  background: '#ffffff',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  boxShadow: '0 16px 36px -12px rgba(0, 26, 28, 0.22)',
-                }}
-              >
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-                    <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'var(--primary)', display: 'grid', placeItems: 'center', color: '#ffffff' }}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect width="7" height="9" x="3" y="3" rx="1" />
-                        <rect width="7" height="5" x="14" y="3" rx="1" />
-                        <rect width="7" height="9" x="14" y="12" rx="1" />
-                        <rect width="7" height="5" x="3" y="16" rx="1" />
-                      </svg>
-                    </div>
-                    <span
-                      style={{
-                        fontSize: '10px',
-                        fontWeight: 800,
-                        color: 'var(--primary)',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.08em',
-                        fontFamily: 'monospace',
-                        background: 'rgba(0, 130, 142, 0.08)',
-                        padding: '3px 8px',
-                        borderRadius: '6px',
-                        border: '1px solid var(--border)',
-                      }}
-                    >
-                      Blueprint 01
-                    </span>
-                  </div>
-
-                  <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--primary-shade-4)', margin: '0 0 8px', lineHeight: 1.3 }}>
-                    Organization Admin Dashboard
-                  </h3>
-                  <p style={{ fontSize: '13px', color: 'var(--primary-shade-4)', opacity: 0.85, lineHeight: 1.55, margin: 0 }}>
-                    Real-time workspace for People, Roles, Departments, Batches, and Audit logs driven by effective rights.
-                  </p>
-
-                  <div style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px solid var(--border)', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                    <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--primary)', background: 'rgba(204, 230, 232, 0.35)', padding: '3px 8px', borderRadius: '4px' }}>Dynamic Navigation</span>
-                    <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--primary-shade-4)', background: '#f8fcfe', border: '1px solid var(--border)', padding: '3px 8px', borderRadius: '4px' }}>Audit Trail</span>
-                    <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--primary-shade-4)', background: '#f8fcfe', border: '1px solid var(--border)', padding: '3px 8px', borderRadius: '4px' }}>Tenant Scoped</span>
-                  </div>
-                </div>
-
-                <Link
-                  to={`${ROUTES.LOGIN}?role=org_admin`}
-                  className="start-button"
-                  style={{ marginTop: '24px', padding: '10px 18px', fontSize: '12.5px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}
-                >
-                  <span>Open Admin Dashboard</span>
-                  <span>&rarr;</span>
-                </Link>
-              </div>
-
-              {/* Blueprint 02 */}
-              <div
-                style={{
-                  border: '1px solid var(--border)',
-                  borderRadius: '20px',
-                  padding: '28px 24px',
-                  background: '#ffffff',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  boxShadow: '0 16px 36px -12px rgba(0, 26, 28, 0.22)',
-                }}
-              >
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-                    <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'var(--primary)', display: 'grid', placeItems: 'center', color: '#ffffff' }}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <line x1="4" x2="20" y1="21" y2="21" />
-                        <line x1="4" x2="20" y1="3" y2="3" />
-                        <line x1="12" x2="12" y1="8" y2="16" />
-                        <line x1="8" x2="16" y1="12" y2="12" />
-                      </svg>
-                    </div>
-                    <span
-                      style={{
-                        fontSize: '10px',
-                        fontWeight: 800,
-                        color: 'var(--primary)',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.08em',
-                        fontFamily: 'monospace',
-                        background: 'rgba(0, 130, 142, 0.08)',
-                        padding: '3px 8px',
-                        borderRadius: '6px',
-                        border: '1px solid var(--border)',
-                      }}
-                    >
-                      Blueprint 02
-                    </span>
-                  </div>
-
-                  <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--primary-shade-4)', margin: '0 0 8px', lineHeight: 1.3 }}>
-                    Role &amp; Rights Builder
-                  </h3>
-                  <p style={{ fontSize: '13px', color: 'var(--primary-shade-4)', opacity: 0.85, lineHeight: 1.55, margin: 0 }}>
-                    Dynamic custom role editor featuring immutable ceiling barriers that stop privilege self-escalation.
-                  </p>
-
-                  <div style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px solid var(--border)', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                    <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--primary)', background: 'rgba(204, 230, 232, 0.35)', padding: '3px 8px', borderRadius: '4px' }}>Immutable Ceilings</span>
-                    <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--primary-shade-4)', background: '#f8fcfe', border: '1px solid var(--border)', padding: '3px 8px', borderRadius: '4px' }}>No Escalation</span>
-                    <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--primary-shade-4)', background: '#f8fcfe', border: '1px solid var(--border)', padding: '3px 8px', borderRadius: '4px' }}>Granular Matrix</span>
-                  </div>
-                </div>
-
-                <Link
-                  to={`${ROUTES.LOGIN}?role=org_admin`}
-                  className="start-button"
-                  style={{ marginTop: '24px', padding: '10px 18px', fontSize: '12.5px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}
-                >
-                  <span>Open Role Builder</span>
-                  <span>&rarr;</span>
-                </Link>
-              </div>
-
-              {/* Blueprint 03 */}
-              <div
-                style={{
-                  border: '1px solid var(--border)',
-                  borderRadius: '20px',
-                  padding: '28px 24px',
-                  background: '#ffffff',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  boxShadow: '0 16px 36px -12px rgba(0, 26, 28, 0.22)',
-                }}
-              >
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-                    <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'var(--primary)', display: 'grid', placeItems: 'center', color: '#ffffff' }}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect width="16" height="20" x="4" y="2" rx="2" ry="2" />
-                        <path d="M9 22v-4h6v4" />
-                        <path d="M8 6h.01" /><path d="M16 6h.01" /><path d="M8 10h.01" /><path d="M16 10h.01" /><path d="M8 14h.01" /><path d="M16 14h.01" />
-                      </svg>
-                    </div>
-                    <span
-                      style={{
-                        fontSize: '10px',
-                        fontWeight: 800,
-                        color: 'var(--primary)',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.08em',
-                        fontFamily: 'monospace',
-                        background: 'rgba(0, 130, 142, 0.08)',
-                        padding: '3px 8px',
-                        borderRadius: '6px',
-                        border: '1px solid var(--border)',
-                      }}
-                    >
-                      Blueprint 03
-                    </span>
-                  </div>
-
-                  <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--primary-shade-4)', margin: '0 0 8px', lineHeight: 1.3 }}>
-                    SuperAdmin Organization Control
-                  </h3>
-                  <p style={{ fontSize: '13px', color: 'var(--primary-shade-4)', opacity: 0.85, lineHeight: 1.55, margin: 0 }}>
-                    Multi-tenant provisioner with organization seat limits, quota bars, and master rights allocation.
-                  </p>
-
-                  <div style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px solid var(--border)', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                    <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--primary)', background: 'rgba(204, 230, 232, 0.35)', padding: '3px 8px', borderRadius: '4px' }}>Tenant Quotas</span>
-                    <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--primary-shade-4)', background: '#f8fcfe', border: '1px solid var(--border)', padding: '3px 8px', borderRadius: '4px' }}>Master Ceiling</span>
-                    <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--primary-shade-4)', background: '#f8fcfe', border: '1px solid var(--border)', padding: '3px 8px', borderRadius: '4px' }}>Central Governance</span>
-                  </div>
-                </div>
-
-                <Link
-                  to={`${ROUTES.LOGIN}?role=super_admin`}
-                  className="start-button"
-                  style={{ marginTop: '24px', padding: '10px 18px', fontSize: '12.5px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}
-                >
-                  <span>Open SuperAdmin Central</span>
-                  <span>&rarr;</span>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 10. Roles Sandbox */}
-        <section className="roles-sandbox-section" id="roles" style={{ padding: '70px 0', background: '#f8fcfe', borderTop: '1px solid var(--border)' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-              <div>
-                <p className="eyebrow" style={{ margin: 0 }}>ACCESS CONTROL</p>
-                <h2 className="split-heading" style={{ margin: '4px 0', justifyContent: 'flex-start' }}>
-                  <span className="split-heading-lead">Dynamic Roles &amp; </span>
-                  <span className="split-heading-bold">Rights</span>
-                </h2>
-                <p style={{ fontSize: '12.5px', color: 'var(--primary-shade-4)', opacity: 0.85, margin: '4px 0 0' }}>
-                  Select a role to verify its effective rights summary in plain English.
-                </p>
-              </div>
-
-              {/* Role switcher buttons */}
-              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                {(['admin', 'hod', 'teacher', 'student', 'superadmin'] as const).map((rk) => (
-                  <button
-                    key={rk}
-                    type="button"
-                    className={`role-tab-btn ${activeRole === rk ? 'active' : ''}`}
-                    onClick={() => setActiveRole(rk)}
-                    style={{
-                      padding: '8px 14px',
-                      borderRadius: '10px',
-                      border: activeRole === rk ? '1px solid var(--primary)' : '1px solid var(--border)',
-                      background: activeRole === rk ? 'var(--primary)' : '#ffffff',
-                      color: activeRole === rk ? '#ffffff' : 'var(--primary-shade-4)',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease',
-                    }}
-                  >
-                    {rk === 'superadmin' ? 'SuperAdmin' : rk.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Active role details card */}
-            <div
-              style={{
-                borderRadius: '18px',
-                border: '1px solid var(--border)',
-                background: '#ffffff',
-                padding: '26px',
-                boxShadow: '0 12px 32px -16px rgba(0, 26, 28, 0.09)',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '12px',
-                  borderBottom: '1px solid var(--border)',
-                  paddingBottom: '16px',
-                }}
-              >
-                <div>
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.06em', fontFamily: 'monospace' }}>
-                    {currentRole.scope}
-                  </span>
-                  <h3 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--primary-shade-4)', margin: '4px 0 0' }}>
-                    {currentRole.title}
-                  </h3>
-                </div>
-
-                <Link
-                  to={currentRole.route}
-                  className="start-button"
-                  style={{ padding: '8px 16px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}
-                >
-                  <span>{currentRole.actionLabel}</span>
-                  <span>&rarr;</span>
-                </Link>
-              </div>
-
-              <p style={{ fontSize: '13px', color: 'var(--primary-shade-4)', opacity: 0.9, lineHeight: 1.5, margin: '16px 0 12px' }}>
-                {currentRole.intro}
-              </p>
-
-              <div
-                style={{
-                  background: '#f3fafb',
-                  border: '1px solid var(--border)',
-                  borderRadius: '10px',
-                  padding: '12px 14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--primary)', flexShrink: 0 }}>
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg>
-                <span style={{ fontSize: '12.5px', color: 'var(--primary-shade-4)', fontWeight: 600 }}>
-                  {currentRole.permissions}
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 11. Testimonial Section */}
+        {/* 9. Testimonial Section */}
         <section className="testimonial">
           <div className="testimonial-inner reveal is-visible corner-marks on-dark">
             <span className="quote-mark">&ldquo;</span>
@@ -893,7 +473,7 @@ export function HomePage() {
         </section>
       </main>
 
-      {/* 12. Site Footer */}
+      {/* 10. Site Footer */}
       <footer className="site-footer">
         <div className="footer-inner">
           <div className="footer-brand">
@@ -908,9 +488,9 @@ export function HomePage() {
           <div className="footer-col">
             <h4>Product</h4>
             <ul>
+              <li><a href="#product">Product Overview</a></li>
               <li><Link to={`${ROUTES.LOGIN}?role=student`}>Test Series</Link></li>
               <li><Link to={ROUTES.WORKSPACE}>Performance</Link></li>
-              <li><Link to={ROUTES.WORKSPACE}>Study Material</Link></li>
               <li><Link to={ROUTES.REQUEST_ACCESS}>Pricing</Link></li>
             </ul>
           </div>
@@ -918,20 +498,19 @@ export function HomePage() {
           <div className="footer-col">
             <h4>Company</h4>
             <ul>
+              <li><a href="#about">About Us</a></li>
               <li><Link to={ROUTES.REQUEST_ACCESS}>For Institutes</Link></li>
               <li><Link to={ROUTES.REQUEST_ACCESS}>Activate Invite / Onboarding</Link></li>
-              <li><Link to={ROUTES.HOME}>About Us</Link></li>
               <li><Link to={ROUTES.HOME}>Careers</Link></li>
               <li><Link to={ROUTES.CONTACT}>Contact</Link></li>
             </ul>
           </div>
 
           <div className="footer-col">
-            <h4>Architecture</h4>
+            <h4>Platform</h4>
             <ul>
-              <li><a href="#blueprints">Architecture Blueprints</a></li>
-              <li><a href="#roles">Dynamic Roles Sandbox</a></li>
               <li><Link to={ROUTES.LOGIN}>Organizational Portal</Link></li>
+              <li><Link to={ROUTES.REQUEST_ACCESS}>Enterprise Solutions</Link></li>
               <li><Link to={ROUTES.REQUEST_ACCESS}>Tenant Governance</Link></li>
             </ul>
           </div>
