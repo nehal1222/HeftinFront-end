@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { ROUTES } from '@/lib/constants'
+import { ROUTES, SIGNUP_URL } from '@/lib/constants'
 import { getErrorMessage, getFieldErrors } from '@/lib/axios'
 import { setTokens } from '@/lib/storage'
 import { authService } from '@/services/auth.service'
@@ -159,7 +159,7 @@ export function LoginPage() {
             <div className="login-instructions">
               <p>
                 Organization accounts are provisioned by your organization administrator.{' '}
-                <a href="https://heftin.netlify.app/signup">Activate an invite token</a>
+                <a href={SIGNUP_URL}>Activate an invite token</a>
               </p>
             </div>
 
