@@ -40,7 +40,8 @@ npm run dev
 ```
 
 App: http://localhost:5174  
-API (backend): `VITE_API_BASE_URL` (default `http://localhost:8001/api/v1`)
+API (backend): `VITE_API_BASE_URL` (default `http://localhost:8001/api/v1`)  
+Invite activation URL: set `VITE_SIGNUP_URL` to enable the “Activate an invite token” link on the login page.
 
 Port **5174** so it does not clash with other Heftin apps on 5173.
 

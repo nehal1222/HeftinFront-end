@@ -159,7 +159,7 @@ export function LoginPage() {
             <div className="login-instructions">
               <p>
                 Organization accounts are provisioned by your organization administrator.{' '}
-                <a href={SIGNUP_URL}>Activate an invite token</a>
+                {SIGNUP_URL && <a href={SIGNUP_URL}>Activate an invite token</a>}
               </p>
             </div>
 

@@ -7,7 +7,9 @@ export function AuthLayout() {
     ? 'forgot-password-card'
     : pathname === ROUTES.RESET_PASSWORD
       ? 'reset-password-card'
-      : ''
+      : pathname === ROUTES.HOME || pathname === ROUTES.LOGIN
+        ? 'login-form-card'
+        : ''
 
   return (
     <main className="login-page">
