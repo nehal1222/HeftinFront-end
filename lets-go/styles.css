@@ -283,10 +283,16 @@ header h1 {
     padding: 18px 40px;
 }
 
-.brand {
-    display: flex;
+.brand,
+.navbar .brand {
+    display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    text-decoration: none;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    animation: none;
 }
 
 .brand-logo {
