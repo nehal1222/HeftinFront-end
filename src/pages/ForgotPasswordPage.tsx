@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { Mail } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { NetlifyBadge } from '@/components/ui/NetlifyBadge'
 import { ROUTES } from '@/lib/constants'
 import { getErrorMessage, getFieldErrors } from '@/lib/axios'
 import { authService } from '@/services/auth.service'
@@ -49,18 +48,7 @@ export function ForgotPasswordPage() {
   }
 
   return (
-    <main className="login-page">
-      <div className="login-background" aria-hidden="true">
-        <span className="login-background-circle login-background-circle-one" />
-        <span className="login-background-circle login-background-circle-two" />
-        <span className="login-background-circle login-background-circle-three" />
-      </div>
-      <section className="login-card forgot-password-card" aria-labelledby="forgot-password-heading">
-        <Link className="login-brand" to={ROUTES.HOME} aria-label="Heftin Academy home">
-          <img className="login-brand-mark" src="/heftin-logo.png" alt="" />
-          <span>Heftin Academy</span>
-        </Link>
-
+    <>
         {success ? (
           <div className="forgot-password-success" role="status">
             <h1 id="forgot-password-heading"><span>Check your</span><strong>inbox</strong></h1>
@@ -113,9 +101,6 @@ export function ForgotPasswordPage() {
             </p>
           </>
         )}
-      </section>
-
-      <NetlifyBadge />
-    </main>
+    </>
   )
 }

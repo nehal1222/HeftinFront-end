@@ -4,7 +4,6 @@ import { useEffect } from 'react'
 import { Eye, EyeOff, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { NetlifyBadge } from '@/components/ui/NetlifyBadge'
 import { ROUTES } from '@/lib/constants'
 import { getErrorMessage, getFieldErrors } from '@/lib/axios'
 import { authService } from '@/services/auth.service'
@@ -64,18 +63,7 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <main className="login-page">
-      <div className="login-background" aria-hidden="true">
-        <span className="login-background-circle login-background-circle-one" />
-        <span className="login-background-circle login-background-circle-two" />
-        <span className="login-background-circle login-background-circle-three" />
-      </div>
-      <section className="login-card reset-password-card" aria-labelledby="reset-password-heading">
-        <Link className="login-brand" to={ROUTES.HOME} aria-label="Heftin Academy home">
-          <img className="login-brand-mark" src="/heftin-logo.png" alt="" />
-          <span>Heftin Academy</span>
-        </Link>
-
+    <>
         {success ? (
           <div className="reset-password-success" role="status">
             <span className="reset-password-success-mark" aria-hidden="true">✓</span>
@@ -83,6 +71,15 @@ export function ResetPasswordPage() {
             <p>Your password has been changed successfully. You can now sign in with your new password.</p>
             <Link className="login-submit reset-password-success-link" to={ROUTES.LOGIN}>
               <span>Continue to sign in</span>
+              <span className="login-submit-arrow" aria-hidden="true">→</span>
+            </Link>
+          </div>
+        ) : !token ? (
+          <div className="reset-password-success" role="alert">
+            <h1 id="reset-password-heading">Reset link unavailable</h1>
+            <p>This reset link is missing its token. Request a new link to continue.</p>
+            <Link className="login-submit reset-password-success-link" to={ROUTES.FORGOT_PASSWORD}>
+              <span>Request a new reset link</span>
               <span className="login-submit-arrow" aria-hidden="true">→</span>
             </Link>
           </div>
@@ -158,13 +155,12 @@ export function ResetPasswordPage() {
             </form>
 
             <p className="reset-password-return">
+              Need a new link? <Link to={ROUTES.FORGOT_PASSWORD}>Request a new reset link</Link>
+              <br />
               <Link to={ROUTES.LOGIN}>Back to sign in</Link>
             </p>
           </>
         )}
-      </section>
-
-      <NetlifyBadge />
-    </main>
+    </>
   )
 }

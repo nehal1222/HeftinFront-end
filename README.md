@@ -4,7 +4,7 @@ Vite + React 19 + TypeScript + Tailwind CSS v4.
 
 **Read `AGENTS.md` before you write code.** This is the e-examination product only (not NexGen Athlete, not Heftin IAS).
 
-This repo currently has the **basic structure** (folders, auth client, home page). Full schema, extra features, and AI add-ons are still a team plan.
+This repo currently has the **basic structure** (folders, auth client, sign-in and recovery flows, and a protected dashboard landing). Full schema, extra features, and AI add-ons are still a team plan.
 
 ## GitHub
 
