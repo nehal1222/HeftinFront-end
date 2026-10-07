@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   AlertCircle,
   ArrowRight,
@@ -37,19 +37,28 @@ export function LoginPage() {
   const { user, isAuthenticated, login, logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const [searchParams] = useSearchParams()
 
-  const [email, setEmail] = useState('')
+  const requestedRole = searchParams.get('role')
+  const defaultEmail =
+    requestedRole === 'faculty'
+      ? 'faculty@dpa.edu'
+      : requestedRole === 'org_admin'
+      ? 'admin@dpa.edu'
+      : requestedRole === 'super_admin'
+      ? 'superadmin@heftin.com'
+      : requestedRole === 'student'
+      ? 'student@dpa.edu'
+      : requestedRole === 'individual'
+      ? 'learner@gmail.com'
+      : ''
+
+  const [email, setEmail] = useState(defaultEmail)
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [sessionError, setSessionError] = useState<string | null>(null)
-
-  function fillDemoAccount(demoEmail: string = 'student@dpa.edu') {
-    setEmail(demoEmail)
-    setPassword('password123')
-    setSessionError(null)
-  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -253,18 +262,33 @@ export function LoginPage() {
                 </button>
               </form>
 
-              {/* Demo evaluation helper */}
-              <div className="mt-5 border-t border-border pt-3.5 text-center">
-                <p className="text-caption text-muted">
-                  Demo credentials:{' '}
-                  <button
-                    type="button"
-                    onClick={() => fillDemoAccount('student@dpa.edu')}
-                    className="font-medium text-primary hover:underline cursor-pointer"
-                  >
-                    student@dpa.edu / password123 (Click to fill)
-                  </button>
-                </p>
+              {/* Systematic Role Credentials Reference */}
+              <div className="mt-5 border-t border-border pt-4">
+                <span className="block text-caption font-semibold uppercase tracking-wider text-muted text-center mb-2.5">
+                  Institutional Roles Directory
+                </span>
+                <div className="space-y-1.5 rounded-control border border-border bg-surface p-3 text-caption">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-foreground-strong">Student:</span>
+                    <span className="font-mono text-muted">student@dpa.edu &middot; student@123</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-foreground-strong">Faculty:</span>
+                    <span className="font-mono text-muted">faculty@dpa.edu &middot; faculty@123</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-foreground-strong">Org Admin:</span>
+                    <span className="font-mono text-muted">admin@dpa.edu &middot; admin@123</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-foreground-strong">SuperAdmin:</span>
+                    <span className="font-mono text-muted">superadmin@heftin.com &middot; superadmin@123</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-foreground-strong">Individual:</span>
+                    <span className="font-mono text-muted">learner@gmail.com &middot; learner@123</span>
+                  </div>
+                </div>
               </div>
 
               {/* Institutional access link */}

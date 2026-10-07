@@ -1,29 +1,26 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { AlertCircle, GraduationCap, Loader2, LogOut, RefreshCw, Sparkles } from 'lucide-react'
+import { AlertCircle, GraduationCap, Loader2, LogOut, RefreshCw } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { ROUTES } from '@/lib/constants'
 
 export function SessionErrorPage() {
-  const { logout, switchRole } = useAuth()
+  const { logout, retrySession } = useAuth()
   const navigate = useNavigate()
   const [retrying, setRetrying] = useState(false)
 
-  function handleRetry() {
+  async function handleRetry() {
     setRetrying(true)
-    setTimeout(() => {
+    try {
+      await retrySession()
+    } finally {
       setRetrying(false)
-    }, 1000)
+    }
   }
 
   async function handleReturnToSignIn() {
     await logout()
     navigate(ROUTES.LOGIN)
-  }
-
-  function handleContinueDemo() {
-    switchRole('student')
-    navigate(ROUTES.WORKSPACE)
   }
 
   return (
@@ -83,28 +80,19 @@ export function SessionErrorPage() {
                 <button
                   type="button"
                   onClick={handleRetry}
-                  className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm"
+                  className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm cursor-pointer"
                 >
                   <RefreshCw size={15} />
-                  Retry Session Handshake
+                  <span>Retry Session Handshake</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleReturnToSignIn}
-                  className="flex items-center justify-center gap-2 rounded-control border border-border bg-surface py-2.5 text-body-sm font-semibold text-foreground-strong hover:border-primary transition-colors"
+                  className="flex items-center justify-center gap-2 rounded-control border border-border bg-surface py-2.5 text-body-sm font-semibold text-foreground-strong hover:border-primary transition-colors cursor-pointer"
                 >
                   <LogOut size={15} />
-                  Return to Sign In
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleContinueDemo}
-                  className="mt-1 flex items-center justify-center gap-1.5 text-center text-caption font-medium text-primary hover:underline"
-                >
-                  <Sparkles size={13} />
-                  <span>Continue with demo session &rarr;</span>
+                  <span>Return to Sign In</span>
                 </button>
               </div>
             </div>
