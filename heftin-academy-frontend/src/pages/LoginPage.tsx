@@ -1,36 +1,14 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import {
-  AlertCircle,
-  ArrowRight,
-  Eye,
-  EyeOff,
-  GraduationCap,
-  Loader2,
-  LogOut,
-  User,
-} from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { ROUTES } from '@/lib/constants'
 import type { SubscriptionPlan, UserRole } from '@/types/access'
+import '@/auth.css'
 
-function inferProfileFromEmail(email: string): { displayName: string; role: UserRole; plan: SubscriptionPlan } {
-  const normalized = email.trim().toLowerCase()
-  if (normalized.includes('admin@dpa.edu') || normalized.startsWith('admin@')) {
-    return { displayName: 'Vikram Malhotra', role: 'org_admin', plan: 'institution' }
-  }
-  if (normalized.includes('meera') || normalized.includes('faculty') || normalized.includes('teacher')) {
-    return { displayName: 'Dr. Meera Patel', role: 'faculty', plan: 'institution' }
-  }
-  if (normalized.includes('super') || normalized.includes('lead@heftin')) {
-    return { displayName: 'Platform Administrator', role: 'super_admin', plan: 'pro' }
-  }
-  if (normalized.endsWith('.edu') || normalized.includes('student')) {
-    return { displayName: 'Arjun Kumar', role: 'student', plan: 'institution' }
-  }
-  const namePart = normalized.split('@')[0].replace(/[._-]/g, ' ')
-  const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1)
-  return { displayName: formattedName || 'Personal Learner', role: 'individual', plan: 'scholar' }
+interface WelcomeProfile {
+  name: string
+  role: string
+  organization: string
 }
 
 export function LoginPage() {
@@ -40,6 +18,7 @@ export function LoginPage() {
   const [searchParams] = useSearchParams()
 
   const requestedRole = searchParams.get('role')
+  const defaultMode = requestedRole === 'individual' ? 'ind' : 'org'
   const defaultEmail =
     requestedRole === 'faculty'
       ? 'faculty@dpa.edu'
@@ -53,31 +32,72 @@ export function LoginPage() {
       ? 'learner@gmail.com'
       : ''
 
+  const [loginMode, setLoginMode] = useState<'org' | 'ind'>(defaultMode)
   const [email, setEmail] = useState(defaultEmail)
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [sessionError, setSessionError] = useState<string | null>(null)
+  const [welcomeUser, setWelcomeUser] = useState<WelcomeProfile | null>(null)
+
+  function fillRolePreset(presetEmail: string, presetPassword: string) {
+    setEmail(presetEmail)
+    setPassword(presetPassword)
+    setSessionError(null)
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setIsLoading(true)
     setSessionError(null)
 
-    const profile = inferProfileFromEmail(email)
+    const normalized = email.trim().toLowerCase()
+    let assignedRole: UserRole = 'student'
+    let assignedName = 'Arjun Kumar'
+    let assignedPlan: SubscriptionPlan = 'institution'
+    let organizationName = 'Delhi Public Academy'
+
+    if (normalized.includes('faculty') || normalized.includes('teacher') || normalized.includes('meera')) {
+      assignedRole = 'faculty'
+      assignedName = 'Dr. Meera Patel'
+      organizationName = 'Delhi Public Academy'
+    } else if (normalized.includes('admin@dpa') || normalized.includes('orgadmin')) {
+      assignedRole = 'org_admin'
+      assignedName = 'Vikram Malhotra'
+      organizationName = 'Delhi Public Academy'
+    } else if (normalized.includes('superadmin') || normalized.includes('admin@heftin') || normalized.includes('lead@heftin')) {
+      assignedRole = 'super_admin'
+      assignedName = 'Platform Administrator'
+      assignedPlan = 'pro'
+      organizationName = 'Heftin Central Enterprise'
+    } else if (normalized.includes('learner') || normalized.includes('ananya') || loginMode === 'ind') {
+      assignedRole = 'individual'
+      assignedName = 'Ananya Sharma'
+      assignedPlan = 'scholar'
+      organizationName = 'Individual Scholar'
+    }
 
     try {
       await login({
-        email: email.trim(),
+        email: normalized,
         password,
-        displayName: profile.displayName,
-        role: profile.role,
-        plan: profile.plan,
+        displayName: assignedName,
+        role: assignedRole,
+        plan: assignedPlan,
       })
 
-      const destination = (location.state as { from?: string } | null)?.from ?? ROUTES.WORKSPACE
-      navigate(destination, { replace: true })
+      // Show the authentic LETSGO workspace welcome screen overlay
+      setWelcomeUser({
+        name: assignedName,
+        role: assignedRole,
+        organization: organizationName,
+      })
+
+      setTimeout(() => {
+        const destination = (location.state as { from?: string } | null)?.from ?? ROUTES.WORKSPACE
+        navigate(destination, { replace: true })
+      }, 1100)
     } catch (err: unknown) {
       const message =
         err instanceof Error
@@ -90,47 +110,57 @@ export function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface px-4 py-12 font-sans text-foreground">
-      <div className="w-full max-w-md">
-        {/* Brand Header */}
-        <div className="mb-6 flex flex-col items-center text-center">
-          <Link to={ROUTES.HOME} className="flex items-center gap-2.5 transition-opacity hover:opacity-90">
-            <div className="grid size-10 place-items-center rounded-control bg-primary text-primary-foreground shadow-sm">
-              <GraduationCap size={22} aria-hidden="true" />
-            </div>
-            <span className="font-display text-heading-md font-semibold text-foreground-strong">
-              Heftin Academy
-            </span>
-          </Link>
-        </div>
+    <>
+      {/* ================================
+           ANIMATED FLOATING BACKGROUND
+      ================================= */}
+      <div className="background" aria-hidden="true">
+        <div className="circle circle-one" />
+        <div className="circle circle-two" />
+        <div className="circle circle-three" />
+      </div>
 
-        {/* Card */}
-        <div className="rounded-card border border-border bg-surface-elevated p-7 shadow-sm sm:p-8">
-          {isAuthenticated && user ? (
-            /* State: Already signed in */
-            <div className="text-center">
-              <div className="mx-auto grid size-12 place-items-center rounded-full bg-primary-soft text-primary-dark">
-                <User size={24} aria-hidden="true" />
-              </div>
-              <h1 className="mt-4 font-display text-heading-sm font-semibold text-foreground-strong">
-                Welcome back, {user.displayName}
-              </h1>
-              <p className="mt-1 text-body-sm text-muted">
-                You are currently signed in as{' '}
-                <span className="font-semibold text-foreground-strong">{user.email}</span>
-              </p>
-              <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-3 py-1 text-caption font-semibold text-primary-dark capitalize">
-                Role: {user.role.replace('_', ' ')}
+      {/* ================================
+           MAIN WRAPPER & LOGIN CARD
+      ================================= */}
+      <main className="auth-wrapper font-sans">
+        <section className="auth-card">
+          {isAuthenticated && user && !welcomeUser ? (
+            /* State: Already Authenticated */
+            <div style={{ textAlign: 'center', padding: '10px 0' }}>
+              <div className="brand" style={{ marginBottom: '18px' }}>
+                <div className="brand-icon">
+                  <img src="/images/logo.jpeg" alt="Heftin Academy" className="brand-icon-img" />
+                </div>
+                <span>Heftin Academy</span>
               </div>
 
-              <div className="mt-6 flex flex-col gap-2.5">
+              <div className="auth-heading" style={{ marginBottom: '18px' }}>
+                <h1 style={{ fontSize: '24px' }}>
+                  <span className="line-1">Welcome</span>
+                  <span className="line-2">back</span>
+                </h1>
+                <p>
+                  You are currently authenticated as <strong>{user.displayName}</strong> ({user.email})
+                </p>
+              </div>
+
+              <div style={{ margin: '16px 0', padding: '12px', borderRadius: '10px', background: 'var(--white)', border: '1px solid var(--border)', fontSize: '12px' }}>
+                <span style={{ color: 'var(--muted)' }}>Active Identity: </span>
+                <strong style={{ color: 'var(--primary)', textTransform: 'capitalize' }}>
+                  {user.role.replace('_', ' ')} &middot; {user.plan.toUpperCase()}
+                </strong>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
                 <button
                   type="button"
                   onClick={() => navigate(ROUTES.WORKSPACE)}
-                  className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm cursor-pointer"
+                  className="primary-button"
+                  style={{ width: '100%' }}
                 >
-                  <span>Continue to Workspace</span>
-                  <ArrowRight size={16} aria-hidden="true" />
+                  <span className="button-text">Continue to Workspace</span>
+                  <span className="button-arrow">&rarr;</span>
                 </button>
 
                 <button
@@ -141,186 +171,512 @@ export function LoginPage() {
                     setPassword('')
                     setSessionError(null)
                   }}
-                  className="flex items-center justify-center gap-2 rounded-control border border-border bg-surface py-2 text-body-sm font-medium text-muted hover:text-foreground hover:border-primary transition-colors cursor-pointer"
+                  style={{
+                    padding: '10px 16px',
+                    borderRadius: '11px',
+                    border: '1px solid var(--border)',
+                    background: 'var(--white)',
+                    color: 'var(--muted)',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
                 >
-                  <LogOut size={15} aria-hidden="true" />
-                  <span>Sign Out &amp; Use Another Account</span>
+                  Sign Out &amp; Use Another Account
                 </button>
               </div>
             </div>
           ) : (
-            /* State: Standard Clean Production Sign In Form */
-            <div>
-              <div className="mb-5">
-                <h1 className="font-display text-heading-md font-semibold text-foreground-strong">
-                  Sign In
-                </h1>
-                <p className="mt-1 text-body-sm text-muted">
-                  Enter your credentials to access your academy workspace.
-                </p>
+            /* Standard LETSGO Card Form */
+            <>
+              {/* ================================
+                   LOGO
+              ================================= */}
+              <div className="brand">
+                <div className="brand-icon">
+                  <img src="/images/logo.jpeg" alt="Heftin Academy" className="brand-icon-img" />
+                </div>
+                <span>Heftin Academy</span>
               </div>
 
-              {/* Session Error Alert Banner (Triggers on False Credentials) */}
-              {sessionError && (
-                <div
-                  role="alert"
-                  className="mb-5 flex items-start gap-3 rounded-control border border-primary-tint-3 bg-primary-soft/40 p-3.5 text-body-sm text-foreground-strong"
+              {/* ================================
+                   HEADING
+              ================================= */}
+              <div className="auth-heading">
+                <h1>
+                  <span className="line-1">Welcome</span>
+                  <span className="line-2">back</span>
+                </h1>
+                <p>Sign in to continue to your account</p>
+              </div>
+
+              {/* ================================
+                   MODE SWITCHER: ORG VS INDIVIDUAL
+              ================================= */}
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '6px',
+                  marginBottom: '20px',
+                  padding: '4px',
+                  border: '1px solid var(--border)',
+                  borderRadius: '12px',
+                  background: 'var(--white)',
+                }}
+              >
+                <button
+                  type="button"
+                  id="tabOrg"
+                  onClick={() => setLoginMode('org')}
+                  style={{
+                    flex: 1,
+                    padding: '8px 10px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: loginMode === 'org' ? 'var(--primary)' : 'var(--white)',
+                    color: loginMode === 'org' ? 'var(--white)' : 'var(--error)',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '4px',
+                    transition: 'all 0.2s ease',
+                  }}
                 >
-                  <AlertCircle size={18} className="shrink-0 mt-0.5 text-primary" aria-hidden="true" />
-                  <div className="space-y-1">
-                    <p className="font-semibold text-primary-dark">Authentication Failed</p>
-                    <p className="text-caption text-muted leading-relaxed">{sessionError}</p>
+                  <span>Organization</span>
+                </button>
+                <button
+                  type="button"
+                  id="tabInd"
+                  onClick={() => setLoginMode('ind')}
+                  style={{
+                    flex: 1,
+                    padding: '8px 10px',
+                    borderRadius: '8px',
+                    border: loginMode === 'ind' ? 'none' : '1px solid var(--border)',
+                    background: loginMode === 'ind' ? 'var(--primary)' : 'var(--white)',
+                    color: loginMode === 'ind' ? 'var(--white)' : 'var(--error)',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '4px',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  <span>Individual</span>
+                </button>
+              </div>
+
+              {/* Individual Category Container */}
+              {loginMode === 'ind' && (
+                <div
+                  id="individualContainer"
+                  style={{
+                    textAlign: 'center',
+                    padding: '24px 16px',
+                    border: '1px solid var(--border)',
+                    borderRadius: '14px',
+                    background: 'var(--white)',
+                    marginBottom: '20px',
+                  }}
+                >
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      padding: '3px 10px',
+                      borderRadius: '99px',
+                      background: 'rgba(0, 130, 142, 0.1)',
+                      color: 'var(--primary)',
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    Individual Category
+                  </span>
+                  <h3 style={{ margin: '8px 0 4px', fontSize: '16px', fontWeight: 700, color: 'var(--error)' }}>
+                    Individual Learner Workspace
+                  </h3>
+                  <p
+                    style={{
+                      margin: '0 auto',
+                      fontSize: '11.5px',
+                      color: 'var(--muted)',
+                      lineHeight: 1.5,
+                      maxWidth: '320px',
+                    }}
+                  >
+                    Access self-paced practice sets, personal test series analytics, and study streaks.
+                  </p>
+                  <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEmail('learner@gmail.com')
+                        setPassword('learner@123')
+                        setLoginMode('org')
+                      }}
+                      className="primary-button"
+                      style={{ width: '100%' }}
+                    >
+                      Sign in as Individual Learner &rarr;
+                    </button>
                   </div>
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label
-                    htmlFor="login-email"
-                    className="block text-caption font-semibold text-foreground-strong"
-                  >
-                    Email Address
-                  </label>
-                  <input
-                    id="login-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@institution.edu or name@gmail.com"
-                    required
-                    autoComplete="email"
-                    className="mt-1.5 w-full rounded-control border border-border bg-surface px-3.5 py-2.5 text-body-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
-                  />
+              {/* ================================
+                   LOGIN FORM
+              ================================= */}
+              <form id="loginForm" onSubmit={handleSubmit} noValidate>
+                {/* EMAIL */}
+                <div className="form-group">
+                  <label htmlFor="email">Email address</label>
+                  <div className={`input-wrapper ${sessionError ? 'has-error' : ''}`}>
+                    <span className="input-icon">
+                      <svg
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        aria-hidden="true"
+                      >
+                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                        <path d="m3 7 9 6 9-6" />
+                      </svg>
+                    </span>
+
+                    <input
+                      type="email"
+                      id="email"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value)
+                        setSessionError(null)
+                      }}
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                      required
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <div className="flex items-center justify-between">
-                    <label
-                      htmlFor="login-password"
-                      className="block text-caption font-semibold text-foreground-strong"
-                    >
-                      Password
-                    </label>
-                    <Link
-                      to={ROUTES.FORGOT_PASSWORD}
-                      className="text-caption font-medium text-primary hover:underline"
-                    >
+                {/* PASSWORD */}
+                <div className="form-group">
+                  <div className="label-row">
+                    <label htmlFor="password">Password</label>
+                    <Link to={ROUTES.FORGOT_PASSWORD} className="forgot-link">
                       Forgot password?
                     </Link>
                   </div>
-                  <div className="relative mt-1.5">
+
+                  <div className={`input-wrapper ${sessionError ? 'has-error' : ''}`}>
+                    <span className="input-icon">
+                      <svg
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        aria-hidden="true"
+                      >
+                        <rect x="4" y="10" width="16" height="11" rx="2" />
+                        <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                      </svg>
+                    </span>
+
                     <input
-                      id="login-password"
                       type={showPassword ? 'text' : 'password'}
+                      id="password"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => {
+                        setPassword(e.target.value)
+                        setSessionError(null)
+                      }}
                       placeholder="Enter your password"
-                      required
                       autoComplete="current-password"
-                      className="w-full rounded-control border border-border bg-surface py-2.5 pl-3.5 pr-10 text-body-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                      required
                     />
+
                     <button
                       type="button"
+                      className="password-toggle"
+                      id="passwordToggle"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted hover:text-foreground cursor-pointer"
                     >
-                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      {showPassword ? (
+                        <svg
+                          id="eyeClosed"
+                          width="19"
+                          height="19"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          aria-hidden="true"
+                        >
+                          <path d="m3 3 18 18" />
+                          <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
+                          <path d="M9.9 4.2A10.6 10.6 0 0 1 12 4c6.5 0 10 8 10 8a18.7 18.7 0 0 1-3.1 4.4" />
+                          <path d="M6.2 6.2C3.5 8.2 2 12 2 12s3.5 8 10 8c1.8 0 3.4-.5 4.8-1.2" />
+                        </svg>
+                      ) : (
+                        <svg
+                          id="eyeOpen"
+                          width="19"
+                          height="19"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          aria-hidden="true"
+                        >
+                          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
+                      )}
                     </button>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-1 text-caption">
-                  <label className="flex items-center gap-2 cursor-pointer select-none text-muted hover:text-foreground">
+                {/* REMEMBER ME */}
+                <div className="form-options">
+                  <label className="remember-me">
                     <input
                       type="checkbox"
+                      id="rememberMe"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="size-4 rounded border-border text-primary focus:ring-primary"
                     />
-                    <span>Remember this device</span>
+                    <span className="custom-checkbox" />
+                    <span>Remember me</span>
                   </label>
                 </div>
 
+                {/* Dynamic Domain & Tenant Indicator */}
+                <div
+                  id="tenantIndicator"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '10px 12px',
+                    marginBottom: '16px',
+                    border: '1px solid var(--border)',
+                    borderRadius: '9px',
+                    background: 'var(--white)',
+                    fontSize: '11px',
+                  }}
+                >
+                  <div>
+                    <strong style={{ display: 'block', color: 'var(--error)' }}>
+                      Delhi Public Academy
+                    </strong>
+                    <span style={{ color: 'var(--primary)', fontSize: '10px', fontWeight: 600 }}>
+                      Tenant: org_001 &middot; Scoped Access
+                    </span>
+                  </div>
+                  <span style={{ color: 'var(--primary)', fontWeight: 700, fontSize: '10px' }}>
+                    Verified
+                  </span>
+                </div>
+
+                {/* FORM MESSAGE (Session Error Handling) */}
+                {sessionError && (
+                  <div
+                    id="formMessage"
+                    className="form-message error"
+                    role="alert"
+                    style={{ display: 'block', marginBottom: '15px' }}
+                  >
+                    {sessionError}
+                  </div>
+                )}
+
+                {/* LOGIN BUTTON */}
                 <button
                   type="submit"
+                  className="primary-button"
+                  id="loginButton"
                   disabled={isLoading}
-                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm disabled:opacity-70 cursor-pointer"
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 size={16} className="animate-spin" aria-hidden="true" />
-                      <span>Authenticating Session...</span>
+                      <span className="loader" style={{ display: 'inline-block' }} />
+                      <span id="buttonText" className="button-text">
+                        Signing in...
+                      </span>
                     </>
                   ) : (
                     <>
-                      <span>Sign In</span>
-                      <ArrowRight size={16} aria-hidden="true" />
+                      <span id="buttonText" className="button-text">
+                        Sign in
+                      </span>
+                      <span id="buttonArrow" className="button-arrow">
+                        &rarr;
+                      </span>
                     </>
                   )}
                 </button>
               </form>
 
-              {/* Systematic Role Credentials Reference */}
-              <div className="mt-5 border-t border-border pt-4">
-                <span className="block text-caption font-semibold uppercase tracking-wider text-muted text-center mb-2.5">
-                  Institutional Roles Directory
-                </span>
-                <div className="space-y-1.5 rounded-control border border-border bg-surface p-3 text-caption">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-foreground-strong">Student:</span>
-                    <span className="font-mono text-muted">student@dpa.edu &middot; student@123</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-foreground-strong">Faculty:</span>
-                    <span className="font-mono text-muted">faculty@dpa.edu &middot; faculty@123</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-foreground-strong">Org Admin:</span>
-                    <span className="font-mono text-muted">admin@dpa.edu &middot; admin@123</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-foreground-strong">SuperAdmin:</span>
-                    <span className="font-mono text-muted">superadmin@heftin.com &middot; superadmin@123</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-foreground-strong">Individual:</span>
-                    <span className="font-mono text-muted">learner@gmail.com &middot; learner@123</span>
-                  </div>
+              {/* DIVIDER */}
+              <div className="divider">
+                <span />
+                <p>or</p>
+                <span />
+              </div>
+
+              {/* SIGN UP / ONBOARDING */}
+              <p className="bottom-text">
+                Organization accounts are provisioned by your organization administrator.{' '}
+                <Link to={ROUTES.REQUEST_ACCESS}>Activate an invite token</Link>
+              </p>
+
+              {/* Evaluator Test Deck: The 4 Organization Roles */}
+              <div
+                id="reviewerTestDeck"
+                style={{
+                  marginTop: '24px',
+                  padding: '14px',
+                  border: '1px solid var(--border)',
+                  borderRadius: '12px',
+                  background: 'var(--white)',
+                  textAlign: 'left',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    borderBottom: '1px solid var(--border)',
+                    paddingBottom: '8px',
+                  }}
+                >
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--error)' }}>
+                    The 4 Organization Roles (Simulation Deck)
+                  </span>
+                  <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--primary)' }}>
+                    1-Click Test
+                  </span>
+                </div>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(4, 1fr)',
+                    gap: '6px',
+                    marginTop: '10px',
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => fillRolePreset('sana@dpa.edu', 'password123')}
+                    style={{
+                      padding: '6px 4px',
+                      border: '1px solid var(--border)',
+                      borderRadius: '6px',
+                      background: 'var(--white)',
+                      color: 'var(--error)',
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Student
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => fillRolePreset('teacher@dpa.edu', 'password123')}
+                    style={{
+                      padding: '6px 4px',
+                      border: '1px solid var(--border)',
+                      borderRadius: '6px',
+                      background: 'var(--white)',
+                      color: 'var(--error)',
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Faculty
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => fillRolePreset('orgadmin@dpa.edu', 'password123')}
+                    style={{
+                      padding: '6px 4px',
+                      border: '1px solid var(--border)',
+                      borderRadius: '6px',
+                      background: 'var(--white)',
+                      color: 'var(--error)',
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Org Admin
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => fillRolePreset('admin@heftin.com', 'password123')}
+                    style={{
+                      padding: '6px 4px',
+                      border: '1px solid var(--border)',
+                      borderRadius: '6px',
+                      background: 'var(--white)',
+                      color: 'var(--error)',
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    SuperAdmin
+                  </button>
                 </div>
               </div>
-
-              {/* Institutional access link */}
-              <div className="mt-3 text-center">
-                <Link
-                  to={ROUTES.REQUEST_ACCESS}
-                  className="text-caption font-medium text-muted hover:text-primary transition-colors"
-                >
-                  Need an institutional license? Request Access &rarr;
-                </Link>
-              </div>
-            </div>
+            </>
           )}
-        </div>
+        </section>
+      </main>
 
-        {/* Footer */}
-        <div className="mt-6 flex items-center justify-center gap-4 text-center">
-          <Link
-            to={ROUTES.HOME}
-            className="text-caption font-medium text-muted hover:text-foreground transition-colors"
-          >
-            Back to Home
-          </Link>
-          <span className="text-muted text-caption">&middot;</span>
-          <Link
-            to={ROUTES.SESSION_ERROR}
-            className="text-caption font-medium text-muted hover:text-foreground transition-colors"
-          >
-            Session Help
-          </Link>
-        </div>
-      </div>
-    </main>
+      {/* ================================
+           WORKSPACE WELCOME OVERLAY MODAL
+      ================================= */}
+      {welcomeUser && (
+        <section id="workspaceWelcome" className="workspace-welcome" aria-live="polite">
+          <div className="workspace-welcome-card">
+            <div className="workspace-welcome-mark">H</div>
+            <p className="workspace-welcome-eyebrow">Heftin Academy</p>
+            <h2>Hi, welcome to your workspace</h2>
+            <p className="workspace-welcome-person">
+              Signing you in as <strong id="welcomeName">{welcomeUser.name}</strong>
+            </p>
+            <div className="workspace-welcome-details">
+              <span>
+                <small>Organization</small>
+                <strong id="welcomeOrganization">{welcomeUser.organization}</strong>
+              </span>
+              <span>
+                <small>Role</small>
+                <strong id="welcomeRole" style={{ textTransform: 'capitalize' }}>
+                  {welcomeUser.role.replace('_', ' ')}
+                </strong>
+              </span>
+            </div>
+            <p className="workspace-welcome-loading">Preparing your role home...</p>
+          </div>
+        </section>
+      )}
+    </>
   )
 }
