@@ -281,16 +281,18 @@ header h1 {
 }
 
 .brand {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    text-decoration: none;
+    line-height: 1;
 }
 
 .brand-logo {
     width: 34px;
     height: 34px;
     flex-shrink: 0;
-    border-radius: 9px;
+    border-radius: 8px;
     object-fit: cover;
     display: block;
 }
@@ -302,6 +304,9 @@ header h1 {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--on-navy);
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
 }
 
 .navbar ul {
@@ -438,7 +443,7 @@ header h1 {
         radial-gradient(circle at 80% 75%, rgba(0, 52, 57, 0.35), transparent 50%),
         var(--navy);
     background-attachment: fixed;
-    padding: 150px 24px 120px;
+    padding: 150px 0 120px;
     text-align: center;
     color: var(--on-navy);
     border-bottom: 1px solid var(--line);
@@ -781,7 +786,7 @@ header h1 {
     position: relative;
     overflow: hidden;
     background: var(--cream);
-    padding: 150px 24px;
+    padding: 150px 0;
     text-align: center;
 }
 
@@ -1184,7 +1189,7 @@ header h1 {
         var(--teal);
     background-attachment: fixed;
     color: var(--on-navy);
-    padding: 160px 24px;
+    padding: 160px 0;
     text-align: center;
 }
 
@@ -1458,7 +1463,7 @@ header h1 {
     position: relative;
     overflow: hidden;
     background: var(--teal-light);
-    padding: 150px 24px;
+    padding: 150px 0;
     text-align: center;
     border-top: 1px solid var(--line);
     transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -1788,7 +1793,7 @@ header h1 {
 .features {
     background: var(--cream);
     color: var(--ink);
-    padding: 160px 24px;
+    padding: 160px 0;
     text-align: center;
     --ink: #003439;
     --ink-soft: rgba(0, 52, 57, 0.62);
@@ -1955,7 +1960,7 @@ header h1 {
     overflow: hidden;
     background: var(--cream);
     color: #003439;
-    padding: 90px 24px 32px;
+    padding: 90px 0 32px;
     border-top: 1px solid var(--line);
 }
 
@@ -1983,14 +1988,22 @@ header h1 {
 }
 
 .footer-logo {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 18px;
     color: #003439;
     margin-bottom: 12px;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.footer-logo span {
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
 }
 
 .footer-brand p {

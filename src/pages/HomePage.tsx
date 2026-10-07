@@ -897,10 +897,10 @@ export function HomePage() {
       <footer className="site-footer">
         <div className="footer-inner">
           <div className="footer-brand">
-            <div className="footer-logo">
+            <Link to={ROUTES.HOME} className="footer-logo">
               <img src="/images/logo.jpeg" alt="Heftin Academy" className="brand-logo" />
               <span>Heftin Academy</span>
-            </div>
+            </Link>
             <p>Every mock test brings you closer to rank one.</p>
             <p className="footer-contact">Contact: <a href="mailto:hello@example.com">hello@example.com</a></p>
           </div>
