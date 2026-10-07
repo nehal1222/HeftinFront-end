@@ -43,7 +43,7 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <AuthLayout eyebrow="Account recovery">
+    <AuthLayout>
       <h1 className="text-3xl font-semibold tracking-tight text-foreground-strong">Create a new password</h1>
       <p className="mt-2 text-sm text-muted">Choose a strong password you have not used before.</p>
       <form className="mt-8 space-y-5" onSubmit={handleSubmit} noValidate>

@@ -33,7 +33,7 @@ export function ForgotPasswordPage() {
   }
 
   return (
-    <AuthLayout eyebrow="Account recovery">
+    <AuthLayout>
       <h1 className="text-3xl font-semibold tracking-tight text-foreground-strong">Forgot your password?</h1>
       <p className="mt-2 text-sm text-muted">Enter your account email and we will send a secure reset link.</p>
       <form className="mt-8 space-y-5" onSubmit={handleSubmit} noValidate>

@@ -1,8 +1,11 @@
 import api from '@/lib/axios'
+import { clearAuthStorage } from '@/lib/storage'
 import type {
   AuthTokenResponse,
   ForgotPasswordRequest,
   LoginRequest,
+  RefreshRequest,
+  RefreshResponse,
   ResetPasswordRequest,
 } from '@/types/auth'
 
@@ -12,11 +15,22 @@ export const authService = {
     return data
   },
 
+  async refresh(payload: RefreshRequest) {
+    const { data } = await api.post<RefreshResponse>('/auth/refresh', payload)
+    return data
+  },
+
+  async logout() {
+    clearAuthStorage()
+  },
+
   async forgotPassword(payload: ForgotPasswordRequest) {
-    await api.post('/auth/forgot-password', payload)
+    void payload
+    // Mock until the backend endpoint is available.
   },
 
   async resetPassword(payload: ResetPasswordRequest) {
-    await api.post('/auth/reset-password', payload)
+    void payload
+    // Mock until the backend endpoint is available.
   },
 }
