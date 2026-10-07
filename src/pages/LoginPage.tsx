@@ -200,6 +200,87 @@ export function LoginPage() {
               </div>
 
               {/* ================================
+                   TOP AUTH MODE SWITCHER
+              ================================= */}
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '4px',
+                  marginBottom: '20px',
+                  padding: '4px',
+                  border: '1px solid var(--border)',
+                  borderRadius: '12px',
+                  background: 'var(--white)',
+                }}
+              >
+                <button
+                  type="button"
+                  id="tabSignIn"
+                  style={{
+                    flex: 1,
+                    padding: '8px 6px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: 'var(--primary)',
+                    color: '#fff',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'default',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  <span>Sign In</span>
+                </button>
+                <button
+                  type="button"
+                  id="tabInvite"
+                  onClick={() => navigate(ROUTES.SIGNUP)}
+                  style={{
+                    flex: 1,
+                    padding: '8px 6px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border)',
+                    background: '#fff',
+                    color: 'var(--error)',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  <span>Activate Invite</span>
+                </button>
+                <button
+                  type="button"
+                  id="tabB2B"
+                  onClick={() => navigate(ROUTES.REQUEST_ACCESS)}
+                  style={{
+                    flex: 1,
+                    padding: '8px 6px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border)',
+                    background: '#fff',
+                    color: 'var(--error)',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  <span>Request Org Access</span>
+                </button>
+              </div>
+
+              {/* ================================
                    HEADING
               ================================= */}
               <div className="auth-heading">
@@ -211,124 +292,67 @@ export function LoginPage() {
               </div>
 
               {/* ================================
-                   MODE SWITCHER: ORG VS INDIVIDUAL
+                   SCOPE TOGGLE: ORG VS INDIVIDUAL
               ================================= */}
               <div
                 style={{
                   display: 'flex',
                   gap: '6px',
-                  marginBottom: '20px',
-                  padding: '4px',
+                  marginBottom: '16px',
+                  padding: '3px',
                   border: '1px solid var(--border)',
-                  borderRadius: '12px',
-                  background: 'var(--white)',
+                  borderRadius: '10px',
+                  background: 'var(--bg-soft)',
                 }}
               >
                 <button
                   type="button"
                   id="tabOrg"
-                  onClick={() => setLoginMode('org')}
+                  onClick={() => {
+                    setLoginMode('org')
+                    if (email === 'ananya@gmail.com') setEmail('')
+                  }}
                   style={{
                     flex: 1,
-                    padding: '8px 10px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background: loginMode === 'org' ? 'var(--primary)' : 'var(--white)',
-                    color: loginMode === 'org' ? 'var(--white)' : 'var(--error)',
+                    padding: '7px 8px',
+                    borderRadius: '7px',
+                    border: loginMode === 'org' ? 'none' : '1px solid transparent',
+                    background: loginMode === 'org' ? 'var(--white)' : 'transparent',
+                    color: loginMode === 'org' ? 'var(--primary)' : 'var(--muted)',
+                    boxShadow: loginMode === 'org' ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
                     fontSize: '11px',
                     fontWeight: 700,
                     cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '4px',
                     transition: 'all 0.2s ease',
                   }}
                 >
-                  <span>Organization</span>
+                  <span>Organization Account</span>
                 </button>
                 <button
                   type="button"
                   id="tabInd"
-                  onClick={() => setLoginMode('ind')}
+                  onClick={() => {
+                    setLoginMode('ind')
+                    setEmail('ananya@gmail.com')
+                    setPassword('password123')
+                  }}
                   style={{
                     flex: 1,
-                    padding: '8px 10px',
-                    borderRadius: '8px',
-                    border: loginMode === 'ind' ? 'none' : '1px solid var(--border)',
-                    background: loginMode === 'ind' ? 'var(--primary)' : 'var(--white)',
-                    color: loginMode === 'ind' ? 'var(--white)' : 'var(--error)',
+                    padding: '7px 8px',
+                    borderRadius: '7px',
+                    border: loginMode === 'ind' ? 'none' : '1px solid transparent',
+                    background: loginMode === 'ind' ? 'var(--white)' : 'transparent',
+                    color: loginMode === 'ind' ? 'var(--primary)' : 'var(--muted)',
+                    boxShadow: loginMode === 'ind' ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
                     fontSize: '11px',
                     fontWeight: 700,
                     cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '4px',
                     transition: 'all 0.2s ease',
                   }}
                 >
-                  <span>Individual</span>
+                  <span>Individual Learner</span>
                 </button>
               </div>
-
-              {/* Individual Category Container */}
-              {loginMode === 'ind' && (
-                <div
-                  id="individualContainer"
-                  style={{
-                    textAlign: 'center',
-                    padding: '24px 16px',
-                    border: '1px solid var(--border)',
-                    borderRadius: '14px',
-                    background: 'var(--white)',
-                    marginBottom: '20px',
-                  }}
-                >
-                  <span
-                    style={{
-                      display: 'inline-block',
-                      padding: '3px 10px',
-                      borderRadius: '99px',
-                      background: 'rgba(0, 130, 142, 0.1)',
-                      color: 'var(--primary)',
-                      fontSize: '10px',
-                      fontWeight: 700,
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    Individual Category
-                  </span>
-                  <h3 style={{ margin: '8px 0 4px', fontSize: '16px', fontWeight: 700, color: 'var(--error)' }}>
-                    Individual Learner Workspace
-                  </h3>
-                  <p
-                    style={{
-                      margin: '0 auto',
-                      fontSize: '11.5px',
-                      color: 'var(--muted)',
-                      lineHeight: 1.5,
-                      maxWidth: '320px',
-                    }}
-                  >
-                    Access self-paced practice sets, personal test series analytics, and study streaks.
-                  </p>
-                  <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEmail('learner@gmail.com')
-                        setPassword('learner@123')
-                        setLoginMode('org')
-                      }}
-                      className="primary-button"
-                      style={{ width: '100%' }}
-                    >
-                      Sign in as Individual Learner &rarr;
-                    </button>
-                  </div>
-                </div>
-              )}
 
               {/* ================================
                    LOGIN FORM
@@ -479,14 +503,16 @@ export function LoginPage() {
                 >
                   <div>
                     <strong style={{ display: 'block', color: 'var(--error)' }}>
-                      Delhi Public Academy
+                      {loginMode === 'org' ? 'Delhi Public Academy' : 'Individual Learner Workspace'}
                     </strong>
                     <span style={{ color: 'var(--primary)', fontSize: '10px', fontWeight: 600 }}>
-                      Tenant: org_001 &middot; Scoped Access
+                      {loginMode === 'org'
+                        ? 'Tenant: org_001 \u00B7 Scoped Access'
+                        : 'Personal Analytics \u00B7 Self-Paced Practice'}
                     </span>
                   </div>
                   <span style={{ color: 'var(--primary)', fontWeight: 700, fontSize: '10px' }}>
-                    Verified
+                    {loginMode === 'org' ? 'Verified' : 'Active Tier'}
                   </span>
                 </div>
 
@@ -565,85 +591,109 @@ export function LoginPage() {
                   }}
                 >
                   <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--error)' }}>
-                    The 4 Organization Roles (Simulation Deck)
+                    {loginMode === 'org'
+                      ? 'The 4 Organization Roles (Simulation Deck)'
+                      : 'Individual Learner (Simulation Deck)'}
                   </span>
                   <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--primary)' }}>
                     1-Click Test
                   </span>
                 </div>
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(4, 1fr)',
-                    gap: '6px',
-                    marginTop: '10px',
-                  }}
-                >
-                  <button
-                    type="button"
-                    onClick={() => fillRolePreset('sana@dpa.edu', 'password123')}
+                {loginMode === 'org' ? (
+                  <div
                     style={{
-                      padding: '6px 4px',
-                      border: '1px solid var(--border)',
-                      borderRadius: '6px',
-                      background: 'var(--white)',
-                      color: 'var(--error)',
-                      fontSize: '10px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(4, 1fr)',
+                      gap: '6px',
+                      marginTop: '10px',
                     }}
                   >
-                    Student
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => fillRolePreset('teacher@dpa.edu', 'password123')}
-                    style={{
-                      padding: '6px 4px',
-                      border: '1px solid var(--border)',
-                      borderRadius: '6px',
-                      background: 'var(--white)',
-                      color: 'var(--error)',
-                      fontSize: '10px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Faculty
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => fillRolePreset('orgadmin@dpa.edu', 'password123')}
-                    style={{
-                      padding: '6px 4px',
-                      border: '1px solid var(--border)',
-                      borderRadius: '6px',
-                      background: 'var(--white)',
-                      color: 'var(--error)',
-                      fontSize: '10px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Org Admin
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => fillRolePreset('admin@heftin.com', 'password123')}
-                    style={{
-                      padding: '6px 4px',
-                      border: '1px solid var(--border)',
-                      borderRadius: '6px',
-                      background: 'var(--white)',
-                      color: 'var(--error)',
-                      fontSize: '10px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    SuperAdmin
-                  </button>
-                </div>
+                    <button
+                      type="button"
+                      onClick={() => fillRolePreset('sana@dpa.edu', 'password123')}
+                      style={{
+                        padding: '6px 4px',
+                        border: '1px solid var(--border)',
+                        borderRadius: '6px',
+                        background: 'var(--white)',
+                        color: 'var(--error)',
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Student
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => fillRolePreset('teacher@dpa.edu', 'password123')}
+                      style={{
+                        padding: '6px 4px',
+                        border: '1px solid var(--border)',
+                        borderRadius: '6px',
+                        background: 'var(--white)',
+                        color: 'var(--error)',
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Faculty
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => fillRolePreset('orgadmin@dpa.edu', 'password123')}
+                      style={{
+                        padding: '6px 4px',
+                        border: '1px solid var(--border)',
+                        borderRadius: '6px',
+                        background: 'var(--white)',
+                        color: 'var(--error)',
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Org Admin
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => fillRolePreset('admin@heftin.com', 'password123')}
+                      style={{
+                        padding: '6px 4px',
+                        border: '1px solid var(--border)',
+                        borderRadius: '6px',
+                        background: 'var(--white)',
+                        color: 'var(--error)',
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      SuperAdmin
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ marginTop: '10px' }}>
+                    <button
+                      type="button"
+                      onClick={() => fillRolePreset('ananya@gmail.com', 'password123')}
+                      style={{
+                        width: '100%',
+                        padding: '8px 10px',
+                        border: '1px solid var(--border)',
+                        borderRadius: '6px',
+                        background: 'var(--white)',
+                        color: 'var(--error)',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Ananya Sharma (Individual Scholar) &rarr;
+                    </button>
+                  </div>
+                )}
               </div>
             </>
           )}
