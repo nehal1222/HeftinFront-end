@@ -1,3 +1,4 @@
+import { AsyncState } from '@/components/ui/AsyncState'
 const COLOR_SWATCHES = [
   ['primary', 'bg-primary'],
   ['primary-shade-1', 'bg-primary-shade-1'],
@@ -74,6 +75,41 @@ export function DesignSystemPage() {
           ))}
         </div>
       </section>
+      <section>
+  <h2 className="mb-3 font-display text-heading-sm tracking-tight">
+    Async states
+  </h2>
+
+  <div className="grid gap-4 lg:grid-cols-2">
+    <div className="rounded-lg border border-border bg-surface-elevated">
+      <AsyncState state="loading" />
+    </div>
+
+    <div className="rounded-lg border border-border bg-surface-elevated">
+      <AsyncState state="empty" />
+    </div>
+
+    <div className="rounded-lg border border-border bg-surface-elevated">
+      <AsyncState state="error" onRetry={() => undefined} />
+    </div>
+
+    <div className="rounded-lg border border-border bg-surface-elevated">
+      <AsyncState state="forbidden" />
+    </div>
+
+    <div className="rounded-lg border border-border bg-surface-elevated">
+      <AsyncState state="notFound" />
+    </div>
+
+    <div className="rounded-lg border border-border bg-surface-elevated">
+      <AsyncState
+        state="error"
+        title="Session expired"
+        description="Your session has expired. Please sign in again."
+      />
+    </div>
+  </div>
+</section>
     </main>
   )
 }

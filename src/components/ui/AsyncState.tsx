@@ -1,4 +1,11 @@
-import { AlertCircle, FileQuestion, Inbox, LoaderCircle, ShieldX } from 'lucide-react'
+import {
+  AlertCircle,
+  FileQuestion,
+  Inbox,
+  LoaderCircle,
+  ShieldX,
+} from 'lucide-react'
+import { Button } from '@/components/ui/Button'
 import type { ApiStateKind } from '@/lib/api-state'
 
 const STATE_COPY = {
@@ -38,20 +45,35 @@ export function AsyncState({
       role={isFailure ? 'alert' : 'status'}
       aria-live="polite"
     >
-      <Icon size={22} aria-hidden="true" className={state === 'loading' ? 'animate-spin text-primary' : 'text-muted'} />
+      <Icon
+        size={22}
+        aria-hidden="true"
+        className={state === 'loading' ? 'animate-spin text-primary' : 'text-muted'}
+      />
+
       <div>
-        <h2 className="text-base font-semibold text-foreground-strong">{title ?? copy.title}</h2>
-        <p className="mt-1 max-w-lg text-sm text-muted">{description ?? copy.description}</p>
+        <h2 className="text-base font-semibold text-foreground-strong">
+          {title ?? copy.title}
+        </h2>
+
+        <p className="mt-1 max-w-lg text-sm text-muted">
+          {description ?? copy.description}
+        </p>
       </div>
-      {onRetry && state !== 'loading' && state !== 'forbidden' && state !== 'notFound' && (
-        <button
-          type="button"
-          onClick={onRetry}
-          className="rounded-control border border-border bg-card px-3 py-2 text-sm font-semibold text-foreground-strong hover:border-primary hover:text-primary-dark"
-        >
-          Try again
-        </button>
-      )}
+
+      {onRetry &&
+        state !== 'loading' &&
+        state !== 'forbidden' &&
+        state !== 'notFound' && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onRetry}
+          >
+            Try again
+          </Button>
+        )}
     </section>
   )
 }
