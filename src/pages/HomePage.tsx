@@ -897,9 +897,9 @@ export function HomePage() {
       <footer className="site-footer">
         <div className="footer-inner">
           <div className="footer-brand">
-            <Link to={ROUTES.HOME} className="footer-logo">
+            <Link to={ROUTES.HOME} className="brand footer-brand-logo" style={{ marginBottom: '14px' }}>
               <img src="/images/logo.jpeg" alt="Heftin Academy" className="brand-logo" />
-              <span>Heftin Academy</span>
+              <span className="brand-name">Heftin Academy</span>
             </Link>
             <p>Every mock test brings you closer to rank one.</p>
             <p className="footer-contact">Contact: <a href="mailto:hello@example.com">hello@example.com</a></p>

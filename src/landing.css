@@ -1962,6 +1962,8 @@ header h1 {
     color: #003439;
     padding: 90px 0 32px;
     border-top: 1px solid var(--line);
+    --on-navy: #003439;
+    --on-navy-soft: rgba(0, 52, 57, 0.68);
 }
 
 .site-footer::before {
