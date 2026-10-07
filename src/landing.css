@@ -273,11 +273,11 @@ header h1 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 40px;
+    gap: 32px;
 
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 18px 40px;
+    padding: 16px 24px;
 }
 
 .brand {
@@ -472,6 +472,9 @@ header h1 {
 .hero-inner {
     position: relative;
     z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -495,7 +498,8 @@ header h1 {
 
 .why-copy .split-heading,
 .stat-band-copy .split-heading,
-.features-copy .split-heading {
+.features-copy .split-heading,
+.roles-sandbox-section .split-heading {
     justify-content: flex-start;
 }
 
@@ -823,8 +827,9 @@ header h1 {
 }
 
 .process-inner {
-    max-width: 1040px;
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 0 24px;
 }
 
 .process h2 {
@@ -1051,13 +1056,13 @@ header h1 {
 .why-inner {
     position: relative;
     z-index: 1;
-    max-width: 1280px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 150px 24px;
+    padding: 100px 24px;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: center;
-    gap: 40px;
+    gap: 48px;
     text-align: left;
 }
 
@@ -1188,6 +1193,7 @@ header h1 {
     z-index: 1;
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 24px;
 }
 
 .stat-band-split {
@@ -1462,8 +1468,9 @@ header h1 {
 }
 
 .exams-inner {
-    max-width: 1260px;
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 0 24px;
 }
 
 .exams .eyebrow {
@@ -1790,8 +1797,9 @@ header h1 {
 .features-inner {
     position: relative;
     z-index: 1;
-    max-width: 1260px;
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 0 24px;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
     align-items: center;
@@ -1965,8 +1973,9 @@ header h1 {
 }
 
 .footer-inner {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 0 24px;
     display: grid;
     grid-template-columns: 1.4fr repeat(4, 1fr);
     gap: 32px;
@@ -2032,9 +2041,9 @@ header h1 {
 }
 
 .footer-bottom {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 48px auto 0;
-    padding-top: 24px;
+    padding: 24px 24px 0;
     border-top: 1px solid var(--line);
     text-align: center;
 }
