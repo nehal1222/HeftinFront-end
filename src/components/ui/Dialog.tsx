@@ -5,6 +5,7 @@ import {
   useRef,
   type ReactNode,
 } from 'react'
+import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 type DialogProps = {
@@ -136,7 +137,7 @@ export function Dialog({
             aria-label="Close dialog"
             className="rounded-md p-1 text-muted hover:bg-surface hover:text-foreground"
           >
-            ✕
+            <X size={16} />
           </button>
         </div>
 

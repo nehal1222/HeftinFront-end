@@ -1,13 +1,12 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { AlertCircle, Loader2, LogOut, RefreshCw } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { AlertCircle, GraduationCap, Loader2, LogOut, RefreshCw, Sparkles } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { ROUTES } from '@/lib/constants'
 
 export function SessionErrorPage() {
   const { logout, switchRole } = useAuth()
   const navigate = useNavigate()
-  const [view, setView] = useState<'error' | 'loading'>('error')
   const [retrying, setRetrying] = useState(false)
 
   function handleRetry() {
@@ -30,37 +29,20 @@ export function SessionErrorPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-surface px-4 py-8 font-sans text-foreground">
       <div className="w-full max-w-md">
-        {/* Toggle Sample Views */}
-        <div className="mb-4 flex items-center justify-center gap-1 rounded-control border border-border bg-surface-elevated p-1 text-caption font-medium">
-          <span className="px-2 text-muted">Sample State:</span>
-          <button
-            type="button"
-            onClick={() => setView('error')}
-            className={`rounded-control px-3 py-1 transition-colors ${
-              view === 'error'
-                ? 'bg-primary text-primary-foreground font-semibold shadow-sm'
-                : 'text-muted hover:text-foreground'
-            }`}
-          >
-            Session Error
-          </button>
-          <button
-            type="button"
-            onClick={() => setView('loading')}
-            className={`rounded-control px-3 py-1 transition-colors ${
-              view === 'loading'
-                ? 'bg-primary text-primary-foreground font-semibold shadow-sm'
-                : 'text-muted hover:text-foreground'
-            }`}
-          >
-            Session Loading
-          </button>
+        {/* Brand Header */}
+        <div className="mb-6 flex items-center justify-center gap-2.5">
+          <div className="grid size-9 place-items-center rounded-control bg-primary text-primary-foreground shadow-sm">
+            <GraduationCap size={20} aria-hidden="true" />
+          </div>
+          <span className="font-display text-heading-sm font-semibold text-foreground-strong">
+            Heftin Academy
+          </span>
         </div>
 
-        {/* The Exact Card */}
+        {/* Card */}
         <div className="rounded-card border border-border bg-surface-elevated p-6 shadow-sm sm:p-8">
-          {view === 'loading' || retrying ? (
-            /* Loading State */
+          {retrying ? (
+            /* Session Loading State on Retry */
             <div className="flex flex-col items-center py-6 text-center">
               <div className="grid size-12 place-items-center rounded-control bg-primary-soft text-primary-dark animate-spin">
                 <Loader2 size={24} aria-hidden="true" />
@@ -69,11 +51,15 @@ export function SessionErrorPage() {
                 Restoring Session
               </h1>
               <p className="mt-1 text-caption text-muted">
-                Verifying authentication token and permissions...
+                Verifying authentication token and renewing security permissions...
               </p>
+              <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-caption text-muted">
+                <span className="size-2 rounded-full bg-primary animate-pulse" />
+                <span>Contacting authorization gateway...</span>
+              </div>
             </div>
           ) : (
-            /* The Exact Session Error Screen */
+            /* Session Error State */
             <div>
               <div className="flex items-center gap-3">
                 <div className="grid size-10 place-items-center rounded-control bg-primary-soft text-primary-dark">
@@ -90,7 +76,7 @@ export function SessionErrorPage() {
               </div>
 
               <div className="mt-4 rounded-control border border-border bg-surface p-3.5 text-body-sm text-foreground-strong">
-                Session verification failed: Authentication token has expired or is invalid.
+                Session verification failed: Authentication token has expired or is invalid (401 Unauthorized).
               </div>
 
               <div className="mt-6 flex flex-col gap-2.5">
@@ -100,7 +86,7 @@ export function SessionErrorPage() {
                   className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm"
                 >
                   <RefreshCw size={15} />
-                  Retry Session
+                  Retry Session Handshake
                 </button>
 
                 <button
@@ -115,13 +101,31 @@ export function SessionErrorPage() {
                 <button
                   type="button"
                   onClick={handleContinueDemo}
-                  className="mt-1 text-center text-caption font-medium text-primary hover:underline"
+                  className="mt-1 flex items-center justify-center gap-1.5 text-center text-caption font-medium text-primary hover:underline"
                 >
-                  Continue with demo profile &rarr;
+                  <Sparkles size={13} />
+                  <span>Continue with demo session &rarr;</span>
                 </button>
               </div>
             </div>
           )}
+        </div>
+
+        {/* Footer */}
+        <div className="mt-4 flex items-center justify-center gap-4 text-center">
+          <Link
+            to={ROUTES.HOME}
+            className="text-caption font-medium text-muted hover:text-foreground"
+          >
+            Back to Home
+          </Link>
+          <span className="text-muted text-caption">&middot;</span>
+          <Link
+            to={ROUTES.REQUEST_ACCESS}
+            className="text-caption font-medium text-muted hover:text-foreground"
+          >
+            Institutional Portal
+          </Link>
         </div>
       </div>
     </main>

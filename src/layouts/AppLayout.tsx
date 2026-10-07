@@ -1,5 +1,6 @@
 
 import { useState, type ReactNode } from 'react'
+import { X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { cn } from '@/lib/utils'
@@ -73,7 +74,7 @@ export function AppLayout({
                 aria-label="Close navigation"
                 onClick={() => setMobileNavOpen(false)}
               >
-                ✕
+                <X size={16} />
               </Button>
             </div>
 

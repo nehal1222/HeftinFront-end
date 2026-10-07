@@ -9,7 +9,6 @@ import { SessionErrorPage } from '@/pages/SessionErrorPage'
 import { OnboardingRequestPage } from '@/pages/OnboardingRequestPage'
 import { SuperAdminPage } from '@/pages/SuperAdminPage'
 import { OrgAdminPage } from '@/pages/OrgAdminPage'
-import { UnifiedAuthSuitePage } from '@/pages/UnifiedAuthSuitePage'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { ROUTES } from '@/lib/constants'
 
@@ -17,10 +16,10 @@ export function AppRouter() {
   return (
     <Routes>
       <Route path={ROUTES.HOME} element={<HomePage />} />
-      <Route path="/unified" element={<UnifiedAuthSuitePage />} />
-      <Route path="/auth-suite" element={<UnifiedAuthSuitePage />} />
-      <Route path="/auth-samples" element={<UnifiedAuthSuitePage />} />
-      <Route path="/session-lifecycle" element={<UnifiedAuthSuitePage />} />
+      <Route path="/unified" element={<Navigate to={ROUTES.LOGIN} replace />} />
+      <Route path="/auth-suite" element={<Navigate to={ROUTES.LOGIN} replace />} />
+      <Route path="/auth-samples" element={<Navigate to={ROUTES.LOGIN} replace />} />
+      <Route path="/session-lifecycle" element={<Navigate to={ROUTES.SESSION_ERROR} replace />} />
       <Route path={ROUTES.REQUEST_ACCESS} element={<OnboardingRequestPage />} />
       <Route path={ROUTES.LOGIN} element={<LoginPage />} />
       <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />

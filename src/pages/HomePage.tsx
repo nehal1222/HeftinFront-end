@@ -151,7 +151,6 @@ export function HomePage() {
               <li><Link to={ROUTES.REQUEST_ACCESS} style={{ whiteSpace: 'nowrap' }}>For Institutes</Link></li>
               <li><a href="#blueprints" style={{ whiteSpace: 'nowrap' }}>Blueprints</a></li>
               <li><a href="#roles" style={{ whiteSpace: 'nowrap' }}>Roles</a></li>
-              <li><Link to="/unified" style={{ whiteSpace: 'nowrap' }}>All-in-One Suite</Link></li>
             </ul>
             <div className="nav-actions-inner" style={{ whiteSpace: 'nowrap' }}>
               <Link to={ROUTES.REQUEST_ACCESS} className="go-premium" style={{ whiteSpace: 'nowrap' }}>Go Premium</Link>
