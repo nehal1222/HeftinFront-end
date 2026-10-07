@@ -164,20 +164,10 @@ export function LoginPage() {
                 <span>Heftin Academy</span>
               </div>
 
-              <div className="auth-heading">
-                <h1>
-                  <span className="line-1">Welcome</span>
-                  <span className="line-2">back</span>
-                </h1>
-
-                <p>Sign in to continue to your account</p>
-              </div>
-
-              {/* Organization / Individual mode */}
               <div
                 style={{
                   display: 'flex',
-                  gap: '6px',
+                  gap: '4px',
                   marginBottom: '20px',
                   padding: '4px',
                   border: '1px solid var(--border)',
@@ -187,29 +177,107 @@ export function LoginPage() {
               >
                 <button
                   type="button"
-                  onClick={() => setLoginMode('org')}
                   style={{
                     flex: 1,
-                    padding: '8px 10px',
+                    padding: '8px 6px',
                     borderRadius: '8px',
-                    border:
-                      loginMode === 'org'
-                        ? 'none'
-                        : '1px solid var(--border)',
-                    background:
-                      loginMode === 'org'
-                        ? 'var(--primary)'
-                        : 'var(--white)',
-                    color:
-                      loginMode === 'org'
-                        ? 'var(--white)'
-                        : 'var(--error)',
+                    border: 'none',
+                    background: 'var(--primary)',
+                    color: '#fff',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'default',
+                  }}
+                >
+                  Sign In
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate(ROUTES.SIGNUP)}
+                  style={{
+                    flex: 1,
+                    padding: '8px 6px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border)',
+                    background: '#fff',
+                    color: 'var(--error)',
                     fontSize: '11px',
                     fontWeight: 700,
                     cursor: 'pointer',
                   }}
                 >
-                  Organization
+                  Activate Invite
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate(ROUTES.REQUEST_ACCESS)}
+                  style={{
+                    flex: 1,
+                    padding: '8px 6px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border)',
+                    background: '#fff',
+                    color: 'var(--error)',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Request Org Access
+                </button>
+              </div>
+
+              <div className="auth-heading">
+                <h1>
+                  <span className="line-1">Welcome</span>
+                  <span className="line-2">back</span>
+                </h1>
+
+                <p>Sign in to continue to your account</p>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '6px',
+                  marginBottom: '16px',
+                  padding: '3px',
+                  border: '1px solid var(--border)',
+                  borderRadius: '10px',
+                  background: 'var(--bg-soft)',
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setLoginMode('org')}
+                  style={{
+                    flex: 1,
+                    padding: '7px 8px',
+                    borderRadius: '7px',
+                    border:
+                      loginMode === 'org'
+                        ? 'none'
+                        : '1px solid transparent',
+                    background:
+                      loginMode === 'org'
+                        ? 'var(--white)'
+                        : 'transparent',
+                    color:
+                      loginMode === 'org'
+                        ? 'var(--primary)'
+                        : 'var(--muted)',
+                    boxShadow:
+                      loginMode === 'org'
+                        ? '0 1px 3px rgba(0,0,0,0.06)'
+                        : 'none',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Organization Account
                 </button>
 
                 <button
@@ -217,26 +285,30 @@ export function LoginPage() {
                   onClick={() => setLoginMode('ind')}
                   style={{
                     flex: 1,
-                    padding: '8px 10px',
-                    borderRadius: '8px',
+                    padding: '7px 8px',
+                    borderRadius: '7px',
                     border:
                       loginMode === 'ind'
                         ? 'none'
-                        : '1px solid var(--border)',
+                        : '1px solid transparent',
                     background:
                       loginMode === 'ind'
-                        ? 'var(--primary)'
-                        : 'var(--white)',
+                        ? 'var(--white)'
+                        : 'transparent',
                     color:
                       loginMode === 'ind'
-                        ? 'var(--white)'
-                        : 'var(--error)',
+                        ? 'var(--primary)'
+                        : 'var(--muted)',
+                    boxShadow:
+                      loginMode === 'ind'
+                        ? '0 1px 3px rgba(0,0,0,0.06)'
+                        : 'none',
                     fontSize: '11px',
                     fontWeight: 700,
                     cursor: 'pointer',
                   }}
                 >
-                  Individual
+                  Individual Learner
                 </button>
               </div>
 
@@ -292,7 +364,7 @@ export function LoginPage() {
                 </div>
               )}
 
-              <form id="loginForm" onSubmit={handleSubmit} noValidate>
+              <form onSubmit={handleSubmit} noValidate>
                 <div className="form-group">
                   <label htmlFor="email">Email address</label>
 
@@ -421,9 +493,57 @@ export function LoginPage() {
                   </label>
                 </div>
 
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '10px 12px',
+                    marginBottom: '16px',
+                    border: '1px solid var(--border)',
+                    borderRadius: '9px',
+                    background: 'var(--white)',
+                    fontSize: '11px',
+                  }}
+                >
+                  <div>
+                    <strong
+                      style={{
+                        display: 'block',
+                        color: 'var(--error)',
+                      }}
+                    >
+                      {loginMode === 'org'
+                        ? 'Organization Account'
+                        : 'Individual Learner Workspace'}
+                    </strong>
+
+                    <span
+                      style={{
+                        color: 'var(--primary)',
+                        fontSize: '10px',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {loginMode === 'org'
+                        ? 'Organization-scoped access'
+                        : 'Personal learner access'}
+                    </span>
+                  </div>
+
+                  <span
+                    style={{
+                      color: 'var(--primary)',
+                      fontWeight: 700,
+                      fontSize: '10px',
+                    }}
+                  >
+                    Secure
+                  </span>
+                </div>
+
                 {sessionError && (
                   <div
-                    id="formMessage"
                     className="form-message error"
                     role="alert"
                     style={{
@@ -438,7 +558,6 @@ export function LoginPage() {
                 <button
                   type="submit"
                   className="primary-button"
-                  id="loginButton"
                   disabled={isLoading}
                   style={{ width: '100%' }}
                 >

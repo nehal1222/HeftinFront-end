@@ -8,9 +8,9 @@ interface SignupPageProps {
   defaultMode?: 'invite' | 'b2b' | 'indiv'
 }
 
-type SignupRole = 'student' | 'faculty' | 'org_admin' | 'super_admin'
-
-export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps) {
+export function SignupPage({
+  defaultMode: initialDefaultMode,
+}: SignupPageProps) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
@@ -20,31 +20,32 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
     | 'indiv'
     | null
 
-  const activeInitialMode = urlMode || initialDefaultMode || 'invite'
+  const activeInitialMode =
+    urlMode || initialDefaultMode || 'invite'
 
   const [signupMode, setSignupMode] = useState<
     'invite' | 'b2b' | 'indiv'
   >(activeInitialMode)
 
-  // Activate Invite Form State
+  // Invite form
   const [inviteCode, setInviteCode] = useState('')
-  const [selectedRole, setSelectedRole] = useState<SignupRole>('student')
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false)
 
-  // Errors & Loading for Invite Form
   const [fullNameError, setFullNameError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
-  const [confirmPasswordError, setConfirmPasswordError] = useState('')
+  const [confirmPasswordError, setConfirmPasswordError] =
+    useState('')
   const [formMessage, setFormMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  // B2B Request Form State
+  // B2B form
   const [b2bOrgName, setB2bOrgName] = useState('')
   const [b2bOrgType, setB2bOrgType] = useState('coaching')
   const [b2bContactName, setB2bContactName] = useState('')
@@ -55,12 +56,14 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
   const [b2bMessage, setB2bMessage] = useState('')
   const [b2bLoading, setB2bLoading] = useState(false)
   const [b2bSuccess, setB2bSuccess] = useState(false)
-  const [b2bSubmittedOrg, setB2bSubmittedOrg] = useState('')
+  const [b2bSubmittedOrg, setB2bSubmittedOrg] =
+    useState('')
 
-  // Individual Waitlist State
+  // Individual waitlist
   const [waitlistEmail, setWaitlistEmail] = useState('')
   const [waitlistMsg, setWaitlistMsg] = useState('')
-  const [waitlistSuccess, setWaitlistSuccess] = useState(false)
+  const [waitlistSuccess, setWaitlistSuccess] =
+    useState(false)
 
   function clearErrors() {
     setFullNameError('')
@@ -74,10 +77,6 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
   }
 
-  function handleRoleChange(role: SignupRole) {
-    setSelectedRole(role)
-  }
-
   async function handleInviteSubmit(
     event: React.FormEvent<HTMLFormElement>,
   ) {
@@ -87,7 +86,9 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
     let valid = true
 
     if (inviteCode.trim() === '') {
-      setFormMessage('Please enter your invite token or cohort code.')
+      setFormMessage(
+        'Please enter your invite token or cohort code.',
+      )
       valid = false
     }
 
@@ -105,15 +106,19 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
     }
 
     if (password === '') {
-      setPasswordError('Please create a password.')
+      setPasswordError('Please enter your password.')
       valid = false
     } else if (password.length < 6) {
-      setPasswordError('Password must contain at least 6 characters.')
+      setPasswordError(
+        'Password must contain at least 6 characters.',
+      )
       valid = false
     }
 
     if (confirmPassword === '') {
-      setConfirmPasswordError('Please confirm your password.')
+      setConfirmPasswordError(
+        'Please confirm your password.',
+      )
       valid = false
     } else if (confirmPassword !== password) {
       setConfirmPasswordError('Passwords do not match.')
@@ -125,19 +130,59 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
     }
 
     /*
-     * Account creation is not implemented by the current auth service.
-     * The existing backend authentication flow uses /auth/login and
-     * /auth/me. Therefore this page directs the user to sign in after
-     * validation instead of creating a fake local account.
+     * The current backend does not expose a signup endpoint.
+     * Authentication is handled through:
+     *
+     * POST /auth/login
+     * GET  /auth/me
+     *
+     * Therefore we do not create a fake local account here.
+     * The organization must provision the account first.
      */
     setIsLoading(true)
+    setFormMessage('')
 
-    setTimeout(() => {
-      setIsLoading(false)
-      setFormMessage(
-        'Your invite details are ready. Please use the Sign In page with an account provisioned by your organization.',
+    try {
+      /*
+       * Use the real login flow.
+       * AuthContext performs:
+       * 1. POST /auth/login
+       * 2. GET /auth/me
+       */
+      const loginResponse = await fetch(
+        '/auth/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email.trim().toLowerCase(),
+            password,
+          }),
+        },
       )
-    }, 500)
+
+      if (!loginResponse.ok) {
+        throw new Error(
+          'Unable to authenticate with the provided account.',
+        )
+      }
+
+      setFormMessage(
+        'Your account is provisioned. Please continue from the Sign In page.',
+      )
+
+      setTimeout(() => {
+        navigate(ROUTES.LOGIN)
+      }, 700)
+    } catch {
+      setFormMessage(
+        'This account could not be authenticated. Please make sure your organization has provisioned your account, then use Sign In.',
+      )
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   async function handleB2BSubmit(
@@ -160,7 +205,7 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
         notes: b2bMessage.trim(),
       })
     } catch {
-      // Gracefully continue and show the request feedback.
+      // The request UI still provides feedback to the user.
     }
 
     setTimeout(() => {
@@ -170,7 +215,9 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
     }, 700)
   }
 
-  function handleWaitlist(event: React.FormEvent) {
+  function handleWaitlist(
+    event: React.FormEvent<HTMLFormElement>,
+  ) {
     event.preventDefault()
 
     if (!isValidEmail(waitlistEmail.trim())) {
@@ -185,24 +232,6 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
     setWaitlistSuccess(true)
     setWaitlistEmail('')
   }
-
-  const isSuperAdmin = selectedRole === 'super_admin'
-
-  const tenantNameText = isSuperAdmin
-    ? 'Heftin Platform Central'
-    : 'Delhi Public Academy'
-
-  const tenantScopeText = isSuperAdmin
-    ? 'Platform Administrator · Global Scope'
-    : selectedRole === 'student'
-      ? 'Tenant: org_001 · Student (Batch 101)'
-      : selectedRole === 'faculty'
-        ? 'Tenant: org_001 · Faculty Access'
-        : 'Tenant: org_001 · Organization Admin'
-
-  const tenantBadgeText = isSuperAdmin
-    ? 'Platform Root'
-    : 'Verified Invite'
 
   return (
     <>
@@ -225,10 +254,11 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                 className="brand-icon-img"
               />
             </div>
+
             <span>Heftin Academy</span>
           </div>
 
-          {/* Mode Switcher */}
+          {/* Authentication mode switcher */}
           <div
             style={{
               display: 'flex',
@@ -240,6 +270,24 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
               background: 'var(--white)',
             }}
           >
+            <button
+              type="button"
+              onClick={() => navigate(ROUTES.LOGIN)}
+              style={{
+                flex: 1,
+                padding: '8px 6px',
+                borderRadius: '8px',
+                border: '1px solid var(--border)',
+                background: '#fff',
+                color: 'var(--error)',
+                fontSize: '11px',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
+            >
+              Sign In
+            </button>
+
             <button
               type="button"
               onClick={() => {
@@ -331,18 +379,21 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
             </button>
           </div>
 
-          {/* Invite */}
+          {/* ================= INVITE ================= */}
           {signupMode === 'invite' && (
             <div>
               <div className="auth-heading">
                 <h1>
-                  <span className="line-1">Activate your</span>
+                  <span className="line-1">
+                    Activate your
+                  </span>
                   <span className="line-2">account</span>
                 </h1>
 
                 <p>
-                  Join your institution with an invite token. Your account
-                  must be provisioned by the organization.
+                  Join your institution with an invite token.
+                  Your account must be provisioned by the
+                  organization.
                 </p>
               </div>
 
@@ -366,7 +417,7 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                       color: 'var(--error)',
                     }}
                   >
-                    {tenantNameText}
+                    Delhi Public Academy
                   </strong>
 
                   <span
@@ -376,7 +427,7 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                       fontWeight: 600,
                     }}
                   >
-                    {tenantScopeText}
+                    Organization-managed account
                   </span>
                 </div>
 
@@ -385,28 +436,17 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                     color: 'var(--primary)',
                     fontWeight: 700,
                     fontSize: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '3px',
                   }}
                 >
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    aria-hidden="true"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-
-                  {tenantBadgeText}
+                  ✓ Verified Invite
                 </span>
               </div>
 
-              <form onSubmit={handleInviteSubmit} noValidate>
+              <form
+                onSubmit={handleInviteSubmit}
+                noValidate
+              >
+                {/* Invite code */}
                 <div
                   className="form-group"
                   style={{ marginBottom: '14px' }}
@@ -455,267 +495,7 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                   </div>
                 </div>
 
-                {/* Role */}
-                <div
-                  className="form-group"
-                  style={{ marginBottom: '16px' }}
-                >
-                  <label
-                    style={{
-                      fontSize: '11px',
-                      fontWeight: 600,
-                    }}
-                  >
-                    Account role
-                  </label>
-
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '8px',
-                      marginTop: '6px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        padding: '8px 10px',
-                        border: '1px solid var(--border)',
-                        borderRadius: '8px',
-                        background: 'var(--bg-soft)',
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: '10px',
-                          fontWeight: 800,
-                          color: 'var(--primary)',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.04em',
-                          display: 'block',
-                          marginBottom: '6px',
-                        }}
-                      >
-                        Organisation
-                      </span>
-
-                      <div
-                        className="role-select"
-                        style={{
-                          gridTemplateColumns:
-                            'repeat(3, 1fr)',
-                          gap: '6px',
-                        }}
-                      >
-                        <label className="role-option">
-                          <input
-                            type="radio"
-                            name="role"
-                            value="org_admin"
-                            checked={
-                              selectedRole === 'org_admin'
-                            }
-                            onChange={() =>
-                              handleRoleChange('org_admin')
-                            }
-                          />
-
-                          <span
-                            className="role-option-card"
-                            style={{ padding: '8px 4px' }}
-                          >
-                            <span className="role-option-icon">
-                              <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                aria-hidden="true"
-                              >
-                                <rect
-                                  x="4"
-                                  y="5"
-                                  width="16"
-                                  height="14"
-                                  rx="2"
-                                />
-                                <path d="M8 9h8M8 13h5" />
-                              </svg>
-                            </span>
-
-                            <span
-                              className="role-option-label"
-                              style={{ fontSize: '10px' }}
-                            >
-                              Org Admin
-                            </span>
-                          </span>
-                        </label>
-
-                        <label className="role-option">
-                          <input
-                            type="radio"
-                            name="role"
-                            value="faculty"
-                            checked={
-                              selectedRole === 'faculty'
-                            }
-                            onChange={() =>
-                              handleRoleChange('faculty')
-                            }
-                          />
-
-                          <span
-                            className="role-option-card"
-                            style={{ padding: '8px 4px' }}
-                          >
-                            <span className="role-option-icon">
-                              <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                aria-hidden="true"
-                              >
-                                <rect
-                                  x="3"
-                                  y="4"
-                                  width="18"
-                                  height="12"
-                                  rx="2"
-                                />
-                                <path d="M8 21h8M12 16v5" />
-                              </svg>
-                            </span>
-
-                            <span
-                              className="role-option-label"
-                              style={{ fontSize: '10px' }}
-                            >
-                              Faculty
-                            </span>
-                          </span>
-                        </label>
-
-                        <label className="role-option">
-                          <input
-                            type="radio"
-                            name="role"
-                            value="super_admin"
-                            checked={
-                              selectedRole === 'super_admin'
-                            }
-                            onChange={() =>
-                              handleRoleChange('super_admin')
-                            }
-                          />
-
-                          <span
-                            className="role-option-card"
-                            style={{ padding: '8px 4px' }}
-                          >
-                            <span className="role-option-icon">
-                              <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                aria-hidden="true"
-                              >
-                                <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z" />
-                              </svg>
-                            </span>
-
-                            <span
-                              className="role-option-label"
-                              style={{ fontSize: '10px' }}
-                            >
-                              SuperAdmin
-                            </span>
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-
-                    <div
-                      style={{
-                        padding: '8px 10px',
-                        border: '1px solid var(--border)',
-                        borderRadius: '8px',
-                        background: 'var(--bg-soft)',
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: '10px',
-                          fontWeight: 800,
-                          color: 'var(--error)',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.04em',
-                          display: 'block',
-                          marginBottom: '6px',
-                        }}
-                      >
-                        Individual
-                      </span>
-
-                      <div
-                        className="role-select"
-                        style={{
-                          gridTemplateColumns: '1fr',
-                          gap: '6px',
-                        }}
-                      >
-                        <label className="role-option">
-                          <input
-                            type="radio"
-                            name="role"
-                            value="student"
-                            checked={selectedRole === 'student'}
-                            onChange={() =>
-                              handleRoleChange('student')
-                            }
-                          />
-
-                          <span
-                            className="role-option-card"
-                            style={{ padding: '8px 4px' }}
-                          >
-                            <span className="role-option-icon">
-                              <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                aria-hidden="true"
-                              >
-                                <path d="M22 10 12 5 2 10l10 5 10-5Z" />
-                                <path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5" />
-                              </svg>
-                            </span>
-
-                            <span
-                              className="role-option-label"
-                              style={{ fontSize: '10px' }}
-                            >
-                              Student
-                            </span>
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Full Name + Email */}
+                {/* Name + Email */}
                 <div
                   style={{
                     display: 'grid',
@@ -729,38 +509,22 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                     className="form-group"
                     style={{ marginBottom: 0 }}
                   >
-                    <label htmlFor="fullName">Full name</label>
+                    <label htmlFor="fullName">
+                      Full name
+                    </label>
 
                     <div
                       className={`input-wrapper ${
                         fullNameError ? 'has-error' : ''
                       }`}
                     >
-                      <span className="input-icon">
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          aria-hidden="true"
-                        >
-                          <circle cx="12" cy="8" r="4" />
-                          <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" />
-                        </svg>
-                      </span>
-
                       <input
                         type="text"
                         id="fullName"
                         value={fullName}
                         onChange={(event) => {
                           setFullName(event.target.value)
-
-                          if (fullNameError) {
-                            setFullNameError('')
-                          }
+                          setFullNameError('')
                         }}
                         placeholder="Your full name"
                         autoComplete="name"
@@ -778,44 +542,22 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                     className="form-group"
                     style={{ marginBottom: 0 }}
                   >
-                    <label htmlFor="email">Email address</label>
+                    <label htmlFor="email">
+                      Email address
+                    </label>
 
                     <div
                       className={`input-wrapper ${
                         emailError ? 'has-error' : ''
                       }`}
                     >
-                      <span className="input-icon">
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          aria-hidden="true"
-                        >
-                          <rect
-                            x="3"
-                            y="5"
-                            width="18"
-                            height="14"
-                            rx="2"
-                          />
-                          <path d="m3 7 9 6 9-6" />
-                        </svg>
-                      </span>
-
                       <input
                         type="email"
                         id="email"
                         value={email}
                         onChange={(event) => {
                           setEmail(event.target.value)
-
-                          if (emailError) {
-                            setEmailError('')
-                          }
+                          setEmailError('')
                         }}
                         placeholder="you@dpa.edu"
                         autoComplete="email"
@@ -844,54 +586,38 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                     className="form-group"
                     style={{ marginBottom: 0 }}
                   >
-                    <label htmlFor="password">Password</label>
+                    <label htmlFor="password">
+                      Password
+                    </label>
 
                     <div
                       className={`input-wrapper ${
                         passwordError ? 'has-error' : ''
                       }`}
                     >
-                      <span className="input-icon">
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          aria-hidden="true"
-                        >
-                          <rect
-                            x="4"
-                            y="10"
-                            width="16"
-                            height="11"
-                            rx="2"
-                          />
-                          <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-                        </svg>
-                      </span>
-
                       <input
-                        type={showPassword ? 'text' : 'password'}
+                        type={
+                          showPassword
+                            ? 'text'
+                            : 'password'
+                        }
                         id="password"
                         value={password}
                         onChange={(event) => {
                           setPassword(event.target.value)
-
-                          if (passwordError) {
-                            setPasswordError('')
-                          }
+                          setPasswordError('')
                         }}
                         placeholder="Min. 6 chars"
-                        autoComplete="new-password"
+                        autoComplete="current-password"
                       />
 
                       <button
                         type="button"
                         className="password-toggle"
                         onClick={() =>
-                          setShowPassword((current) => !current)
+                          setShowPassword(
+                            (current) => !current,
+                          )
                         }
                         aria-label={
                           showPassword
@@ -925,27 +651,6 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                           : ''
                       }`}
                     >
-                      <span className="input-icon">
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          aria-hidden="true"
-                        >
-                          <rect
-                            x="4"
-                            y="10"
-                            width="16"
-                            height="11"
-                            rx="2"
-                          />
-                          <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-                        </svg>
-                      </span>
-
                       <input
                         type={
                           showConfirmPassword
@@ -955,11 +660,10 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                         id="confirmPassword"
                         value={confirmPassword}
                         onChange={(event) => {
-                          setConfirmPassword(event.target.value)
-
-                          if (confirmPasswordError) {
-                            setConfirmPasswordError('')
-                          }
+                          setConfirmPassword(
+                            event.target.value,
+                          )
+                          setConfirmPasswordError('')
                         }}
                         placeholder="Re-enter password"
                         autoComplete="new-password"
@@ -979,7 +683,9 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                             : 'Show password'
                         }
                       >
-                        {showConfirmPassword ? 'Hide' : 'Show'}
+                        {showConfirmPassword
+                          ? 'Hide'
+                          : 'Show'}
                       </button>
                     </div>
 
@@ -1013,7 +719,9 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                     <>
                       <span
                         className="loader"
-                        style={{ display: 'inline-block' }}
+                        style={{
+                          display: 'inline-block',
+                        }}
                       />
                       <span className="button-text">
                         Checking invite...
@@ -1042,12 +750,14 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
             </div>
           )}
 
-          {/* B2B */}
+          {/* ================= B2B ================= */}
           {signupMode === 'b2b' && (
             <div>
               <div className="auth-heading">
                 <h1>
-                  <span className="line-1">Request access for</span>
+                  <span className="line-1">
+                    Request access for
+                  </span>
                   <span className="line-2">
                     your organization
                   </span>
@@ -1337,9 +1047,7 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                         </option>
                         <option value="SSC">SSC CGL</option>
                         <option value="PSC">State PSC</option>
-                        <option value="NEET">
-                          NEET / JEE
-                        </option>
+                        <option value="NEET">NEET / JEE</option>
                       </select>
                     </div>
                   </div>
@@ -1384,6 +1092,7 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                             display: 'inline-block',
                           }}
                         />
+
                         <span className="button-text">
                           Logging request...
                         </span>
@@ -1393,6 +1102,7 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                         <span className="button-text">
                           Submit onboarding request
                         </span>
+
                         <span className="button-arrow">
                           &rarr;
                         </span>
@@ -1434,8 +1144,8 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                       margin: '0 0 6px',
                     }}
                   >
-                    Onboarding request for {b2bSubmittedOrg}{' '}
-                    logged!
+                    Onboarding request for{' '}
+                    {b2bSubmittedOrg} logged!
                   </h3>
 
                   <p
@@ -1473,7 +1183,7 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
             </div>
           )}
 
-          {/* Individual */}
+          {/* ================= INDIVIDUAL ================= */}
           {signupMode === 'indiv' && (
             <div
               id="individualContainer"
@@ -1524,7 +1234,8 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gridTemplateColumns:
+                    'repeat(3, 1fr)',
                   gap: '8px',
                   marginBottom: '18px',
                   textAlign: 'left',

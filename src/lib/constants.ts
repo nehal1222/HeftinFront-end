@@ -11,6 +11,7 @@ export const ROUTES = {
   REQUEST_ACCESS: '/request-access',
   SIGNUP: '/signup',
   LOGIN: '/login',
+  CONTACT: '/contact',
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
   DASHBOARD: '/dashboard',
