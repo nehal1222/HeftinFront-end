@@ -153,6 +153,7 @@ export function HomePage() {
               <li><Link to={ROUTES.REQUEST_ACCESS} style={{ whiteSpace: 'nowrap' }}>For Institutes</Link></li>
               <li><a href="#blueprints" style={{ whiteSpace: 'nowrap' }}>Blueprints</a></li>
               <li><a href="#roles" style={{ whiteSpace: 'nowrap' }}>Roles</a></li>
+              <li><Link to={ROUTES.CONTACT} style={{ whiteSpace: 'nowrap' }}>Contact</Link></li>
             </ul>
             <div className="nav-actions-inner" style={{ whiteSpace: 'nowrap' }}>
               <Link to={ROUTES.REQUEST_ACCESS} className="go-premium" style={{ whiteSpace: 'nowrap' }}>Go Premium</Link>
@@ -171,7 +172,7 @@ export function HomePage() {
               ) : (
                 <>
                   <Link to={ROUTES.LOGIN} className="login" style={{ whiteSpace: 'nowrap' }}>Login</Link>
-                  <Link to={ROUTES.LOGIN} className="start-button" style={{ whiteSpace: 'nowrap' }}>Get Started</Link>
+                  <Link to={ROUTES.SIGNUP} className="start-button" style={{ whiteSpace: 'nowrap' }}>Get Started</Link>
                 </>
               )}
             </div>
@@ -196,7 +197,7 @@ export function HomePage() {
             <p>
               Real exam conditions, honest scoring, and analytics<br /> that actually tell you what to fix next — built <br /> for aspirants who take their rank seriously.
             </p>
-            <Link to={ROUTES.LOGIN} className="start-button">Get Started</Link>
+            <Link to={ROUTES.SIGNUP} className="start-button">Get Started</Link>
 
             <div className="hero-stats">
               <div className="hero-stat"><strong>50K+</strong><span>Students preparing</span></div>
@@ -519,14 +520,14 @@ export function HomePage() {
           className="blueprints-section"
           id="blueprints"
           style={{
-            padding: '80px 20px',
+            padding: '80px 0',
             background: 'var(--primary)',
             borderTop: '1px solid var(--border)',
             borderBottom: '1px solid var(--border)',
             position: 'relative',
           }}
         >
-          <div style={{ maxWidth: '1140px', margin: '0 auto' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
             <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 48px' }}>
               <div
                 style={{
@@ -771,12 +772,12 @@ export function HomePage() {
         </section>
 
         {/* 10. Roles Sandbox */}
-        <section className="roles-sandbox-section" id="roles" style={{ padding: '70px 20px', background: '#f8fcfe', borderTop: '1px solid var(--border)' }}>
-          <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <section className="roles-sandbox-section" id="roles" style={{ padding: '70px 0', background: '#f8fcfe', borderTop: '1px solid var(--border)' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
               <div>
                 <p className="eyebrow" style={{ margin: 0 }}>ACCESS CONTROL</p>
-                <h2 className="split-heading" style={{ margin: '4px 0' }}>
+                <h2 className="split-heading" style={{ margin: '4px 0', justifyContent: 'flex-start' }}>
                   <span className="split-heading-lead">Dynamic Roles &amp; </span>
                   <span className="split-heading-bold">Rights</span>
                 </h2>
