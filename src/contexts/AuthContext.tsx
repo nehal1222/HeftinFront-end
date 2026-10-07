@@ -23,8 +23,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSessionError(null)
 
     try {
+      // Verify the stored access token with the backend.
       const me = await authService.getMe()
 
+      // Build the frontend access profile from the real backend user.
       const profile = createAccessProfile(
         me.name,
         me.email,
@@ -35,6 +37,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setStoredUser(profile)
       setUser(profile)
     } catch {
+      // The token is invalid or expired.
+      // Clear the local session instead of creating a fake fallback session.
       clearAuthStorage()
       setUser(null)
       setSessionError(
@@ -48,6 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
 
+    // Development/test-only session error state.
     if (params.get('simulate_session_error') === 'true') {
       setSessionError(
         'Session verification failed: Authentication token is invalid.',
@@ -56,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return
     }
 
+    // Verify the existing session when the application loads.
     hydrateSession()
   }, [])
 
@@ -77,16 +83,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function login(details: { email: string; password: string }) {
     setSessionError(null)
 
-    // Step 1: authenticate with the backend.
+    // Step 1: Authenticate with the real backend.
     await authService.login({
       email: details.email.trim(),
       password: details.password,
     })
 
-    // Step 2: get the authenticated user's real profile.
+    // Step 2: Fetch the authenticated user's real profile.
     const me = await authService.getMe()
 
-    // Step 3: build the frontend access profile from backend data.
+    // Step 3: Build the frontend access profile from backend data.
     const profile = createAccessProfile(
       me.name,
       me.email,
@@ -101,6 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function logout() {
     await authService.logout()
     setUser(null)
+    setSessionError(null)
   }
 
   return (

@@ -9,7 +9,6 @@ export function ProtectedRoute() {
     isLoadingSession,
     sessionError,
     retrySession,
-    clearSessionError,
     logout,
   } = useAuth()
 
@@ -29,7 +28,7 @@ export function ProtectedRoute() {
           </h1>
 
           <p className="mt-1 text-caption text-muted">
-            Verifying authentication token and permissions...
+            Verifying authentication token and permissions with authorization gateway...
           </p>
         </div>
       </main>
@@ -61,14 +60,14 @@ export function ProtectedRoute() {
             {sessionError}
           </div>
 
-          <div className="mt-6 flex flex-col gap-2">
+          <div className="mt-6 flex flex-col gap-2.5">
             <button
               type="button"
               onClick={retrySession}
               className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark"
             >
               <RefreshCw size={15} aria-hidden="true" />
-              Retry Session
+              <span>Retry Session Handshake</span>
             </button>
 
             <button
@@ -79,15 +78,7 @@ export function ProtectedRoute() {
               className="flex items-center justify-center gap-2 rounded-control border border-border bg-surface py-2.5 text-body-sm font-semibold text-foreground-strong transition-colors hover:border-primary"
             >
               <LogOut size={15} aria-hidden="true" />
-              Return to Sign In
-            </button>
-
-            <button
-              type="button"
-              onClick={clearSessionError}
-              className="mt-1 text-center text-caption font-medium text-primary hover:underline"
-            >
-              Dismiss error
+              <span>Return to Sign In</span>
             </button>
           </div>
         </div>

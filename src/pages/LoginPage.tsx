@@ -1,23 +1,15 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import {
-  AlertCircle,
-  ArrowRight,
-  Eye,
-  EyeOff,
-  GraduationCap,
-  Loader2,
-  LogOut,
-  User,
-} from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { ROUTES } from '@/lib/constants'
+import '@/auth.css'
 
 export function LoginPage() {
   const { user, isAuthenticated, login, logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
+  const [loginMode, setLoginMode] = useState<'org' | 'ind'>('org')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -54,252 +46,473 @@ export function LoginPage() {
     }
   }
 
+  async function handleLogout() {
+    await logout()
+    setEmail('')
+    setPassword('')
+    setSessionError(null)
+  }
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface px-4 py-12 font-sans text-foreground">
-      <div className="w-full max-w-md">
-        {/* Brand Header */}
-        <div className="mb-6 flex flex-col items-center text-center">
-          <Link
-            to={ROUTES.HOME}
-            className="flex items-center gap-2.5 transition-opacity hover:opacity-90"
-          >
-            <div className="grid size-10 place-items-center rounded-control bg-primary text-primary-foreground shadow-sm">
-              <GraduationCap size={22} aria-hidden="true" />
-            </div>
+    <>
+      <div className="background" aria-hidden="true">
+        <div className="circle circle-one" />
+        <div className="circle circle-two" />
+        <div className="circle circle-three" />
+      </div>
 
-            <span className="font-display text-heading-md font-semibold text-foreground-strong">
-              Heftin Academy
-            </span>
-          </Link>
-        </div>
-
-        {/* Card */}
-        <div className="rounded-card border border-border bg-surface-elevated p-7 shadow-sm sm:p-8">
+      <main className="auth-wrapper font-sans">
+        <section className="auth-card">
           {isAuthenticated && user ? (
-            /* State: Already signed in */
-            <div className="text-center">
-              <div className="mx-auto grid size-12 place-items-center rounded-full bg-primary-soft text-primary-dark">
-                <User size={24} aria-hidden="true" />
+            <div style={{ textAlign: 'center', padding: '10px 0' }}>
+              <div className="brand" style={{ marginBottom: '18px' }}>
+                <div className="brand-icon">
+                  <img
+                    src="/images/logo.jpeg"
+                    alt="Heftin Academy"
+                    className="brand-icon-img"
+                  />
+                </div>
+                <span>Heftin Academy</span>
               </div>
 
-              <h1 className="mt-4 font-display text-heading-sm font-semibold text-foreground-strong">
-                Welcome back, {user.displayName}
-              </h1>
+              <div className="auth-heading" style={{ marginBottom: '18px' }}>
+                <h1 style={{ fontSize: '24px' }}>
+                  <span className="line-1">Welcome</span>
+                  <span className="line-2">back</span>
+                </h1>
 
-              <p className="mt-1 text-body-sm text-muted">
-                You are currently signed in as{' '}
-                <span className="font-semibold text-foreground-strong">
-                  {user.email}
+                <p>
+                  You are currently authenticated as{' '}
+                  <strong>{user.displayName}</strong> ({user.email})
+                </p>
+              </div>
+
+              <div
+                style={{
+                  margin: '16px 0',
+                  padding: '12px',
+                  borderRadius: '10px',
+                  background: 'var(--white)',
+                  border: '1px solid var(--border)',
+                  fontSize: '12px',
+                }}
+              >
+                <span style={{ color: 'var(--muted)' }}>
+                  Active Identity:{' '}
                 </span>
-              </p>
 
-              <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-3 py-1 text-caption font-semibold text-primary-dark capitalize">
-                Role: {user.role.replace('_', ' ')}
+                <strong
+                  style={{
+                    color: 'var(--primary)',
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {user.role.replace('_', ' ')} &middot;{' '}
+                  {user.plan.toUpperCase()}
+                </strong>
               </div>
 
-              <div className="mt-6 flex flex-col gap-2.5">
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  marginTop: '20px',
+                }}
+              >
                 <button
                   type="button"
                   onClick={() => navigate(ROUTES.WORKSPACE)}
-                  className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark shadow-sm cursor-pointer"
+                  className="primary-button"
+                  style={{ width: '100%' }}
                 >
-                  <span>Continue to Workspace</span>
-                  <ArrowRight size={16} aria-hidden="true" />
+                  <span className="button-text">
+                    Continue to Workspace
+                  </span>
+                  <span className="button-arrow">&rarr;</span>
                 </button>
 
                 <button
                   type="button"
-                  onClick={async () => {
-                    await logout()
-                    setEmail('')
-                    setPassword('')
-                    setSessionError(null)
+                  onClick={handleLogout}
+                  style={{
+                    padding: '10px 16px',
+                    borderRadius: '11px',
+                    border: '1px solid var(--border)',
+                    background: 'var(--white)',
+                    color: 'var(--muted)',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
                   }}
-                  className="flex items-center justify-center gap-2 rounded-control border border-border bg-surface py-2 text-body-sm font-medium text-muted transition-colors hover:border-primary hover:text-foreground cursor-pointer"
                 >
-                  <LogOut size={15} aria-hidden="true" />
-                  <span>Sign Out &amp; Use Another Account</span>
+                  Sign Out &amp; Use Another Account
                 </button>
               </div>
             </div>
           ) : (
-            /* State: Standard Sign In Form */
-            <div>
-              <div className="mb-5">
-                <h1 className="font-display text-heading-md font-semibold text-foreground-strong">
-                  Sign In
-                </h1>
-
-                <p className="mt-1 text-body-sm text-muted">
-                  Enter your credentials to access your academy workspace.
-                </p>
+            <>
+              <div className="brand">
+                <div className="brand-icon">
+                  <img
+                    src="/images/logo.jpeg"
+                    alt="Heftin Academy"
+                    className="brand-icon-img"
+                  />
+                </div>
+                <span>Heftin Academy</span>
               </div>
 
-              {/* Authentication Error */}
-              {sessionError && (
-                <div
-                  role="alert"
-                  className="mb-5 flex items-start gap-3 rounded-control border border-primary-tint-3 bg-primary-soft/40 p-3.5 text-body-sm text-foreground-strong"
+              <div className="auth-heading">
+                <h1>
+                  <span className="line-1">Welcome</span>
+                  <span className="line-2">back</span>
+                </h1>
+
+                <p>Sign in to continue to your account</p>
+              </div>
+
+              {/* Organization / Individual mode */}
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '6px',
+                  marginBottom: '20px',
+                  padding: '4px',
+                  border: '1px solid var(--border)',
+                  borderRadius: '12px',
+                  background: 'var(--white)',
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setLoginMode('org')}
+                  style={{
+                    flex: 1,
+                    padding: '8px 10px',
+                    borderRadius: '8px',
+                    border:
+                      loginMode === 'org'
+                        ? 'none'
+                        : '1px solid var(--border)',
+                    background:
+                      loginMode === 'org'
+                        ? 'var(--primary)'
+                        : 'var(--white)',
+                    color:
+                      loginMode === 'org'
+                        ? 'var(--white)'
+                        : 'var(--error)',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
                 >
-                  <AlertCircle
-                    size={18}
-                    className="mt-0.5 shrink-0 text-primary"
-                    aria-hidden="true"
-                  />
+                  Organization
+                </button>
 
-                  <div className="space-y-1">
-                    <p className="font-semibold text-primary-dark">
-                      Authentication Failed
-                    </p>
+                <button
+                  type="button"
+                  onClick={() => setLoginMode('ind')}
+                  style={{
+                    flex: 1,
+                    padding: '8px 10px',
+                    borderRadius: '8px',
+                    border:
+                      loginMode === 'ind'
+                        ? 'none'
+                        : '1px solid var(--border)',
+                    background:
+                      loginMode === 'ind'
+                        ? 'var(--primary)'
+                        : 'var(--white)',
+                    color:
+                      loginMode === 'ind'
+                        ? 'var(--white)'
+                        : 'var(--error)',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Individual
+                </button>
+              </div>
 
-                    <p className="text-caption leading-relaxed text-muted">
-                      {sessionError}
-                    </p>
-                  </div>
+              {loginMode === 'ind' && (
+                <div
+                  style={{
+                    textAlign: 'center',
+                    padding: '18px 16px',
+                    border: '1px solid var(--border)',
+                    borderRadius: '14px',
+                    background: 'var(--white)',
+                    marginBottom: '20px',
+                  }}
+                >
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      padding: '3px 10px',
+                      borderRadius: '99px',
+                      background: 'rgba(0, 130, 142, 0.1)',
+                      color: 'var(--primary)',
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    Individual Category
+                  </span>
+
+                  <h3
+                    style={{
+                      margin: '8px 0 4px',
+                      fontSize: '16px',
+                      fontWeight: 700,
+                      color: 'var(--error)',
+                    }}
+                  >
+                    Individual Learner Workspace
+                  </h3>
+
+                  <p
+                    style={{
+                      margin: '0 auto',
+                      fontSize: '11.5px',
+                      color: 'var(--muted)',
+                      lineHeight: 1.5,
+                      maxWidth: '320px',
+                    }}
+                  >
+                    Sign in with your individual learner account to access
+                    your personal workspace.
+                  </p>
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Email */}
-                <div>
-                  <label
-                    htmlFor="login-email"
-                    className="block text-caption font-semibold text-foreground-strong"
-                  >
-                    Email Address
-                  </label>
+              <form id="loginForm" onSubmit={handleSubmit} noValidate>
+                <div className="form-group">
+                  <label htmlFor="email">Email address</label>
 
-                  <input
-                    id="login-email"
-                    type="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    placeholder="name@institution.edu or name@gmail.com"
-                    required
-                    autoComplete="email"
-                    className="mt-1.5 w-full rounded-control border border-border bg-surface px-3.5 py-2.5 text-body-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
-                  />
+                  <div
+                    className={`input-wrapper ${
+                      sessionError ? 'has-error' : ''
+                    }`}
+                  >
+                    <span className="input-icon">
+                      <svg
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        aria-hidden="true"
+                      >
+                        <rect
+                          x="3"
+                          y="5"
+                          width="18"
+                          height="14"
+                          rx="2"
+                        />
+                        <path d="m3 7 9 6 9-6" />
+                      </svg>
+                    </span>
+
+                    <input
+                      type="email"
+                      id="email"
+                      value={email}
+                      onChange={(event) => {
+                        setEmail(event.target.value)
+                        setSessionError(null)
+                      }}
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                      required
+                    />
+                  </div>
                 </div>
 
-                {/* Password */}
-                <div>
-                  <div className="flex items-center justify-between">
-                    <label
-                      htmlFor="login-password"
-                      className="block text-caption font-semibold text-foreground-strong"
-                    >
-                      Password
-                    </label>
+                <div className="form-group">
+                  <div className="label-row">
+                    <label htmlFor="password">Password</label>
 
                     <Link
                       to={ROUTES.FORGOT_PASSWORD}
-                      className="text-caption font-medium text-primary hover:underline"
+                      className="forgot-link"
                     >
                       Forgot password?
                     </Link>
                   </div>
 
-                  <div className="relative mt-1.5">
+                  <div
+                    className={`input-wrapper ${
+                      sessionError ? 'has-error' : ''
+                    }`}
+                  >
+                    <span className="input-icon">
+                      <svg
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        aria-hidden="true"
+                      >
+                        <rect
+                          x="4"
+                          y="10"
+                          width="16"
+                          height="11"
+                          rx="2"
+                        />
+                        <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                      </svg>
+                    </span>
+
                     <input
-                      id="login-password"
                       type={showPassword ? 'text' : 'password'}
+                      id="password"
                       value={password}
-                      onChange={(event) => setPassword(event.target.value)}
+                      onChange={(event) => {
+                        setPassword(event.target.value)
+                        setSessionError(null)
+                      }}
                       placeholder="Enter your password"
-                      required
                       autoComplete="current-password"
-                      className="w-full rounded-control border border-border bg-surface py-2.5 pl-3.5 pr-10 text-body-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                      required
                     />
 
                     <button
                       type="button"
-                      onClick={() => setShowPassword((current) => !current)}
-                      aria-label={
-                        showPassword ? 'Hide password' : 'Show password'
+                      className="password-toggle"
+                      onClick={() =>
+                        setShowPassword((current) => !current)
                       }
-                      className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 text-muted hover:text-foreground"
+                      aria-label={
+                        showPassword
+                          ? 'Hide password'
+                          : 'Show password'
+                      }
                     >
-                      {showPassword ? (
-                        <EyeOff size={16} aria-hidden="true" />
-                      ) : (
-                        <Eye size={16} aria-hidden="true" />
-                      )}
+                      {showPassword ? 'Hide' : 'Show'}
                     </button>
                   </div>
                 </div>
 
-                {/* Remember Me */}
-                <div className="flex items-center justify-between pt-1 text-caption">
-                  <label className="flex cursor-pointer select-none items-center gap-2 text-muted hover:text-foreground">
+                <div className="form-options">
+                  <label className="remember-me">
                     <input
                       type="checkbox"
+                      id="rememberMe"
                       checked={rememberMe}
                       onChange={(event) =>
                         setRememberMe(event.target.checked)
                       }
-                      className="size-4 rounded border-border text-primary focus:ring-primary"
                     />
 
-                    <span>Remember this device</span>
+                    <span className="custom-checkbox" />
+                    <span>Remember me</span>
                   </label>
                 </div>
 
-                {/* Submit */}
+                {sessionError && (
+                  <div
+                    id="formMessage"
+                    className="form-message error"
+                    role="alert"
+                    style={{
+                      display: 'block',
+                      marginBottom: '15px',
+                    }}
+                  >
+                    {sessionError}
+                  </div>
+                )}
+
                 <button
                   type="submit"
+                  className="primary-button"
+                  id="loginButton"
                   disabled={isLoading}
-                  className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-70"
+                  style={{ width: '100%' }}
                 >
                   {isLoading ? (
                     <>
-                      <Loader2
-                        size={16}
-                        className="animate-spin"
-                        aria-hidden="true"
+                      <span
+                        className="loader"
+                        style={{ display: 'inline-block' }}
                       />
-                      <span>Signing In...</span>
+                      <span className="button-text">
+                        Signing in...
+                      </span>
                     </>
                   ) : (
                     <>
-                      <span>Sign In</span>
-                      <ArrowRight size={16} aria-hidden="true" />
+                      <span className="button-text">Sign in</span>
+                      <span className="button-arrow">&rarr;</span>
                     </>
                   )}
                 </button>
               </form>
 
-              {/* Institutional Access */}
-              <div className="mt-5 border-t border-border pt-3.5 text-center">
-                <Link
-                  to={ROUTES.REQUEST_ACCESS}
-                  className="text-caption font-medium text-muted transition-colors hover:text-primary"
-                >
-                  Need an institutional license? Request Access &rarr;
-                </Link>
+              <div className="divider">
+                <span />
+                <p>or</p>
+                <span />
               </div>
-            </div>
-          )}
-        </div>
 
-        {/* Footer */}
-        <div className="mt-6 flex items-center justify-center gap-4 text-center">
+              <p className="bottom-text">
+                Organization accounts are provisioned by your
+                administrator.{' '}
+                <Link to={ROUTES.SIGNUP}>Activate invite token</Link>{' '}
+                &middot;{' '}
+                <Link to={ROUTES.REQUEST_ACCESS}>
+                  Request org access
+                </Link>
+              </p>
+            </>
+          )}
+        </section>
+
+        <div
+          style={{
+            marginTop: '20px',
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '16px',
+          }}
+        >
           <Link
             to={ROUTES.HOME}
-            className="text-caption font-medium text-muted transition-colors hover:text-foreground"
+            style={{
+              color: 'var(--muted)',
+              fontSize: '12px',
+              textDecoration: 'none',
+            }}
           >
             Back to Home
           </Link>
 
-          <span className="text-caption text-muted">&middot;</span>
+          <span style={{ color: 'var(--muted)' }}>·</span>
 
           <Link
             to={ROUTES.SESSION_ERROR}
-            className="text-caption font-medium text-muted hover:text-foreground transition-colors"
+            style={{
+              color: 'var(--muted)',
+              fontSize: '12px',
+              textDecoration: 'none',
+            }}
           >
             Session Help
           </Link>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   )
 }
