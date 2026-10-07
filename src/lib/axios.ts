@@ -82,7 +82,7 @@ api.interceptors.response.use(
 
         try {
           sessionStorage.setItem(SESSION_KEYS.SESSION_EXPIRED, 'true')
-          sessionStorage.setItem(SESSION_KEYS.RETURN_TO, returnTo)
+          
         } catch {
           // Keep redirecting even when session storage is blocked.
         }

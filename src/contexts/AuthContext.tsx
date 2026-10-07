@@ -7,7 +7,10 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { getAccessToken } from '@/lib/storage'
+import {
+  clearAuthStorage,
+  getAccessToken,
+} from '@/lib/storage'
 
 type AuthContextValue = {
   isAuthenticated: boolean
@@ -19,13 +22,17 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // Placeholder until FE-12 adds the real token -> /auth/me session check.
   const [isLoading] = useState(false)
+
   const [isAuthenticated, setIsAuthenticated] = useState(
     () => Boolean(getAccessToken()),
   )
+
   const [user] = useState<unknown | null>(null)
 
   function signOut() {
+    clearAuthStorage()
     setIsAuthenticated(false)
   }
 

@@ -7,7 +7,6 @@ export const STORAGE_KEYS = {
 } as const
 export const SESSION_KEYS = {
   SESSION_EXPIRED: 'hac_session_expired',
-  RETURN_TO: 'hac_return_to',
 } as const
 
 export const ROUTES = {

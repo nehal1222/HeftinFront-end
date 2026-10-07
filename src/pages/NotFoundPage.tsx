@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { ROUTES } from '@/lib/constants'
 
@@ -21,10 +20,11 @@ export function NotFoundPage() {
         </p>
 
         <div className="mt-6">
-          <Link to={ROUTES.HOME}>
-            <Button type="button">
-              Go home
-            </Button>
+          <Link
+            to={ROUTES.HOME}
+            className="inline-flex items-center justify-center rounded-control bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark"
+          >
+            Go home
           </Link>
         </div>
       </Card>

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import type { ApiStateKind } from '@/lib/api-state'
+import { getApiState, type ApiStateKind } from '@/lib/api-state'
 
 export function useApiState(initialState: ApiStateKind = 'loading') {
   const [state, setState] = useState<ApiStateKind>(initialState)
@@ -24,6 +24,10 @@ export function useApiState(initialState: ApiStateKind = 'loading') {
     setState('notFound')
   }, [])
 
+  const setFromError = useCallback((error: unknown) => {
+    setState(getApiState(error))
+  }, [])
+
   return {
     state,
     setState,
@@ -32,5 +36,6 @@ export function useApiState(initialState: ApiStateKind = 'loading') {
     setError,
     setForbidden,
     setNotFound,
+    setFromError,
   }
 }
