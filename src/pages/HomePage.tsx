@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ROUTES } from '@/lib/constants'
 import { Link } from 'react-router-dom'
+import { useAuth } from '@/hooks/useAuth'
 import '@/landing.css'
 
 type RoleKey = 'admin' | 'hod' | 'teacher' | 'student' | 'superadmin'
@@ -58,6 +59,7 @@ const ROLE_DATA: Record<RoleKey, RoleDetail> = {
 }
 
 export function HomePage() {
+  const { isAuthenticated, logout } = useAuth()
   const [activeRole, setActiveRole] = useState<RoleKey>('admin')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [preloaderHidden, setPreloaderHidden] = useState(false)
@@ -154,8 +156,24 @@ export function HomePage() {
             </ul>
             <div className="nav-actions-inner" style={{ whiteSpace: 'nowrap' }}>
               <Link to={ROUTES.REQUEST_ACCESS} className="go-premium" style={{ whiteSpace: 'nowrap' }}>Go Premium</Link>
-              <Link to={ROUTES.LOGIN} className="login" style={{ whiteSpace: 'nowrap' }}>Login</Link>
-              <Link to={ROUTES.LOGIN} className="start-button" style={{ whiteSpace: 'nowrap' }}>Get Started</Link>
+              {isAuthenticated ? (
+                <>
+                  <Link to={ROUTES.WORKSPACE} className="login" style={{ whiteSpace: 'nowrap' }}>Dashboard</Link>
+                  <button
+                    type="button"
+                    onClick={logout}
+                    className="start-button"
+                    style={{ whiteSpace: 'nowrap', cursor: 'pointer', border: 'none' }}
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to={ROUTES.LOGIN} className="login" style={{ whiteSpace: 'nowrap' }}>Login</Link>
+                  <Link to={ROUTES.LOGIN} className="start-button" style={{ whiteSpace: 'nowrap' }}>Get Started</Link>
+                </>
+              )}
             </div>
           </div>
         </div>

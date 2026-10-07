@@ -1,397 +1,299 @@
 import { useState } from 'react'
-import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   AlertCircle,
   ArrowRight,
-  Building2,
-  CheckCircle2,
   Eye,
   EyeOff,
   GraduationCap,
   Loader2,
-  RefreshCw,
+  LogOut,
   User,
 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { ROUTES } from '@/lib/constants'
 import type { SubscriptionPlan, UserRole } from '@/types/access'
 
-type LoginViewState = 'form' | 'loading' | 'error'
+function inferProfileFromEmail(email: string): { displayName: string; role: UserRole; plan: SubscriptionPlan } {
+  const normalized = email.trim().toLowerCase()
+  if (normalized.includes('admin@dpa.edu') || normalized.startsWith('admin@')) {
+    return { displayName: 'Vikram Malhotra', role: 'org_admin', plan: 'institution' }
+  }
+  if (normalized.includes('meera') || normalized.includes('faculty') || normalized.includes('teacher')) {
+    return { displayName: 'Dr. Meera Patel', role: 'faculty', plan: 'institution' }
+  }
+  if (normalized.includes('super') || normalized.includes('lead@heftin')) {
+    return { displayName: 'Platform Administrator', role: 'super_admin', plan: 'pro' }
+  }
+  if (normalized.endsWith('.edu') || normalized.includes('student')) {
+    return { displayName: 'Arjun Kumar', role: 'student', plan: 'institution' }
+  }
+  const namePart = normalized.split('@')[0].replace(/[._-]/g, ' ')
+  const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1)
+  return { displayName: formattedName || 'Personal Learner', role: 'individual', plan: 'scholar' }
+}
 
 export function LoginPage() {
-  const { isAuthenticated, login } = useAuth()
+  const { user, isAuthenticated, login, logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [searchParams] = useSearchParams()
 
-  const requestedRole = searchParams.get('role') as UserRole
-  const initialCategory = requestedRole === 'individual' ? 'individual' : 'organizational'
-
-  const [category, setCategory] = useState<'organizational' | 'individual'>(initialCategory)
-  const [role, setRole] = useState<UserRole>(() => {
-    if (requestedRole && ['student', 'faculty', 'org_admin', 'super_admin', 'individual'].includes(requestedRole)) {
-      return requestedRole
-    }
-    return 'student'
-  })
-  const [displayName, setDisplayName] = useState(() => (role === 'individual' ? 'Ananya Sharma' : 'Arjun Kumar'))
-  const [email, setEmail] = useState(() => (role === 'individual' ? 'ananya.learner@gmail.com' : 'student@dpa.edu'))
-  const [password, setPassword] = useState('password123')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [plan, setPlan] = useState<SubscriptionPlan>(() => (category === 'individual' ? 'scholar' : 'institution'))
+  const [rememberMe, setRememberMe] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
+  const [sessionError, setSessionError] = useState<string | null>(null)
 
-  const [viewState, setViewState] = useState<LoginViewState>('form')
-  const [errorMessage, setErrorMessage] = useState<string>(
-    'Session verification failed: Invalid credentials or authentication token was rejected (401 Unauthorized).'
-  )
-
-  if (isAuthenticated && viewState === 'form') {
-    return <Navigate to={ROUTES.WORKSPACE} replace />
-  }
-
-  function switchCategory(nextCategory: 'organizational' | 'individual') {
-    setCategory(nextCategory)
-    if (nextCategory === 'individual') {
-      setRole('individual')
-      setDisplayName('Ananya Sharma')
-      setEmail('ananya.learner@gmail.com')
-      setPlan('scholar')
-    } else {
-      setRole('student')
-      setDisplayName('Arjun Kumar')
-      setEmail('student@dpa.edu')
-      setPlan('institution')
-    }
-  }
-
-  function pickRole(selectedRole: UserRole) {
-    setRole(selectedRole)
-    if (selectedRole === 'student') {
-      setDisplayName('Arjun Kumar')
-      setEmail('student@dpa.edu')
-      setPlan('institution')
-    } else if (selectedRole === 'faculty') {
-      setDisplayName('Dr. Meera Patel')
-      setEmail('dr.meera@dpa.edu')
-      setPlan('institution')
-    } else if (selectedRole === 'org_admin') {
-      setDisplayName('Vikram Malhotra')
-      setEmail('admin@dpa.edu')
-      setPlan('institution')
-    } else if (selectedRole === 'super_admin') {
-      setDisplayName('Platform Admin')
-      setEmail('lead@heftin.com')
-      setPlan('pro')
-    }
-  }
-
-  async function performLogin(credentialsPassword: string) {
-    setViewState('loading')
-    try {
-      await login({ displayName, email, role, plan, password: credentialsPassword })
-      const destination = (location.state as { from?: string } | null)?.from ?? ROUTES.WORKSPACE
-      navigate(destination, { replace: true })
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Session verification failed: Invalid credentials (401 Unauthorized).'
-      setErrorMessage(msg)
-      setViewState('error')
-    }
+  function fillDemoAccount(demoEmail: string = 'student@dpa.edu') {
+    setEmail(demoEmail)
+    setPassword('password123')
+    setSessionError(null)
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    await performLogin(password)
-  }
+    setIsLoading(true)
+    setSessionError(null)
 
-  function handleTestFalseCredentials() {
-    setPassword('wrong_password_401')
-    performLogin('wrong_password_401')
-  }
+    const profile = inferProfileFromEmail(email)
 
-  function handleFillValidDemoCredentials() {
-    setPassword('password123')
-    setViewState('form')
-  }
+    try {
+      await login({
+        email: email.trim(),
+        password,
+        displayName: profile.displayName,
+        role: profile.role,
+        plan: profile.plan,
+      })
 
-  function handleRetrySignIn() {
-    setViewState('form')
+      const destination = (location.state as { from?: string } | null)?.from ?? ROUTES.WORKSPACE
+      navigate(destination, { replace: true })
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : 'Session verification failed: Invalid credentials or token rejected (401 Unauthorized).'
+      setSessionError(message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface px-4 py-8 text-foreground font-sans">
-      <div className="w-full max-w-sm">
+    <main className="flex min-h-screen items-center justify-center bg-surface px-4 py-12 font-sans text-foreground">
+      <div className="w-full max-w-md">
         {/* Brand Header */}
-        <div className="mb-6 flex items-center justify-center gap-2.5">
-          <div className="grid size-9 place-items-center rounded-control bg-primary text-primary-foreground shadow-sm">
-            <GraduationCap size={20} aria-hidden="true" />
-          </div>
-          <span className="font-display text-heading-sm font-semibold text-foreground-strong">
-            Heftin Academy
-          </span>
+        <div className="mb-6 flex flex-col items-center text-center">
+          <Link to={ROUTES.HOME} className="flex items-center gap-2.5 transition-opacity hover:opacity-90">
+            <div className="grid size-10 place-items-center rounded-control bg-primary text-primary-foreground shadow-sm">
+              <GraduationCap size={22} aria-hidden="true" />
+            </div>
+            <span className="font-display text-heading-md font-semibold text-foreground-strong">
+              Heftin Academy
+            </span>
+          </Link>
         </div>
 
-        {/* Card Body */}
-        <div className="rounded-card border border-border bg-surface-elevated p-6 shadow-sm">
-          {/* ========================================================= */}
-          {/* STATE 1: SESSION LOADING STATE                            */}
-          {/* ========================================================= */}
-          {viewState === 'loading' && (
-            <div className="flex flex-col items-center py-6 text-center">
-              <div className="grid size-12 place-items-center rounded-control bg-primary-soft text-primary-dark animate-spin">
-                <Loader2 size={24} aria-hidden="true" />
+        {/* Card */}
+        <div className="rounded-card border border-border bg-surface-elevated p-7 shadow-sm sm:p-8">
+          {isAuthenticated && user ? (
+            /* State: Already signed in */
+            <div className="text-center">
+              <div className="mx-auto grid size-12 place-items-center rounded-full bg-primary-soft text-primary-dark">
+                <User size={24} aria-hidden="true" />
               </div>
-              <h2 className="mt-4 font-display text-heading-xs font-semibold text-foreground-strong">
-                Authenticating Session
-              </h2>
-              <p className="mt-1 text-caption text-muted">
-                Verifying credentials &amp; session with authorization gateway...
+              <h1 className="mt-4 font-display text-heading-sm font-semibold text-foreground-strong">
+                Welcome back, {user.displayName}
+              </h1>
+              <p className="mt-1 text-body-sm text-muted">
+                You are currently signed in as{' '}
+                <span className="font-semibold text-foreground-strong">{user.email}</span>
               </p>
-              <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-caption text-muted">
-                <span className="size-2 rounded-full bg-primary animate-pulse" />
-                <span>Checking gateway handshake...</span>
-              </div>
-            </div>
-          )}
-
-          {/* ========================================================= */}
-          {/* STATE 2: SESSION ERROR STATE (ON FALSE CREDENTIALS)       */}
-          {/* ========================================================= */}
-          {viewState === 'error' && (
-            <div>
-              <div className="flex items-center gap-3">
-                <div className="grid size-10 place-items-center rounded-control bg-primary-soft text-primary-dark">
-                  <AlertCircle size={22} aria-hidden="true" />
-                </div>
-                <div>
-                  <span className="text-caption font-semibold uppercase tracking-wider text-muted">
-                    Authentication Status
-                  </span>
-                  <h1 className="font-display text-heading-sm font-semibold text-foreground-strong">
-                    Session Error
-                  </h1>
-                </div>
-              </div>
-
-              <div className="mt-4 rounded-control border border-border bg-surface p-3.5 text-body-sm text-foreground-strong">
-                {errorMessage}
+              <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-3 py-1 text-caption font-semibold text-primary-dark capitalize">
+                Role: {user.role.replace('_', ' ')}
               </div>
 
               <div className="mt-6 flex flex-col gap-2.5">
                 <button
                   type="button"
-                  onClick={handleRetrySignIn}
-                  className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm"
+                  onClick={() => navigate(ROUTES.WORKSPACE)}
+                  className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm cursor-pointer"
                 >
-                  <RefreshCw size={15} />
-                  Retry Sign In
+                  <span>Continue to Workspace</span>
+                  <ArrowRight size={16} aria-hidden="true" />
                 </button>
 
                 <button
                   type="button"
-                  onClick={handleFillValidDemoCredentials}
-                  className="flex items-center justify-center gap-2 rounded-control border border-border bg-surface py-2.5 text-body-sm font-semibold text-foreground-strong hover:border-primary transition-colors"
+                  onClick={async () => {
+                    await logout()
+                    setEmail('')
+                    setPassword('')
+                    setSessionError(null)
+                  }}
+                  className="flex items-center justify-center gap-2 rounded-control border border-border bg-surface py-2 text-body-sm font-medium text-muted hover:text-foreground hover:border-primary transition-colors cursor-pointer"
                 >
-                  <CheckCircle2 size={15} className="text-primary" />
-                  Fill Valid Demo Credentials
+                  <LogOut size={15} aria-hidden="true" />
+                  <span>Sign Out &amp; Use Another Account</span>
                 </button>
-
-                <Link
-                  to={ROUTES.REQUEST_ACCESS}
-                  className="mt-1 text-center text-caption font-medium text-muted hover:text-primary transition-colors"
-                >
-                  Need access? Request Institutional Onboarding &rarr;
-                </Link>
               </div>
             </div>
-          )}
-
-          {/* ========================================================= */}
-          {/* STATE 3: CLEAN PROFESSIONAL SIGN IN FORM                  */}
-          {/* ========================================================= */}
-          {viewState === 'form' && (
-            <>
-              <h1 className="font-display text-heading-sm font-semibold text-foreground-strong">
-                Sign In
-              </h1>
-
-              {/* Category Toggle */}
-              <div className="mt-4">
-                <span className="block text-caption font-semibold text-muted uppercase tracking-wider">
-                  Category
-                </span>
-                <div className="mt-1.5 grid grid-cols-2 gap-1 rounded-control border border-border bg-surface p-1">
-                  <button
-                    type="button"
-                    onClick={() => switchCategory('organizational')}
-                    className={`flex items-center justify-center gap-1.5 rounded-control py-1.5 text-caption font-semibold transition-colors ${
-                      category === 'organizational'
-                        ? 'bg-primary text-primary-foreground shadow-sm'
-                        : 'text-muted hover:text-foreground'
-                    }`}
-                  >
-                    <Building2 size={13} aria-hidden="true" />
-                    Organizational
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => switchCategory('individual')}
-                    className={`flex items-center justify-center gap-1.5 rounded-control py-1.5 text-caption font-semibold transition-colors ${
-                      category === 'individual'
-                        ? 'bg-primary text-primary-foreground shadow-sm'
-                        : 'text-muted hover:text-foreground'
-                    }`}
-                  >
-                    <User size={13} aria-hidden="true" />
-                    Individual
-                  </button>
-                </div>
+          ) : (
+            /* State: Standard Clean Production Sign In Form */
+            <div>
+              <div className="mb-5">
+                <h1 className="font-display text-heading-md font-semibold text-foreground-strong">
+                  Sign In
+                </h1>
+                <p className="mt-1 text-body-sm text-muted">
+                  Enter your credentials to access your academy workspace.
+                </p>
               </div>
 
-              {/* Quick Preset Selector */}
-              <div className="mt-4">
-                <span className="block text-caption font-semibold text-muted uppercase tracking-wider">
-                  {category === 'organizational' ? 'Role' : 'Profile'}
-                </span>
-                <div className="mt-1.5 flex flex-wrap gap-1">
-                  {category === 'organizational' ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => pickRole('student')}
-                        className={`rounded-control px-2.5 py-1 text-caption font-medium transition-colors ${
-                          role === 'student'
-                            ? 'bg-primary text-primary-foreground font-semibold'
-                            : 'border border-border bg-surface text-muted hover:text-foreground'
-                        }`}
-                      >
-                        Student
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => pickRole('faculty')}
-                        className={`rounded-control px-2.5 py-1 text-caption font-medium transition-colors ${
-                          role === 'faculty'
-                            ? 'bg-primary text-primary-foreground font-semibold'
-                            : 'border border-border bg-surface text-muted hover:text-foreground'
-                        }`}
-                      >
-                        Faculty
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => pickRole('org_admin')}
-                        className={`rounded-control px-2.5 py-1 text-caption font-medium transition-colors ${
-                          role === 'org_admin'
-                            ? 'bg-primary text-primary-foreground font-semibold'
-                            : 'border border-border bg-surface text-muted hover:text-foreground'
-                        }`}
-                      >
-                        Admin
-                      </button>
-                    </>
-                  ) : (
-                    <span className="rounded-control border border-border bg-surface px-2.5 py-1 text-caption font-medium text-foreground-strong">
-                      Personal Learner
-                    </span>
-                  )}
+              {/* Session Error Alert Banner (Triggers on False Credentials) */}
+              {sessionError && (
+                <div
+                  role="alert"
+                  className="mb-5 flex items-start gap-3 rounded-control border border-primary-tint-3 bg-primary-soft/40 p-3.5 text-body-sm text-foreground-strong"
+                >
+                  <AlertCircle size={18} className="shrink-0 mt-0.5 text-primary" aria-hidden="true" />
+                  <div className="space-y-1">
+                    <p className="font-semibold text-primary-dark">Authentication Failed</p>
+                    <p className="text-caption text-muted leading-relaxed">{sessionError}</p>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Credentials Form */}
-              <form onSubmit={handleSubmit} className="mt-5 space-y-3.5">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="login-email" className="block text-caption font-semibold text-foreground-strong">
-                    Email
+                  <label
+                    htmlFor="login-email"
+                    className="block text-caption font-semibold text-foreground-strong"
+                  >
+                    Email Address
                   </label>
                   <input
                     id="login-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@institution.edu or name@gmail.com"
                     required
-                    className="mt-1 w-full rounded-control border border-border bg-surface px-3 py-2 text-body-sm outline-none focus:border-primary"
+                    autoComplete="email"
+                    className="mt-1.5 w-full rounded-control border border-border bg-surface px-3.5 py-2.5 text-body-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
                   />
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between">
-                    <label htmlFor="login-password" className="block text-caption font-semibold text-foreground-strong">
+                    <label
+                      htmlFor="login-password"
+                      className="block text-caption font-semibold text-foreground-strong"
+                    >
                       Password
                     </label>
                     <Link
                       to={ROUTES.FORGOT_PASSWORD}
                       className="text-caption font-medium text-primary hover:underline"
                     >
-                      Forgot?
+                      Forgot password?
                     </Link>
                   </div>
-                  <div className="relative mt-1">
+                  <div className="relative mt-1.5">
                     <input
                       id="login-password"
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter your password"
                       required
-                      className="w-full rounded-control border border-border bg-surface py-2 pl-3 pr-9 text-body-sm outline-none focus:border-primary"
+                      autoComplete="current-password"
+                      className="w-full rounded-control border border-border bg-surface py-2.5 pl-3.5 pr-10 text-body-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
-                      className="absolute inset-y-0 right-0 flex items-center pr-2.5 text-muted hover:text-foreground"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted hover:text-foreground cursor-pointer"
                     >
-                      {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
                 </div>
 
-                {/* Direct Test Helper: Test False Credentials */}
-                <div className="flex items-center justify-between rounded-control border border-border bg-surface p-2 text-caption">
-                  <span className="text-muted">Simulate Session Auth:</span>
-                  <button
-                    type="button"
-                    onClick={handleTestFalseCredentials}
-                    className="font-semibold text-primary hover:underline"
-                  >
-                    Test False Credentials (401)
-                  </button>
+                <div className="flex items-center justify-between pt-1 text-caption">
+                  <label className="flex items-center gap-2 cursor-pointer select-none text-muted hover:text-foreground">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="size-4 rounded border-border text-primary focus:ring-primary"
+                    />
+                    <span>Remember this device</span>
+                  </label>
                 </div>
 
                 <button
                   type="submit"
-                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm"
+                  disabled={isLoading}
+                  className="mt-2 flex w-full items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm disabled:opacity-70 cursor-pointer"
                 >
-                  <span>Sign In</span>
-                  <ArrowRight size={15} aria-hidden="true" />
+                  {isLoading ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" aria-hidden="true" />
+                      <span>Authenticating Session...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Sign In</span>
+                      <ArrowRight size={16} aria-hidden="true" />
+                    </>
+                  )}
                 </button>
               </form>
 
-              <div className="mt-5 border-t border-border pt-3 text-center">
+              {/* Demo evaluation helper */}
+              <div className="mt-5 border-t border-border pt-3.5 text-center">
+                <p className="text-caption text-muted">
+                  Demo credentials:{' '}
+                  <button
+                    type="button"
+                    onClick={() => fillDemoAccount('student@dpa.edu')}
+                    className="font-medium text-primary hover:underline cursor-pointer"
+                  >
+                    student@dpa.edu / password123 (Click to fill)
+                  </button>
+                </p>
+              </div>
+
+              {/* Institutional access link */}
+              <div className="mt-3 text-center">
                 <Link
                   to={ROUTES.REQUEST_ACCESS}
                   className="text-caption font-medium text-muted hover:text-primary transition-colors"
                 >
-                  Request Institutional Onboarding
+                  Need an institutional license? Request Access &rarr;
                 </Link>
               </div>
-            </>
+            </div>
           )}
         </div>
 
-        {/* Footer Navigation */}
-        <div className="mt-4 flex items-center justify-center gap-4 text-center">
+        {/* Footer */}
+        <div className="mt-6 flex items-center justify-center gap-4 text-center">
           <Link
             to={ROUTES.HOME}
-            className="text-caption font-medium text-muted hover:text-foreground"
+            className="text-caption font-medium text-muted hover:text-foreground transition-colors"
           >
             Back to Home
           </Link>
           <span className="text-muted text-caption">&middot;</span>
           <Link
             to={ROUTES.SESSION_ERROR}
-            className="text-caption font-medium text-muted hover:text-foreground"
+            className="text-caption font-medium text-muted hover:text-foreground transition-colors"
           >
-            Session Status
+            Session Help
           </Link>
         </div>
       </div>
