@@ -921,7 +921,7 @@ export function HomePage() {
               <li><Link to={ROUTES.REQUEST_ACCESS}>Activate Invite / Onboarding</Link></li>
               <li><Link to={ROUTES.HOME}>About Us</Link></li>
               <li><Link to={ROUTES.HOME}>Careers</Link></li>
-              <li><a href="mailto:hello@example.com">Contact</a></li>
+              <li><Link to={ROUTES.CONTACT}>Contact</Link></li>
             </ul>
           </div>
 

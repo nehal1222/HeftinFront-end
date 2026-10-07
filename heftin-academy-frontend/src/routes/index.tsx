@@ -4,6 +4,7 @@ import { DesignSystemPage } from '@/pages/DesignSystemPage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { LoginPage } from '@/pages/LoginPage'
 import { SignupPage } from '@/pages/SignupPage'
+import { ContactPage } from '@/pages/ContactPage'
 import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage'
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
 import { SessionErrorPage } from '@/pages/SessionErrorPage'
@@ -22,6 +23,7 @@ export function AppRouter() {
       <Route path="/session-lifecycle" element={<Navigate to={ROUTES.SESSION_ERROR} replace />} />
       <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
       <Route path={ROUTES.REQUEST_ACCESS} element={<SignupPage defaultMode="b2b" />} />
+      <Route path={ROUTES.CONTACT} element={<ContactPage />} />
       <Route path={ROUTES.LOGIN} element={<LoginPage />} />
       <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
       <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />

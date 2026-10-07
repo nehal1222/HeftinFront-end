@@ -298,9 +298,9 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
       ================================= */}
       <main className="auth-wrapper font-sans">
         {/* ================================
-             AUTH CARD (WIDE)
+             AUTH CARD (UNIFIED 500PX)
         ================================= */}
-        <section className="auth-card auth-card-wide" style={{ maxWidth: '520px' }}>
+        <section className="auth-card">
           {/* BRAND LOGO */}
           <div className="brand">
             <div className="brand-icon">
@@ -310,7 +310,7 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
           </div>
 
           {/* ================================
-               MODE SWITCHER: INVITE VS B2B VS INDIVIDUAL
+               TOP AUTH MODE SWITCHER (UNIFIED)
           ================================= */}
           <div
             style={{
@@ -323,6 +323,28 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
               background: 'var(--white)',
             }}
           >
+            <button
+              type="button"
+              id="tabSignIn"
+              onClick={() => navigate(ROUTES.LOGIN)}
+              style={{
+                flex: 1,
+                padding: '8px 6px',
+                borderRadius: '8px',
+                border: '1px solid var(--border)',
+                background: '#fff',
+                color: 'var(--error)',
+                fontSize: '11px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s',
+              }}
+            >
+              <span>Sign In</span>
+            </button>
             <button
               type="button"
               id="tabInvite"
@@ -343,7 +365,6 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '4px',
                 transition: 'all 0.2s',
               }}
             >
@@ -352,7 +373,10 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
             <button
               type="button"
               id="tabB2B"
-              onClick={() => setSignupMode('b2b')}
+              onClick={() => {
+                setSignupMode('b2b')
+                clearErrors()
+              }}
               style={{
                 flex: 1,
                 padding: '8px 6px',
@@ -366,34 +390,10 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '4px',
                 transition: 'all 0.2s',
               }}
             >
               <span>Request Org Access</span>
-            </button>
-            <button
-              type="button"
-              id="tabIndiv"
-              onClick={() => setSignupMode('indiv')}
-              style={{
-                flex: 1,
-                padding: '8px 6px',
-                borderRadius: '8px',
-                border: signupMode === 'indiv' ? 'none' : '1px solid var(--border)',
-                background: signupMode === 'indiv' ? 'var(--primary)' : '#fff',
-                color: signupMode === 'indiv' ? '#fff' : 'var(--error)',
-                fontSize: '11px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '4px',
-                transition: 'all 0.2s',
-              }}
-            >
-              <span>Individual</span>
             </button>
           </div>
 
@@ -968,7 +968,22 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
               </div>
 
               <p className="bottom-text" style={{ marginTop: '18px' }}>
-                Already have an account? <Link to={ROUTES.LOGIN}>Sign in</Link>
+                Already have an account? <Link to={ROUTES.LOGIN}>Sign in</Link> &middot;{' '}
+                <button
+                  type="button"
+                  onClick={() => setSignupMode('indiv')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--primary)',
+                    cursor: 'pointer',
+                    padding: 0,
+                    font: 'inherit',
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Individual waitlist
+                </button>
               </p>
             </div>
           )}
@@ -1523,7 +1538,22 @@ export function SignupPage({ defaultMode: initialDefaultMode }: SignupPageProps)
               </button>
 
               <p className="bottom-text" style={{ marginTop: '18px' }}>
-                Looking for student or faculty sign in? <Link to={ROUTES.LOGIN}>Sign in</Link>
+                <button
+                  type="button"
+                  onClick={() => setSignupMode('invite')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--primary)',
+                    cursor: 'pointer',
+                    padding: 0,
+                    font: 'inherit',
+                    textDecoration: 'underline',
+                  }}
+                >
+                  &larr; Back to Activate Invite
+                </button>{' '}
+                &middot; <Link to={ROUTES.LOGIN}>Sign in</Link>
               </p>
             </div>
           )}
