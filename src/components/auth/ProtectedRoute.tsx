@@ -1,6 +1,8 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { AsyncState } from '@/components/ui/AsyncState'
+import { Button } from '@/components/ui/Button'
 import { useAuth } from '@/contexts/AuthContext'
+import { AppLayout } from '@/layouts/AppLayout'
 import { ROUTES } from '@/lib/constants'
 
 type ProtectedRouteProps = {
@@ -12,6 +14,7 @@ export function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading, user } = useAuth()
   const location = useLocation()
+  const navigate = useNavigate()
 
   if (isLoading) {
     return <AsyncState state="loading" />
@@ -40,7 +43,20 @@ export function ProtectedRoute({
     )
 
     if (!hasRequiredRight) {
-      return <AsyncState state="forbidden" />
+      return (
+        <AppLayout>
+          <div className="flex flex-col items-center">
+            <AsyncState state="forbidden" />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate(ROUTES.DASHBOARD)}
+            >
+              Go to dashboard
+            </Button>
+          </div>
+        </AppLayout>
+      )
     }
   }
 
