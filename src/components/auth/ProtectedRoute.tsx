@@ -7,14 +7,14 @@ export function ProtectedRoute() {
   const accessToken = getAccessToken()
 
   if (!accessToken) {
-    const returnUrl = `${location.pathname}${location.search}${location.hash}`
+    const from = `${location.pathname}${location.search}${location.hash}`
 
-    return (
-      <Navigate
-        to={`${ROUTES.LOGIN}?returnUrl=${encodeURIComponent(returnUrl)}`}
-        replace
-      />
-    )
+return (
+  <Navigate
+    to={`${ROUTES.LOGIN}?from=${encodeURIComponent(from)}`}
+    replace
+  />
+)
   }
 
   return <Outlet />

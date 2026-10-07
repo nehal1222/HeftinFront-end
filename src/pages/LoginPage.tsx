@@ -52,11 +52,13 @@ export function LoginPage() {
 setStoredUser(response.user)
 
 const params = new URLSearchParams(location.search)
-const returnUrl = params.get('returnUrl')
+const from = params.get('from')
 
 const destination =
-  returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('//')
-    ? returnUrl
+  from &&
+  from.startsWith('/') &&
+  !from.startsWith('//')
+    ? from
     : ROUTES.DASHBOARD
 
 navigate(destination, { replace: true })
