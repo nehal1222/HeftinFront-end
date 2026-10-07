@@ -25,8 +25,16 @@ import { useAuth } from '@/hooks/useAuth'
 import { ROUTES } from '@/lib/constants'
 import { b2bService } from '@/services/b2b.service'
 import { authService } from '@/services/auth.service'
+import { getRefreshToken } from '@/lib/storage'
 
-type NavTab = 'overview' | 'exams' | 'courses' | 'analytics' | 'batches' | 'grading' | 'security'
+type NavTab =
+  | 'overview'
+  | 'exams'
+  | 'courses'
+  | 'analytics'
+  | 'batches'
+  | 'grading'
+  | 'security'
 
 interface ExamItem {
   id: string
@@ -82,7 +90,8 @@ const UPSC_QUESTIONS: Question[] = [
       '1 and 3 only',
     ],
     correctIndex: 2,
-    explanation: 'Under Article 76 of the Indian Constitution, the President appoints the Attorney General, who must be qualified to be appointed a Supreme Court Judge. Under Article 88, he has the right of audience in all courts throughout India.',
+    explanation:
+      'Under Article 76 of the Indian Constitution, the President appoints the Attorney General, who must be qualified to be appointed a Supreme Court Judge. Under Article 88, he has the right of audience in all courts throughout India.',
     subject: 'Indian Polity',
   },
   {
@@ -95,7 +104,8 @@ const UPSC_QUESTIONS: Question[] = [
       'The annualized inflation rate in capital manufacturing industries only',
     ],
     correctIndex: 1,
-    explanation: 'Core Inflation measures underlying, long-term inflation trends by stripping away items subject to volatile price movements, predominantly food and energy prices.',
+    explanation:
+      'Core Inflation measures underlying, long-term inflation trends by stripping away items subject to volatile price movements, predominantly food and energy prices.',
     subject: 'Indian Economy',
   },
   {
@@ -108,7 +118,8 @@ const UPSC_QUESTIONS: Question[] = [
       'Namdapha National Park',
     ],
     correctIndex: 0,
-    explanation: 'Keibul Lamjao National Park on Loktak Lake in Manipur is the only floating national park in the world, characterized by phumdis and being the sole habitat of the endangered Sangai brow-antlered deer.',
+    explanation:
+      'Keibul Lamjao National Park on Loktak Lake in Manipur is the only floating national park in the world, characterized by phumdis and being the sole habitat of the endangered Sangai brow-antlered deer.',
     subject: 'Environment & Ecology',
   },
   {
@@ -121,7 +132,8 @@ const UPSC_QUESTIONS: Question[] = [
       'Robert Clive',
     ],
     correctIndex: 1,
-    explanation: 'Robert Clive introduced the Dual System in Bengal following the Treaty of Allahabad (1765). Warren Hastings abolished it in 1772, bringing Bengal under direct East India Company administration.',
+    explanation:
+      'Robert Clive introduced the Dual System in Bengal following the Treaty of Allahabad (1765). Warren Hastings abolished it in 1772, bringing Bengal under direct East India Company administration.',
     subject: 'Modern History',
   },
   {
@@ -134,7 +146,8 @@ const UPSC_QUESTIONS: Question[] = [
       'Complete fiscal independence of municipal corporations from state control',
     ],
     correctIndex: 0,
-    explanation: 'The Directive Principles of State Policy (Articles 36 to 51) embody the ideals of establishing a socialist, democratic welfare state fostering socio-economic justice.',
+    explanation:
+      'The Directive Principles of State Policy (Articles 36 to 51) embody the ideals of establishing a socialist, democratic welfare state fostering socio-economic justice.',
     subject: 'Indian Polity',
   },
 ]
@@ -146,7 +159,8 @@ const STUDY_MODULES: StudyModule[] = [
     subject: 'Polity & Governance',
     pages: 28,
     lastUpdated: 'Updated 2 days ago',
-    summary: 'Concise analysis of 9-judge bench rulings on federalism, privacy precedents, and Article 21 expansions.',
+    summary:
+      'Concise analysis of 9-judge bench rulings on federalism, privacy precedents, and Article 21 expansions.',
     content: [
       'Doctrine of Basic Structure: Tracing judicial evolution from Kesavananda Bharati to recent collegium rulings.',
       'Federal Balance: Fiscal federalism limits under GST and distribution of legislative powers under the Seventh Schedule.',
@@ -160,7 +174,8 @@ const STUDY_MODULES: StudyModule[] = [
     subject: 'CSAT Comprehension & Quant',
     pages: 34,
     lastUpdated: 'Updated this week',
-    summary: 'Core shortcuts for syllogisms, blood relations, permutations, and reading comprehension passage inference rules.',
+    summary:
+      'Core shortcuts for syllogisms, blood relations, permutations, and reading comprehension passage inference rules.',
     content: [
       'Critical Reading: Distinguishing direct assertions from underlying author assumptions and corollary deductions.',
       'Number Systems: Divisibility rules, cyclicity of unit digits, and remainder theorem shortcuts.',
@@ -174,7 +189,8 @@ const STUDY_MODULES: StudyModule[] = [
     subject: 'Environment & Ecology',
     pages: 22,
     lastUpdated: 'Oct 2026 Edition',
-    summary: 'Comprehensive reference of UNFCCC CoP mandates, Ramsar wetlands criteria, and IUCN status classifications.',
+    summary:
+      'Comprehensive reference of UNFCCC CoP mandates, Ramsar wetlands criteria, and IUCN status classifications.',
     content: [
       'UNFCCC Framework: Paris Agreement Article 6 carbon markets, Nationally Determined Contributions (NDCs), and Loss & Damage Fund.',
       'Biodiversity Conservation: Kunming-Montreal Global Biodiversity Framework 30x30 targets and national bio-reserves.',
@@ -188,7 +204,8 @@ const STUDY_MODULES: StudyModule[] = [
     subject: 'Modern Indian History',
     pages: 40,
     lastUpdated: 'Sep 2026 Edition',
-    summary: 'Chronological roadmap of peasant revolts, socio-religious reforms, congress sessions, and constitutional acts.',
+    summary:
+      'Chronological roadmap of peasant revolts, socio-religious reforms, congress sessions, and constitutional acts.',
     content: [
       'Revolt of 1857: Military, political, and socio-religious catalysts and administrative transfer under Queen’s Proclamation.',
       'Socio-Religious Reform Movements: Brahmo Samaj, Arya Samaj, Aligarh Movement, and Jyotirao Phule’s Satyashodhak Samaj.',
@@ -250,7 +267,8 @@ const INITIAL_SUBMISSIONS: FacultySubmission[] = [
     paper: 'GS Mains Ethics Case Study Essay',
     submittedAt: 'Today, 11:30 AM',
     status: 'pending',
-    studentAnswer: 'In dealing with bureaucratic corruption, a civil servant must reconcile professional obedience with constitutional conscience. Applying deontological ethics alongside pragmatic administrative safeguards ensures both transparency and institutional trust.',
+    studentAnswer:
+      'In dealing with bureaucratic corruption, a civil servant must reconcile professional obedience with constitutional conscience. Applying deontological ethics alongside pragmatic administrative safeguards ensures both transparency and institutional trust.',
   },
   {
     id: 'sub-02',
@@ -259,7 +277,8 @@ const INITIAL_SUBMISSIONS: FacultySubmission[] = [
     paper: 'Geography Sectional Mains Test',
     submittedAt: 'Today, 9:15 AM',
     status: 'pending',
-    studentAnswer: 'The southwest monsoon phenomenon is primarily driven by differential heating of the Tibetan Plateau, shifting of the ITCZ, and the Somali low-level jet stream. Recent climate oscillations have increased variability in regional precipitation.',
+    studentAnswer:
+      'The southwest monsoon phenomenon is primarily driven by differential heating of the Tibetan Plateau, shifting of the ITCZ, and the Somali low-level jet stream. Recent climate oscillations have increased variability in regional precipitation.',
   },
   {
     id: 'sub-03',
@@ -269,91 +288,120 @@ const INITIAL_SUBMISSIONS: FacultySubmission[] = [
     submittedAt: 'Yesterday',
     status: 'graded',
     score: '74 / 100',
-    studentAnswer: 'Cooperative federalism requires institutionalized consensus-building through bodies like the Inter-State Council and NITI Aayog.',
-    feedback: 'Well-structured arguments with relevant Supreme Court precedents cited. Improve presentation with bulleted recommendations.',
+    studentAnswer:
+      'Cooperative federalism requires institutionalized consensus-building through bodies like the Inter-State Council and NITI Aayog.',
+    feedback:
+      'Well-structured arguments with relevant Supreme Court precedents cited. Improve presentation with bulleted recommendations.',
   },
 ]
 
 export function DashboardPage() {
-  const { user, logout, switchRole, triggerSessionError } = useAuth()
+  const { user, logout, triggerSessionError } = useAuth()
   const navigate = useNavigate()
 
   const [activeTab, setActiveTab] = useState<NavTab>('overview')
   const [exams, setExams] = useState<ExamItem[]>(INITIAL_EXAMS)
-  const [submissions, setSubmissions] = useState<FacultySubmission[]>(INITIAL_SUBMISSIONS)
-  const [examFilter, setExamFilter] = useState<'all' | 'live' | 'upcoming' | 'completed'>('all')
+  const [submissions, setSubmissions] =
+    useState<FacultySubmission[]>(INITIAL_SUBMISSIONS)
+  const [examFilter, setExamFilter] = useState<
+    'all' | 'live' | 'upcoming' | 'completed'
+  >('all')
 
-  // Interactive Test Player State
   const [isTestModalOpen, setIsTestModalOpen] = useState(false)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [userAnswers, setUserAnswers] = useState<Record<number, number>>({})
-  const [flaggedQuestions, setFlaggedQuestions] = useState<Set<number>>(new Set())
-  const [testTimeLeft, setTestTimeLeft] = useState(600) // 10 minutes demo timer
+  const [flaggedQuestions, setFlaggedQuestions] = useState<Set<number>>(
+    new Set(),
+  )
+  const [testTimeLeft, setTestTimeLeft] = useState(600)
   const [testCompleted, setTestCompleted] = useState(false)
-  const [testScoreResult, setTestScoreResult] = useState<{ score: number; total: number; correctCount: number } | null>(null)
+  const [testScoreResult, setTestScoreResult] = useState<{
+    score: number
+    total: number
+    correctCount: number
+  } | null>(null)
 
-  // Interactive Study Notes Modal State
-  const [activeStudyModule, setActiveStudyModule] = useState<StudyModule | null>(null)
+  const [activeStudyModule, setActiveStudyModule] =
+    useState<StudyModule | null>(null)
 
-  // Interactive Faculty Grading Modal State
-  const [gradingSubmission, setGradingSubmission] = useState<FacultySubmission | null>(null)
+  const [gradingSubmission, setGradingSubmission] =
+    useState<FacultySubmission | null>(null)
   const [assignedScore, setAssignedScore] = useState('80')
   const [facultyFeedbackText, setFacultyFeedbackText] = useState('')
 
-  // Interactive Notice Modal State
-  const [activeNotice, setActiveNotice] = useState<{ title: string; date: string; content: string } | null>(null)
+  const [activeNotice, setActiveNotice] = useState<{
+    title: string
+    date: string
+    content: string
+  } | null>(null)
 
-  // Streak state with daily check-in
   const [streakDays, setStreakDays] = useState(5)
   const [checkedInToday, setCheckedInToday] = useState(false)
 
-  // Live Session Lifecycle State
   const [sessionTtl, setSessionTtl] = useState(892)
-  const [isSessionExpiredModalOpen, setIsSessionExpiredModalOpen] = useState(false)
-  const [isNetworkErrorBannerVisible, setIsNetworkErrorBannerVisible] = useState(false)
+  const [isSessionExpiredModalOpen, setIsSessionExpiredModalOpen] =
+    useState(false)
+  const [isNetworkErrorBannerVisible, setIsNetworkErrorBannerVisible] =
+    useState(false)
   const [isRefreshingToken, setIsRefreshingToken] = useState(false)
   const [sessionNotice, setSessionNotice] = useState<string | null>(null)
 
-  // Session TTL countdown
   useEffect(() => {
     const interval = setInterval(() => {
       setSessionTtl((prev) => (prev > 0 ? prev - 1 : 0))
     }, 1000)
+
     return () => clearInterval(interval)
   }, [])
 
   async function handleSilentRefresh() {
+    const refreshToken = getRefreshToken()
+
+    if (!refreshToken) {
+      setSessionNotice('No refresh token is available. Please sign in again.')
+      setIsSessionExpiredModalOpen(false)
+      return
+    }
+
     setIsRefreshingToken(true)
     setSessionNotice(null)
+
     try {
-      await authService.refresh('demo-refresh-token')
+      await authService.refresh(refreshToken)
       setSessionTtl(900)
-      setSessionNotice('Session successfully renewed with live token rotation (+15m)!')
+      setSessionNotice('Session successfully renewed with live token rotation.')
     } catch {
-      setSessionTtl(900)
-      setSessionNotice('Fallback session refresh active (+15m)!')
+      setSessionNotice(
+        'Session renewal failed. Please sign in again to continue.',
+      )
     } finally {
       setIsRefreshingToken(false)
       setIsSessionExpiredModalOpen(false)
     }
   }
 
-  // Test countdown timer
   useEffect(() => {
-    let timer: NodeJS.Timeout
+    let timer: ReturnType<typeof setInterval> | undefined
+
     if (isTestModalOpen && !testCompleted && testTimeLeft > 0) {
       timer = setInterval(() => {
         setTestTimeLeft((prev) => (prev > 0 ? prev - 1 : 0))
       }, 1000)
     }
-    return () => clearInterval(timer)
+
+    return () => {
+      if (timer) clearInterval(timer)
+    }
   }, [isTestModalOpen, testCompleted, testTimeLeft])
 
   const isIndividual = user?.role === 'individual'
-  const isStaff = user?.role === 'faculty' || user?.role === 'org_admin' || user?.role === 'super_admin'
+  const isStaff =
+    user?.role === 'faculty' ||
+    user?.role === 'org_admin' ||
+    user?.role === 'super_admin'
+
   const orgName = isIndividual ? 'Personal Learner' : 'Delhi Public Academy'
 
-  // Hydrate live backend batches & exams when available
   useEffect(() => {
     if (user && !isIndividual) {
       b2bService.listBatches().catch(() => {})
@@ -388,19 +436,26 @@ export function DashboardPage() {
   function toggleFlagQuestion(index: number) {
     setFlaggedQuestions((prev) => {
       const next = new Set(prev)
-      if (next.has(index)) next.delete(index)
-      else next.add(index)
+
+      if (next.has(index)) {
+        next.delete(index)
+      } else {
+        next.add(index)
+      }
+
       return next
     })
   }
 
   function handleSubmitTest() {
     let correctCount = 0
-    UPSC_QUESTIONS.forEach((q, idx) => {
-      if (userAnswers[idx] === q.correctIndex) {
+
+    UPSC_QUESTIONS.forEach((question, index) => {
+      if (userAnswers[index] === question.correctIndex) {
         correctCount += 1
       }
     })
+
     const marksPerQuestion = 2
     const totalMarks = UPSC_QUESTIONS.length * marksPerQuestion
     const finalScore = correctCount * marksPerQuestion
@@ -410,15 +465,19 @@ export function DashboardPage() {
       total: totalMarks,
       correctCount,
     })
+
     setTestCompleted(true)
 
-    // Mark test as completed in local list
     setExams((prev) =>
-      prev.map((e) =>
-        e.id === 'ex-01'
-          ? { ...e, status: 'completed', score: `${finalScore} / ${totalMarks}` }
-          : e
-      )
+      prev.map((exam) =>
+        exam.id === 'ex-01'
+          ? {
+              ...exam,
+              status: 'completed',
+              score: `${finalScore} / ${totalMarks}`,
+            }
+          : exam,
+      ),
     )
   }
 
@@ -431,31 +490,38 @@ export function DashboardPage() {
 
   function handleSaveGrade() {
     if (!gradingSubmission) return
+
     setSubmissions((prev) =>
-      prev.map((sub) =>
-        sub.id === gradingSubmission.id
+      prev.map((submission) =>
+        submission.id === gradingSubmission.id
           ? {
-              ...sub,
+              ...submission,
               status: 'graded',
               score: `${assignedScore} / 100`,
-              feedback: facultyFeedbackText || 'Satisfactory attempt with commendable analytical depth.',
+              feedback:
+                facultyFeedbackText ||
+                'Satisfactory attempt with commendable analytical depth.',
             }
-          : sub
-      )
+          : submission,
+      ),
     )
+
     setGradingSubmission(null)
     setFacultyFeedbackText('')
   }
 
-  const filteredExams = exams.filter((e) => {
+  const filteredExams = exams.filter((exam) => {
     if (examFilter === 'all') return true
-    return e.status === examFilter
+    return exam.status === examFilter
   })
 
   const formatTimer = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
     const secs = seconds % 60
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+
+    return `${mins.toString().padStart(2, '0')}:${secs
+      .toString()
+      .padStart(2, '0')}`
   }
 
   return (
@@ -466,9 +532,14 @@ export function DashboardPage() {
           <div className="grid size-9 place-items-center rounded-control bg-primary text-primary-foreground shadow-sm">
             <GraduationCap size={20} aria-hidden="true" />
           </div>
+
           <div>
-            <span className="font-display text-heading-sm font-semibold text-foreground-strong">Heftin</span>
-            <span className="ml-1 text-caption text-primary font-medium">Academy</span>
+            <span className="font-display text-heading-sm font-semibold text-foreground-strong">
+              Heftin
+            </span>
+            <span className="ml-1 text-caption text-primary font-medium">
+              Academy
+            </span>
           </div>
         </div>
 
@@ -583,13 +654,24 @@ export function DashboardPage() {
           </nav>
 
           <div className="rounded-control border border-border bg-surface p-3.5">
-            <span className="text-caption font-semibold uppercase tracking-wider text-muted">Active Workspace</span>
-            <p className="mt-1 truncate text-body-sm font-semibold text-foreground-strong">{orgName}</p>
+            <span className="text-caption font-semibold uppercase tracking-wider text-muted">
+              Active Workspace
+            </span>
+
+            <p className="mt-1 truncate text-body-sm font-semibold text-foreground-strong">
+              {orgName}
+            </p>
+
             <div className="mt-2 flex items-center justify-between">
               <span className="inline-flex items-center gap-1 text-caption font-medium text-primary capitalize">
-                {isIndividual ? <User size={13} /> : <Building2 size={13} />}
+                {isIndividual ? (
+                  <User size={13} />
+                ) : (
+                  <Building2 size={13} />
+                )}
                 {user.role.replace('_', ' ')}
               </span>
+
               <span className="rounded-full bg-primary-soft px-2 py-0.5 text-caption font-bold text-primary-dark">
                 {user.plan.toUpperCase()}
               </span>
@@ -603,51 +685,15 @@ export function DashboardPage() {
         {/* Top Header */}
         <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-surface-elevated px-4 sm:px-6">
           <div className="flex items-center gap-2 sm:gap-3">
-            <span className="text-body-sm font-medium text-muted">Dashboard</span>
+            <span className="text-body-sm font-medium text-muted">
+              Dashboard
+            </span>
+
             <span className="text-muted">/</span>
+
             <span className="text-body-sm font-semibold capitalize text-foreground-strong">
               {activeTab}
             </span>
-
-            {/* Interactive Role Switcher Pill Bar for seamless reviewer testing */}
-            <div className="ml-2 hidden lg:flex items-center gap-1 rounded-control border border-border bg-surface p-1 text-caption font-medium">
-              <span className="px-2 text-muted">Test Role:</span>
-              <button
-                type="button"
-                onClick={() => switchRole('student')}
-                className={`rounded-control px-2 py-0.5 transition-colors ${
-                  user.role === 'student' ? 'bg-primary text-primary-foreground font-semibold' : 'text-muted hover:text-foreground'
-                }`}
-              >
-                Student
-              </button>
-              <button
-                type="button"
-                onClick={() => switchRole('faculty')}
-                className={`rounded-control px-2 py-0.5 transition-colors ${
-                  user.role === 'faculty' ? 'bg-primary text-primary-foreground font-semibold' : 'text-muted hover:text-foreground'
-                }`}
-              >
-                Faculty
-              </button>
-              <button
-                type="button"
-                onClick={() => switchRole('individual')}
-                className={`rounded-control px-2 py-0.5 transition-colors ${
-                  user.role === 'individual' ? 'bg-primary text-primary-foreground font-semibold' : 'text-muted hover:text-foreground'
-                }`}
-              >
-                Individual
-              </button>
-              <button
-                type="button"
-                onClick={() => triggerSessionError('Session verification failed: Authentication token has expired or is invalid.')}
-                title="Simulate error loading session"
-                className="rounded-control border border-border px-2 py-0.5 transition-colors text-muted hover:text-foreground hover:border-primary"
-              >
-                Test Error Session
-              </button>
-            </div>
           </div>
 
           <div className="flex items-center gap-3">
@@ -658,17 +704,21 @@ export function DashboardPage() {
               title="Click to view live session telemetry"
             >
               <span className="size-2 rounded-full bg-primary animate-pulse" />
-              <span>Session: {Math.floor(sessionTtl / 60)}m {sessionTtl % 60}s</span>
+              <span>
+                Session: {Math.floor(sessionTtl / 60)}m {sessionTtl % 60}s
+              </span>
             </button>
 
             <div className="flex items-center gap-2.5 rounded-control border border-border bg-surface px-3 py-1.5">
               <span className="grid size-7 place-items-center rounded-full bg-primary-soft text-caption font-bold text-primary-dark">
                 {user.displayName.slice(0, 2).toUpperCase()}
               </span>
+
               <div className="hidden sm:block text-left leading-tight">
                 <span className="block text-body-sm font-semibold text-foreground-strong">
                   {user.displayName}
                 </span>
+
                 <span className="block text-caption text-muted capitalize">
                   {user.role.replace('_', ' ')}
                 </span>
@@ -691,8 +741,12 @@ export function DashboardPage() {
           <div className="border-b border-border bg-primary-soft/60 px-4 py-2 text-caption text-primary-dark flex items-center justify-between">
             <div className="flex items-center gap-2">
               <AlertCircle size={15} />
-              <span>Network connection lost to backend gateway. Auto-retrying session synchronization...</span>
+              <span>
+                Network connection lost to backend gateway. Auto-retrying
+                session synchronization...
+              </span>
             </div>
+
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -701,6 +755,7 @@ export function DashboardPage() {
               >
                 Retry Now
               </button>
+
               <button
                 type="button"
                 onClick={() => setIsNetworkErrorBannerVisible(false)}
@@ -717,24 +772,30 @@ export function DashboardPage() {
           {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              {/* Category Welcome Banner */}
               <div className="flex flex-col justify-between gap-4 rounded-card border border-border bg-surface-elevated p-6 sm:flex-row sm:items-center">
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="rounded-full bg-primary text-primary-foreground px-2.5 py-0.5 text-caption font-bold uppercase tracking-wider">
-                      {isIndividual ? 'Individual Category' : 'Organizational Category'}
+                      {isIndividual
+                        ? 'Individual Category'
+                        : 'Organizational Category'}
                     </span>
-                    <span className="text-caption text-muted">· UPSC CSE 2026</span>
+
+                    <span className="text-caption text-muted">
+                      · UPSC CSE 2026
+                    </span>
                   </div>
+
                   <h1 className="mt-2 font-display text-heading-md font-semibold text-foreground-strong">
                     Welcome back, {user.displayName.split(' ')[0]}
                   </h1>
+
                   <p className="mt-1 text-body-sm text-muted">
                     {isIndividual
                       ? 'Self-paced preparation track. Complete your daily drills and review sectional performance.'
                       : isStaff
-                      ? 'Batch management workspace. Review pending candidate answer sheets and monitor cohort attendance.'
-                      : 'Institutional track: Delhi Public Academy · Batch 101. Scheduled mock exams and mentor updates.'}
+                        ? 'Batch management workspace. Review pending candidate answer sheets and monitor cohort attendance.'
+                        : 'Institutional track: Delhi Public Academy · Batch 101. Scheduled mock exams and mentor updates.'}
                   </p>
                 </div>
 
@@ -750,9 +811,12 @@ export function DashboardPage() {
                       }`}
                     >
                       <Sparkles size={16} />
-                      {checkedInToday ? 'Checked in today (+1)' : 'Daily Check-in'}
+                      {checkedInToday
+                        ? 'Checked in today (+1)'
+                        : 'Daily Check-in'}
                     </button>
                   )}
+
                   <button
                     type="button"
                     onClick={handleStartTest}
@@ -773,53 +837,96 @@ export function DashboardPage() {
                       value={`${exams.filter((e) => e.status !== 'completed').length} Remaining`}
                       subtitle="Next paper: Today 2:00 PM"
                     />
+
                     <StatCard
                       title="Tests Completed"
                       value={`${exams.filter((e) => e.status === 'completed').length} Attempted`}
                       subtitle="Average accuracy: 78%"
                     />
+
                     <StatCard
                       title="Overall Accuracy"
                       value="76.4%"
                       subtitle="Top 12% in GS Paper I"
                     />
+
                     <StatCard
                       title="Study Streak"
                       value={`${streakDays} Days`}
-                      subtitle={checkedInToday ? 'Goal reached today' : 'Check in to maintain'}
+                      subtitle={
+                        checkedInToday
+                          ? 'Goal reached today'
+                          : 'Check in to maintain'
+                      }
                     />
                   </>
                 ) : user.role === 'faculty' ? (
                   <>
-                    <StatCard title="Assigned Batches" value="2 Cohorts" subtitle="Batch 101 & 102" />
+                    <StatCard
+                      title="Assigned Batches"
+                      value="2 Cohorts"
+                      subtitle="Batch 101 & 102"
+                    />
+
                     <StatCard
                       title="Pending Reviews"
                       value={`${submissions.filter((s) => s.status === 'pending').length} Papers`}
                       subtitle="Awaiting evaluation"
                     />
-                    <StatCard title="Active Students" value="54 Learners" subtitle="98% attendance" />
-                    <StatCard title="Class Average" value="71.8%" subtitle="UPSC GS Paper I" />
+
+                    <StatCard
+                      title="Active Students"
+                      value="54 Learners"
+                      subtitle="98% attendance"
+                    />
+
+                    <StatCard
+                      title="Class Average"
+                      value="71.8%"
+                      subtitle="UPSC GS Paper I"
+                    />
                   </>
                 ) : (
                   <>
-                    <StatCard title="Active Batches" value="6 Batches" subtitle="Cohorts operational" />
-                    <StatCard title="Total Enrolled" value="148 Learners" subtitle="+12 this month" />
-                    <StatCard title="Faculty Members" value="12 Active" subtitle="4 grading" />
-                    <StatCard title="Allocated Seats" value="70 / 70" subtitle="Full capacity" />
+                    <StatCard
+                      title="Active Batches"
+                      value="6 Batches"
+                      subtitle="Cohorts operational"
+                    />
+
+                    <StatCard
+                      title="Total Enrolled"
+                      value="148 Learners"
+                      subtitle="+12 this month"
+                    />
+
+                    <StatCard
+                      title="Faculty Members"
+                      value="12 Active"
+                      subtitle="4 grading"
+                    />
+
+                    <StatCard
+                      title="Allocated Seats"
+                      value="70 / 70"
+                      subtitle="Full capacity"
+                    />
                   </>
                 )}
               </section>
 
               {/* Grid: 2 Columns Left + 1 Column Right */}
               <div className="grid gap-6 lg:grid-cols-3">
-                {/* Left Panel: Tests / Submissions */}
                 <div className="space-y-6 lg:col-span-2">
                   <div className="rounded-card border border-border bg-surface-elevated p-5 shadow-sm">
                     <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                       <div>
                         <h2 className="text-body font-semibold text-foreground-strong">
-                          {isStaff ? 'Pending Submissions for Review' : 'Active & Upcoming Test Series'}
+                          {isStaff
+                            ? 'Pending Submissions for Review'
+                            : 'Active & Upcoming Test Series'}
                         </h2>
+
                         <p className="text-caption text-muted">
                           {isStaff
                             ? 'Student mains answer sheets awaiting faculty score and feedback.'
@@ -829,7 +936,9 @@ export function DashboardPage() {
 
                       <button
                         type="button"
-                        onClick={() => setActiveTab(isStaff ? 'grading' : 'exams')}
+                        onClick={() =>
+                          setActiveTab(isStaff ? 'grading' : 'exams')
+                        }
                         className="text-caption font-semibold text-primary hover:underline self-start sm:self-auto"
                       >
                         View all ({isStaff ? submissions.length : exams.length})
@@ -848,23 +957,29 @@ export function DashboardPage() {
                                   <span className="font-medium text-body-sm text-foreground-strong">
                                     {exam.title}
                                   </span>
+
                                   {exam.status === 'live' && (
                                     <span className="rounded-full bg-primary text-primary-foreground px-2 py-0.5 text-caption font-bold">
                                       LIVE
                                     </span>
                                   )}
+
                                   {exam.status === 'completed' && (
                                     <span className="rounded-full bg-primary-soft text-primary-dark px-2 py-0.5 text-caption font-semibold">
                                       COMPLETED
                                     </span>
                                   )}
                                 </div>
+
                                 <div className="mt-1 flex flex-wrap items-center gap-3 text-caption text-muted">
                                   <span>{exam.subject}</span>
                                   <span>·</span>
+
                                   <span className="flex items-center gap-1">
-                                    <Clock size={12} /> {exam.duration}
+                                    <Clock size={12} />
+                                    {exam.duration}
                                   </span>
+
                                   <span>·</span>
                                   <span>{exam.questions} Questions</span>
                                   <span>·</span>
@@ -887,39 +1002,50 @@ export function DashboardPage() {
                                         : 'border border-border bg-surface text-foreground hover:border-primary hover:text-primary'
                                     }`}
                                   >
-                                    {exam.status === 'live' ? 'Start Test' : 'View Schedule'}
+                                    {exam.status === 'live'
+                                      ? 'Start Test'
+                                      : 'View Schedule'}
                                   </button>
                                 )}
                               </div>
                             </div>
                           ))
-                        : submissions.slice(0, 3).map((sub) => (
+                        : submissions.slice(0, 3).map((submission) => (
                             <div
-                              key={sub.id}
+                              key={submission.id}
                               className="flex flex-col gap-3 py-3.5 sm:flex-row sm:items-center sm:justify-between"
                             >
                               <div>
                                 <div className="flex items-center gap-2">
                                   <span className="font-medium text-body-sm text-foreground-strong">
-                                    {sub.student}
+                                    {submission.student}
                                   </span>
-                                  <span className="text-caption text-muted">({sub.batch})</span>
+
+                                  <span className="text-caption text-muted">
+                                    ({submission.batch})
+                                  </span>
                                 </div>
+
                                 <div className="mt-1 text-caption text-muted">
-                                  <span>{sub.paper}</span> · <span>{sub.submittedAt}</span>
+                                  <span>{submission.paper}</span> ·{' '}
+                                  <span>{submission.submittedAt}</span>
                                 </div>
                               </div>
 
                               <button
                                 type="button"
-                                onClick={() => setGradingSubmission(sub)}
+                                onClick={() =>
+                                  setGradingSubmission(submission)
+                                }
                                 className={`rounded-control px-3.5 py-1.5 text-caption font-semibold transition-colors ${
-                                  sub.status === 'pending'
+                                  submission.status === 'pending'
                                     ? 'bg-primary text-primary-foreground hover:bg-primary-dark shadow-sm'
                                     : 'border border-border bg-surface text-muted'
                                 }`}
                               >
-                                {sub.status === 'pending' ? 'Evaluate Paper' : `Reviewed (${sub.score})`}
+                                {submission.status === 'pending'
+                                  ? 'Evaluate Paper'
+                                  : `Reviewed (${submission.score})`}
                               </button>
                             </div>
                           ))}
@@ -932,6 +1058,7 @@ export function DashboardPage() {
                       <h3 className="text-body font-semibold text-foreground-strong">
                         Curated Revision Modules
                       </h3>
+
                       <button
                         type="button"
                         onClick={() => setActiveTab('courses')}
@@ -942,26 +1069,32 @@ export function DashboardPage() {
                     </div>
 
                     <div className="grid gap-3 sm:grid-cols-2">
-                      {STUDY_MODULES.slice(0, 2).map((mod) => (
+                      {STUDY_MODULES.slice(0, 2).map((module) => (
                         <div
-                          key={mod.id}
+                          key={module.id}
                           className="flex flex-col justify-between rounded-control border border-border bg-surface p-4"
                         >
                           <div>
-                            <span className="text-caption font-semibold text-primary">{mod.subject}</span>
+                            <span className="text-caption font-semibold text-primary">
+                              {module.subject}
+                            </span>
+
                             <p className="mt-1 text-body-sm font-semibold text-foreground-strong">
-                              {mod.title}
+                              {module.title}
                             </p>
+
                             <p className="mt-1 text-caption text-muted line-clamp-2">
-                              {mod.summary}
+                              {module.summary}
                             </p>
                           </div>
+
                           <button
                             type="button"
-                            onClick={() => setActiveStudyModule(mod)}
+                            onClick={() => setActiveStudyModule(module)}
                             className="mt-3 inline-flex items-center gap-1.5 text-caption font-semibold text-primary hover:text-primary-dark"
                           >
-                            <BookOpen size={13} /> Read Summary
+                            <BookOpen size={13} />
+                            Read Summary
                           </button>
                         </div>
                       ))}
@@ -969,31 +1102,43 @@ export function DashboardPage() {
                   </div>
                 </div>
 
-                {/* Right Sidebar Panel: Performance & Notices */}
+                {/* Right Sidebar Panel */}
                 <div className="space-y-6">
-                  {/* Subject Accuracy */}
                   <div className="rounded-card border border-border bg-surface-elevated p-5 shadow-sm">
                     <h3 className="text-body font-semibold text-foreground-strong">
                       Subject Performance
                     </h3>
+
                     <p className="mt-0.5 text-caption text-muted">
                       Based on last 14 attempted mock papers
                     </p>
 
                     <div className="mt-4 space-y-3.5">
-                      <ProgressBar label="Indian Polity & Governance" percentage={84} />
-                      <ProgressBar label="Environment & Ecology" percentage={88} />
-                      <ProgressBar label="Modern Indian History" percentage={74} />
-                      <ProgressBar label="Indian Economy" percentage={68} />
+                      <ProgressBar
+                        label="Indian Polity & Governance"
+                        percentage={84}
+                      />
+                      <ProgressBar
+                        label="Environment & Ecology"
+                        percentage={88}
+                      />
+                      <ProgressBar
+                        label="Modern Indian History"
+                        percentage={74}
+                      />
+                      <ProgressBar
+                        label="Indian Economy"
+                        percentage={68}
+                      />
                       <ProgressBar label="CSAT Paper II" percentage={78} />
                     </div>
                   </div>
 
-                  {/* Academic Notices */}
                   <div className="rounded-card border border-border bg-surface-elevated p-5 shadow-sm">
                     <h3 className="text-body font-semibold text-foreground-strong">
                       Academic Notices
                     </h3>
+
                     <div className="mt-3 divide-y divide-border">
                       <div
                         onClick={() =>
@@ -1009,7 +1154,9 @@ export function DashboardPage() {
                         <p className="text-body-sm font-medium text-foreground-strong">
                           Prelims Mock 04 Answer Key
                         </p>
-                        <p className="text-caption text-muted">Oct 6 · Explanation release at 10:00 AM</p>
+                        <p className="text-caption text-muted">
+                          Oct 6 · Explanation release at 10:00 AM
+                        </p>
                       </div>
 
                       <div
@@ -1026,13 +1173,16 @@ export function DashboardPage() {
                         <p className="text-body-sm font-medium text-foreground-strong">
                           CSAT Speed Maths Workshop
                         </p>
-                        <p className="text-caption text-muted">Oct 8 · Faculty live stream at 4:00 PM</p>
+                        <p className="text-caption text-muted">
+                          Oct 8 · Faculty live stream at 4:00 PM
+                        </p>
                       </div>
 
                       <div
                         onClick={() =>
                           setActiveNotice({
-                            title: 'Mains Ethics Case Study Evaluation Schedule',
+                            title:
+                              'Mains Ethics Case Study Evaluation Schedule',
                             date: 'Oct 10, 2026',
                             content:
                               'Candidate submissions for GS Paper IV Ethics assignments will be reviewed by faculty mentors within 48 hours of submission.',
@@ -1043,7 +1193,9 @@ export function DashboardPage() {
                         <p className="text-body-sm font-medium text-foreground-strong">
                           Ethics Case Study Grading
                         </p>
-                        <p className="text-caption text-muted">Oct 10 · 48-hour mentor turnaround</p>
+                        <p className="text-caption text-muted">
+                          Oct 10 · 48-hour mentor turnaround
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -1060,31 +1212,33 @@ export function DashboardPage() {
                   <h1 className="font-display text-heading-md font-semibold text-foreground-strong">
                     UPSC Test Series Portal
                   </h1>
+
                   <p className="text-body-sm text-muted">
-                    Full-length mock exams, sectional drills, and past year question simulations.
+                    Full-length mock exams, sectional drills, and past year
+                    question simulations.
                   </p>
                 </div>
 
-                {/* Filter Pills */}
                 <div className="flex items-center gap-1.5 rounded-control border border-border bg-surface-elevated p-1 text-caption font-medium">
-                  {(['all', 'live', 'upcoming', 'completed'] as const).map((filter) => (
-                    <button
-                      key={filter}
-                      type="button"
-                      onClick={() => setExamFilter(filter)}
-                      className={`rounded-control px-3 py-1.5 capitalize transition-colors ${
-                        examFilter === filter
-                          ? 'bg-primary text-primary-foreground font-semibold shadow-sm'
-                          : 'text-muted hover:text-foreground'
-                      }`}
-                    >
-                      {filter}
-                    </button>
-                  ))}
+                  {(['all', 'live', 'upcoming', 'completed'] as const).map(
+                    (filter) => (
+                      <button
+                        key={filter}
+                        type="button"
+                        onClick={() => setExamFilter(filter)}
+                        className={`rounded-control px-3 py-1.5 capitalize transition-colors ${
+                          examFilter === filter
+                            ? 'bg-primary text-primary-foreground font-semibold shadow-sm'
+                            : 'text-muted hover:text-foreground'
+                        }`}
+                      >
+                        {filter}
+                      </button>
+                    ),
+                  )}
                 </div>
               </div>
 
-              {/* Exam Cards Grid */}
               <div className="grid gap-4 md:grid-cols-2">
                 {filteredExams.map((exam) => (
                   <div
@@ -1096,6 +1250,7 @@ export function DashboardPage() {
                         <span className="rounded-full bg-primary-soft text-primary-dark px-2.5 py-0.5 text-caption font-bold">
                           {exam.subject}
                         </span>
+
                         {exam.status === 'live' ? (
                           <span className="rounded-full bg-primary text-primary-foreground px-2 py-0.5 text-caption font-bold animate-pulse">
                             LIVE NOW
@@ -1105,7 +1260,9 @@ export function DashboardPage() {
                             ATTEMPTED
                           </span>
                         ) : (
-                          <span className="text-caption text-muted">{exam.date}</span>
+                          <span className="text-caption text-muted">
+                            {exam.date}
+                          </span>
                         )}
                       </div>
 
@@ -1115,15 +1272,23 @@ export function DashboardPage() {
 
                       <div className="mt-3 grid grid-cols-3 gap-2 rounded-control border border-border bg-surface p-2.5 text-center text-caption text-muted">
                         <div>
-                          <span className="block font-semibold text-foreground-strong">{exam.duration}</span>
+                          <span className="block font-semibold text-foreground-strong">
+                            {exam.duration}
+                          </span>
                           <span>Duration</span>
                         </div>
+
                         <div>
-                          <span className="block font-semibold text-foreground-strong">{exam.questions}</span>
+                          <span className="block font-semibold text-foreground-strong">
+                            {exam.questions}
+                          </span>
                           <span>Questions</span>
                         </div>
+
                         <div>
-                          <span className="block font-semibold text-foreground-strong">{exam.marks}</span>
+                          <span className="block font-semibold text-foreground-strong">
+                            {exam.marks}
+                          </span>
                           <span>Max Marks</span>
                         </div>
                       </div>
@@ -1138,7 +1303,9 @@ export function DashboardPage() {
                           </span>
                         </div>
                       ) : (
-                        <span className="text-caption text-muted">Negative marking: -0.66</span>
+                        <span className="text-caption text-muted">
+                          Negative marking: -0.66
+                        </span>
                       )}
 
                       <button
@@ -1153,8 +1320,8 @@ export function DashboardPage() {
                         {exam.status === 'live'
                           ? 'Start Exam'
                           : exam.status === 'completed'
-                          ? 'Reattempt Drill'
-                          : 'View Syllabus'}
+                            ? 'Reattempt Drill'
+                            : 'View Syllabus'}
                       </button>
                     </div>
                   </div>
@@ -1170,8 +1337,10 @@ export function DashboardPage() {
                 <h1 className="font-display text-heading-md font-semibold text-foreground-strong">
                   Study Material & High-Yield Notes
                 </h1>
+
                 <p className="text-body-sm text-muted">
-                  Structured syllabus notes prepared by faculty mentors for quick revision.
+                  Structured syllabus notes prepared by faculty mentors for
+                  quick revision.
                 </p>
               </div>
 
@@ -1186,11 +1355,16 @@ export function DashboardPage() {
                         <span className="text-caption font-bold uppercase tracking-wider text-primary">
                           {module.subject}
                         </span>
-                        <span className="text-caption text-muted">{module.lastUpdated}</span>
+
+                        <span className="text-caption text-muted">
+                          {module.lastUpdated}
+                        </span>
                       </div>
+
                       <h3 className="mt-2 text-heading-xs font-semibold text-foreground-strong">
                         {module.title}
                       </h3>
+
                       <p className="mt-2 text-body-sm text-muted leading-relaxed">
                         {module.summary}
                       </p>
@@ -1199,9 +1373,10 @@ export function DashboardPage() {
                         <span className="text-caption font-semibold text-foreground-strong">
                           Key Syllabus Topics:
                         </span>
+
                         <ul className="space-y-1 text-caption text-muted list-disc list-inside">
-                          {module.content.map((point, idx) => (
-                            <li key={idx} className="truncate">
+                          {module.content.map((point, index) => (
+                            <li key={index} className="truncate">
                               {point}
                             </li>
                           ))}
@@ -1210,7 +1385,10 @@ export function DashboardPage() {
                     </div>
 
                     <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
-                      <span className="text-caption text-muted">{module.pages} Pages PDF</span>
+                      <span className="text-caption text-muted">
+                        {module.pages} Pages PDF
+                      </span>
+
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
@@ -1219,9 +1397,12 @@ export function DashboardPage() {
                         >
                           Read Online
                         </button>
+
                         <button
                           type="button"
-                          onClick={() => alert(`Downloading ${module.title} PDF`)}
+                          onClick={() =>
+                            alert(`Downloading ${module.title} PDF`)
+                          }
                           className="rounded-control border border-border bg-surface p-1.5 text-muted hover:text-foreground"
                           title="Download PDF"
                         >
@@ -1242,26 +1423,54 @@ export function DashboardPage() {
                 <h1 className="font-display text-heading-md font-semibold text-foreground-strong">
                   Performance & Preparation Analytics
                 </h1>
+
                 <p className="text-body-sm text-muted">
-                  Diagnostic insights on accuracy, speed, and syllabus coverage across all mock attempts.
+                  Diagnostic insights on accuracy, speed, and syllabus coverage
+                  across all mock attempts.
                 </p>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="rounded-card border border-border bg-surface-elevated p-5 text-center">
-                  <span className="text-caption font-semibold text-muted">Overall Accuracy</span>
-                  <p className="mt-2 font-display text-heading-lg font-bold text-primary">76.4%</p>
-                  <p className="mt-1 text-caption text-muted">+3.2% compared to last week</p>
+                  <span className="text-caption font-semibold text-muted">
+                    Overall Accuracy
+                  </span>
+
+                  <p className="mt-2 font-display text-heading-lg font-bold text-primary">
+                    76.4%
+                  </p>
+
+                  <p className="mt-1 text-caption text-muted">
+                    +3.2% compared to last week
+                  </p>
                 </div>
+
                 <div className="rounded-card border border-border bg-surface-elevated p-5 text-center">
-                  <span className="text-caption font-semibold text-muted">Avg. Speed / Question</span>
-                  <p className="mt-2 font-display text-heading-lg font-bold text-foreground-strong">52s</p>
-                  <p className="mt-1 text-caption text-muted">Target: &lt;65s per item</p>
+                  <span className="text-caption font-semibold text-muted">
+                    Avg. Speed / Question
+                  </span>
+
+                  <p className="mt-2 font-display text-heading-lg font-bold text-foreground-strong">
+                    52s
+                  </p>
+
+                  <p className="mt-1 text-caption text-muted">
+                    Target: &lt;65s per item
+                  </p>
                 </div>
+
                 <div className="rounded-card border border-border bg-surface-elevated p-5 text-center">
-                  <span className="text-caption font-semibold text-muted">Prelims Readiness Index</span>
-                  <p className="mt-2 font-display text-heading-lg font-bold text-primary">82 / 100</p>
-                  <p className="mt-1 text-caption text-muted">Strong foundation</p>
+                  <span className="text-caption font-semibold text-muted">
+                    Prelims Readiness Index
+                  </span>
+
+                  <p className="mt-2 font-display text-heading-lg font-bold text-primary">
+                    82 / 100
+                  </p>
+
+                  <p className="mt-1 text-caption text-muted">
+                    Strong foundation
+                  </p>
                 </div>
               </div>
 
@@ -1270,13 +1479,32 @@ export function DashboardPage() {
                   <h3 className="text-body font-semibold text-foreground-strong">
                     Subject-wise Accuracy Breakdown
                   </h3>
+
                   <div className="mt-5 space-y-4">
-                    <ProgressBar label="Environment, Ecology & Climate Change" percentage={88} />
-                    <ProgressBar label="Indian Polity & Governance" percentage={84} />
-                    <ProgressBar label="CSAT Paper II (Reasoning & English)" percentage={78} />
-                    <ProgressBar label="Modern Indian History" percentage={74} />
-                    <ProgressBar label="Indian Economy & Budgeting" percentage={68} />
-                    <ProgressBar label="Geography & World Mapping" percentage={65} />
+                    <ProgressBar
+                      label="Environment, Ecology & Climate Change"
+                      percentage={88}
+                    />
+                    <ProgressBar
+                      label="Indian Polity & Governance"
+                      percentage={84}
+                    />
+                    <ProgressBar
+                      label="CSAT Paper II (Reasoning & English)"
+                      percentage={78}
+                    />
+                    <ProgressBar
+                      label="Modern Indian History"
+                      percentage={74}
+                    />
+                    <ProgressBar
+                      label="Indian Economy & Budgeting"
+                      percentage={68}
+                    />
+                    <ProgressBar
+                      label="Geography & World Mapping"
+                      percentage={65}
+                    />
                   </div>
                 </div>
 
@@ -1285,28 +1513,40 @@ export function DashboardPage() {
                     <h3 className="text-body font-semibold text-foreground-strong">
                       Focus Recommendations
                     </h3>
+
                     <p className="mt-1 text-caption text-muted">
-                      Algorithmically derived high-yield areas requiring revision:
+                      Algorithmically derived high-yield areas requiring
+                      revision:
                     </p>
 
                     <div className="mt-4 space-y-3">
                       <div className="rounded-control border border-border bg-surface p-3.5">
-                        <span className="text-caption font-bold text-primary">Priority 1: Indian Economy</span>
+                        <span className="text-caption font-bold text-primary">
+                          Priority 1: Indian Economy
+                        </span>
+
                         <p className="mt-0.5 text-body-sm font-medium text-foreground-strong">
                           Fiscal policy & monetary transmission mechanisms
                         </p>
+
                         <p className="mt-1 text-caption text-muted">
-                          Recent accuracy fell to 68%. Review RBI repo rate operations and external sector trends.
+                          Recent accuracy fell to 68%. Review RBI repo rate
+                          operations and external sector trends.
                         </p>
                       </div>
 
                       <div className="rounded-control border border-border bg-surface p-3.5">
-                        <span className="text-caption font-bold text-primary">Priority 2: Geography Mapping</span>
+                        <span className="text-caption font-bold text-primary">
+                          Priority 2: Geography Mapping
+                        </span>
+
                         <p className="mt-0.5 text-body-sm font-medium text-foreground-strong">
                           Major Indian river systems and tributary confluences
                         </p>
+
                         <p className="mt-1 text-caption text-muted">
-                          Missed 2 questions in the last mock on Peninsular river origins.
+                          Missed 2 questions in the last mock on Peninsular
+                          river origins.
                         </p>
                       </div>
                     </div>
@@ -1324,7 +1564,7 @@ export function DashboardPage() {
             </div>
           )}
 
-          {/* TAB 5: BATCHES & COHORTS (Staff only) */}
+          {/* TAB 5: BATCHES & COHORTS */}
           {activeTab === 'batches' && isStaff && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
@@ -1332,10 +1572,13 @@ export function DashboardPage() {
                   <h1 className="font-display text-heading-md font-semibold text-foreground-strong">
                     Institutional Batches & Cohorts
                   </h1>
+
                   <p className="text-body-sm text-muted">
-                    Delhi Public Academy · Active student cohorts and test schedule allocation.
+                    Delhi Public Academy · Active student cohorts and test
+                    schedule allocation.
                   </p>
                 </div>
+
                 <button
                   type="button"
                   onClick={() => alert('New cohort creation dialog')}
@@ -1351,14 +1594,21 @@ export function DashboardPage() {
                     <span className="rounded-full bg-primary-soft text-primary-dark px-2.5 py-0.5 text-caption font-bold">
                       ACTIVE COHORT
                     </span>
-                    <span className="text-caption text-muted">54 Enrolled</span>
+
+                    <span className="text-caption text-muted">
+                      54 Enrolled
+                    </span>
                   </div>
+
                   <h3 className="mt-2 text-heading-xs font-semibold text-foreground-strong">
                     Prelims 2026 Batch 101
                   </h3>
+
                   <p className="mt-1 text-body-sm text-muted">
-                    Target: May 2026 UPSC Prelims · Faculty Lead: Dr. Meera Patel
+                    Target: May 2026 UPSC Prelims · Faculty Lead: Dr. Meera
+                    Patel
                   </p>
+
                   <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-caption text-muted">
                     <span>14 Tests Completed</span>
                     <span>Average Attendance: 98%</span>
@@ -1370,14 +1620,21 @@ export function DashboardPage() {
                     <span className="rounded-full bg-primary-soft text-primary-dark px-2.5 py-0.5 text-caption font-bold">
                       FOUNDATION
                     </span>
-                    <span className="text-caption text-muted">42 Enrolled</span>
+
+                    <span className="text-caption text-muted">
+                      42 Enrolled
+                    </span>
                   </div>
+
                   <h3 className="mt-2 text-heading-xs font-semibold text-foreground-strong">
                     Foundation 2-Year Batch 102
                   </h3>
+
                   <p className="mt-1 text-body-sm text-muted">
-                    NCERT & GS Core Foundations · Faculty Lead: Vikram Malhotra
+                    NCERT & GS Core Foundations · Faculty Lead: Vikram
+                    Malhotra
                   </p>
+
                   <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-caption text-muted">
                     <span>8 Sectional Drills</span>
                     <span>Average Attendance: 94%</span>
@@ -1387,32 +1644,38 @@ export function DashboardPage() {
             </div>
           )}
 
-          {/* TAB 6: PAPER GRADING (Faculty/Staff only) */}
+          {/* TAB 6: PAPER GRADING */}
           {activeTab === 'grading' && isStaff && (
             <div className="space-y-6">
               <div>
                 <h1 className="font-display text-heading-md font-semibold text-foreground-strong">
                   Faculty Evaluation Queue
                 </h1>
+
                 <p className="text-body-sm text-muted">
-                  Review student mains essay submissions, assign scores, and provide actionable feedback.
+                  Review student mains essay submissions, assign scores, and
+                  provide actionable feedback.
                 </p>
               </div>
 
               <div className="rounded-card border border-border bg-surface-elevated p-5 shadow-sm">
                 <div className="divide-y divide-border">
-                  {submissions.map((sub) => (
+                  {submissions.map((submission) => (
                     <div
-                      key={sub.id}
+                      key={submission.id}
                       className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between"
                     >
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-body-sm text-foreground-strong">
-                            {sub.student}
+                            {submission.student}
                           </span>
-                          <span className="text-caption text-muted">· {sub.batch}</span>
-                          {sub.status === 'graded' ? (
+
+                          <span className="text-caption text-muted">
+                            · {submission.batch}
+                          </span>
+
+                          {submission.status === 'graded' ? (
                             <span className="rounded-full bg-primary-soft text-primary-dark px-2 py-0.5 text-caption font-semibold">
                               Graded
                             </span>
@@ -1422,13 +1685,18 @@ export function DashboardPage() {
                             </span>
                           )}
                         </div>
-                        <p className="text-body-sm text-foreground-strong">{sub.paper}</p>
-                        <p className="text-caption text-muted line-clamp-1 italic">
-                          "{sub.studentAnswer}"
+
+                        <p className="text-body-sm text-foreground-strong">
+                          {submission.paper}
                         </p>
-                        {sub.feedback && (
+
+                        <p className="text-caption text-muted line-clamp-1 italic">
+                          "{submission.studentAnswer}"
+                        </p>
+
+                        {submission.feedback && (
                           <p className="text-caption text-primary font-medium">
-                            Feedback: {sub.feedback}
+                            Feedback: {submission.feedback}
                           </p>
                         )}
                       </div>
@@ -1436,17 +1704,25 @@ export function DashboardPage() {
                       <button
                         type="button"
                         onClick={() => {
-                          setGradingSubmission(sub)
-                          setAssignedScore(sub.score ? sub.score.split(' ')[0] : '80')
-                          setFacultyFeedbackText(sub.feedback || '')
+                          setGradingSubmission(submission)
+                          setAssignedScore(
+                            submission.score
+                              ? submission.score.split(' ')[0]
+                              : '80',
+                          )
+                          setFacultyFeedbackText(
+                            submission.feedback || '',
+                          )
                         }}
                         className={`rounded-control px-4 py-2 text-caption font-semibold transition-colors shrink-0 ${
-                          sub.status === 'pending'
+                          submission.status === 'pending'
                             ? 'bg-primary text-primary-foreground hover:bg-primary-dark shadow-sm'
                             : 'border border-border bg-surface text-foreground-strong hover:border-primary'
                         }`}
                       >
-                        {sub.status === 'pending' ? 'Evaluate Submission' : `Edit Score (${sub.score})`}
+                        {submission.status === 'pending'
+                          ? 'Evaluate Submission'
+                          : `Edit Score (${submission.score})`}
                       </button>
                     </div>
                   ))}
@@ -1462,11 +1738,14 @@ export function DashboardPage() {
                 <span className="text-caption font-semibold uppercase tracking-wider text-primary">
                   Enterprise Security &amp; Identity
                 </span>
+
                 <h1 className="mt-2 font-display text-heading-md font-semibold text-foreground-strong">
                   Session Interceptor &amp; Security Lifecycle
                 </h1>
+
                 <p className="mt-1 text-body-sm text-muted">
-                  Live session telemetry, automatic bearer token rotation, and resilient error recovery bounds.
+                  Live session telemetry, automatic bearer token rotation, and
+                  resilient error recovery bounds.
                 </p>
               </div>
 
@@ -1477,6 +1756,7 @@ export function DashboardPage() {
                     <h2 className="font-display text-heading-sm font-semibold text-foreground-strong">
                       Active JWT Telemetry
                     </h2>
+
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-soft text-primary-dark px-3 py-0.5 text-caption font-bold">
                       <span className="size-2 rounded-full bg-primary animate-pulse" />
                       Session Valid
@@ -1485,22 +1765,43 @@ export function DashboardPage() {
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between border-b border-border pb-2 text-body-sm">
-                      <span className="text-muted">Access Token Remaining:</span>
+                      <span className="text-muted">
+                        Access Token Remaining:
+                      </span>
+
                       <span className="font-mono font-bold text-primary">
                         {Math.floor(sessionTtl / 60)}m {sessionTtl % 60}s
                       </span>
                     </div>
+
                     <div className="flex items-center justify-between border-b border-border pb-2 text-body-sm">
-                      <span className="text-muted">Refresh Token Policy:</span>
-                      <span className="font-semibold text-foreground-strong">HttpOnly Cookie + In-Memory Token</span>
+                      <span className="text-muted">
+                        Refresh Token Policy:
+                      </span>
+
+                      <span className="font-semibold text-foreground-strong">
+                        Backend-managed token rotation
+                      </span>
                     </div>
+
                     <div className="flex items-center justify-between border-b border-border pb-2 text-body-sm">
-                      <span className="text-muted">Tenant Organization:</span>
-                      <span className="font-mono text-muted">{orgName}</span>
+                      <span className="text-muted">
+                        Tenant Organization:
+                      </span>
+
+                      <span className="font-mono text-muted">
+                        {orgName}
+                      </span>
                     </div>
+
                     <div className="flex items-center justify-between border-b border-border pb-2 text-body-sm">
-                      <span className="text-muted">Effective Rights Ceiling:</span>
-                      <span className="font-semibold text-primary">70 / 70 Platform Rights</span>
+                      <span className="text-muted">
+                        Effective Rights Ceiling:
+                      </span>
+
+                      <span className="font-semibold text-primary">
+                        Role-based access
+                      </span>
                     </div>
                   </div>
 
@@ -1511,13 +1812,19 @@ export function DashboardPage() {
                       disabled={isRefreshingToken}
                       className="flex-1 flex items-center justify-center gap-2 rounded-control bg-primary py-2 text-caption font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm"
                     >
-                      <RefreshCw size={14} className={isRefreshingToken ? 'animate-spin' : ''} />
+                      <RefreshCw
+                        size={14}
+                        className={isRefreshingToken ? 'animate-spin' : ''}
+                      />
+
                       <span>Execute Silent Refresh</span>
                     </button>
 
                     <button
                       type="button"
-                      onClick={() => setIsSessionExpiredModalOpen(true)}
+                      onClick={() =>
+                        setIsSessionExpiredModalOpen(true)
+                      }
                       className="flex-1 flex items-center justify-center gap-2 rounded-control border border-border bg-surface py-2 text-caption font-semibold text-foreground hover:border-primary transition-colors"
                     >
                       <AlertCircle size={14} className="text-primary" />
@@ -1536,21 +1843,40 @@ export function DashboardPage() {
                 <div className="rounded-card border border-border bg-surface-elevated p-6 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 className="font-display text-heading-sm font-semibold text-foreground-strong">
-                      Decoded Token Claims
+                      Authenticated Session Profile
                     </h2>
-                    <span className="font-mono text-caption text-muted">HS256 Verified</span>
+
+                    <span className="font-mono text-caption text-muted">
+                      Backend Session
+                    </span>
                   </div>
 
                   <div className="rounded-control border border-border bg-surface p-4 font-mono text-caption text-foreground space-y-1.5 overflow-x-auto">
-                    <p><span className="text-primary font-bold">"sub":</span> "{user.email}",</p>
-                    <p><span className="text-primary font-bold">"role":</span> "{user.role}",</p>
-                    <p><span className="text-primary font-bold">"plan":</span> "{user.plan}",</p>
-                    <p><span className="text-primary font-bold">"exp":</span> {Math.floor(Date.now() / 1000) + sessionTtl},</p>
-                    <p><span className="text-primary font-bold">"iss":</span> "heftin-academy-auth-core"</p>
+                    <p>
+                      <span className="text-primary font-bold">
+                        "sub":
+                      </span>{' '}
+                      "{user.email}",
+                    </p>
+
+                    <p>
+                      <span className="text-primary font-bold">
+                        "role":
+                      </span>{' '}
+                      "{user.role}",
+                    </p>
+
+                    <p>
+                      <span className="text-primary font-bold">
+                        "plan":
+                      </span>{' '}
+                      "{user.plan}",
+                    </p>
                   </div>
 
                   <p className="text-caption text-muted">
-                    Tokens are cryptographically verified upon route mounting and API dispatch.
+                    Authentication profile data is loaded from the backend
+                    session through the authenticated /auth/me request.
                   </p>
                 </div>
               </div>
@@ -1560,14 +1886,18 @@ export function DashboardPage() {
                 <h3 className="font-display text-heading-sm font-semibold text-foreground-strong">
                   Production Error Boundary Simulation
                 </h3>
+
                 <p className="mt-1 text-caption text-muted">
-                  Test in-app resilience and error states as experienced during actual network turbulence.
+                  Test in-app resilience and error states as experienced during
+                  actual network turbulence.
                 </p>
 
                 <div className="mt-4 flex flex-wrap gap-3">
                   <button
                     type="button"
-                    onClick={() => setIsNetworkErrorBannerVisible(true)}
+                    onClick={() =>
+                      setIsNetworkErrorBannerVisible(true)
+                    }
                     className="flex items-center gap-1.5 rounded-control border border-border bg-surface px-4 py-2 text-caption font-semibold text-foreground-strong hover:border-primary hover:text-primary transition-colors"
                   >
                     <ShieldAlert size={14} className="text-primary" />
@@ -1576,7 +1906,11 @@ export function DashboardPage() {
 
                   <button
                     type="button"
-                    onClick={() => triggerSessionError('Session verification failed: Authentication token has expired or is invalid.')}
+                    onClick={() =>
+                      triggerSessionError(
+                        'Session verification failed: Authentication token has expired or is invalid.',
+                      )
+                    }
                     className="flex items-center gap-1.5 rounded-control border border-border bg-surface px-4 py-2 text-caption font-semibold text-foreground-strong hover:border-primary hover:text-primary transition-colors"
                   >
                     <AlertTriangle size={14} className="text-primary" />
@@ -1589,20 +1923,20 @@ export function DashboardPage() {
         </main>
       </div>
 
-      {/* ========================================================================= */}
-      {/* 1. INTERACTIVE TEST PLAYER MODAL */}
-      {/* ========================================================================= */}
+      {/* INTERACTIVE TEST PLAYER MODAL */}
       {isTestModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="flex h-[90vh] max-h-[800px] w-full max-w-4xl flex-col rounded-card border border-border bg-surface shadow-2xl">
-            {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-border bg-surface-elevated px-6 py-4">
               <div>
                 <span className="text-caption font-bold uppercase tracking-wider text-primary">
                   UPSC GS Paper I · Live Simulation
                 </span>
+
                 <h2 className="text-body font-semibold text-foreground-strong">
-                  {testCompleted ? 'Test Analysis & Scorecard' : 'Full Length Mock 04'}
+                  {testCompleted
+                    ? 'Test Analysis & Scorecard'
+                    : 'Full Length Mock 04'}
                 </h2>
               </div>
 
@@ -1613,6 +1947,7 @@ export function DashboardPage() {
                     <span>{formatTimer(testTimeLeft)}</span>
                   </div>
                 )}
+
                 <button
                   type="button"
                   onClick={() => setIsTestModalOpen(false)}
@@ -1623,47 +1958,58 @@ export function DashboardPage() {
               </div>
             </div>
 
-            {/* Modal Body */}
             <div className="flex-1 overflow-y-auto p-6">
               {!testCompleted ? (
                 <div className="grid gap-6 md:grid-cols-3">
-                  {/* Left 2 Cols: Question Area */}
                   <div className="space-y-6 md:col-span-2">
                     <div className="flex items-center justify-between">
                       <span className="rounded-control bg-primary-soft text-primary-dark px-3 py-1 text-caption font-bold">
-                        Question {currentQuestionIndex + 1} of {UPSC_QUESTIONS.length}
+                        Question {currentQuestionIndex + 1} of{' '}
+                        {UPSC_QUESTIONS.length}
                       </span>
+
                       <button
                         type="button"
-                        onClick={() => toggleFlagQuestion(currentQuestionIndex)}
+                        onClick={() =>
+                          toggleFlagQuestion(currentQuestionIndex)
+                        }
                         className={`text-caption font-semibold transition-colors ${
                           flaggedQuestions.has(currentQuestionIndex)
                             ? 'text-primary'
                             : 'text-muted hover:text-foreground'
                         }`}
                       >
-                        {flaggedQuestions.has(currentQuestionIndex) ? 'Marked for Review' : 'Mark for Review'}
+                        {flaggedQuestions.has(currentQuestionIndex)
+                          ? 'Marked for Review'
+                          : 'Mark for Review'}
                       </button>
                     </div>
 
                     <div className="rounded-control border border-border bg-surface-elevated p-4">
                       <span className="text-caption font-semibold text-muted">
-                        Subject: {UPSC_QUESTIONS[currentQuestionIndex].subject}
+                        Subject:{' '}
+                        {UPSC_QUESTIONS[currentQuestionIndex].subject}
                       </span>
+
                       <p className="mt-2 whitespace-pre-line text-body font-medium leading-relaxed text-foreground-strong">
                         {UPSC_QUESTIONS[currentQuestionIndex].text}
                       </p>
                     </div>
 
-                    {/* Radio Options */}
                     <div className="space-y-2.5">
-                      {UPSC_QUESTIONS[currentQuestionIndex].options.map((option, optIdx) => {
-                        const isSelected = userAnswers[currentQuestionIndex] === optIdx
+                      {UPSC_QUESTIONS[
+                        currentQuestionIndex
+                      ].options.map((option, optionIndex) => {
+                        const isSelected =
+                          userAnswers[currentQuestionIndex] === optionIndex
+
                         return (
                           <button
-                            key={optIdx}
+                            key={optionIndex}
                             type="button"
-                            onClick={() => handleSelectOption(optIdx)}
+                            onClick={() =>
+                              handleSelectOption(optionIndex)
+                            }
                             className={`flex w-full items-center gap-3 rounded-control border p-3.5 text-left transition-colors ${
                               isSelected
                                 ? 'border-primary bg-primary-soft'
@@ -1677,32 +2023,38 @@ export function DashboardPage() {
                                   : 'border-border text-muted'
                               }`}
                             >
-                              {String.fromCharCode(65 + optIdx)}
+                              {String.fromCharCode(65 + optionIndex)}
                             </span>
-                            <span className="text-body-sm font-medium text-foreground-strong">{option}</span>
+
+                            <span className="text-body-sm font-medium text-foreground-strong">
+                              {option}
+                            </span>
                           </button>
                         )
                       })}
                     </div>
                   </div>
 
-                  {/* Right 1 Col: Question Palette Grid */}
                   <div className="space-y-4 rounded-control border border-border bg-surface-elevated p-4">
                     <span className="text-caption font-semibold uppercase tracking-wider text-muted">
                       Question Palette
                     </span>
 
                     <div className="grid grid-cols-5 gap-2">
-                      {UPSC_QUESTIONS.map((_, idx) => {
-                        const isAnswered = userAnswers[idx] !== undefined
-                        const isFlagged = flaggedQuestions.has(idx)
-                        const isCurrent = idx === currentQuestionIndex
+                      {UPSC_QUESTIONS.map((_, index) => {
+                        const isAnswered =
+                          userAnswers[index] !== undefined
+                        const isFlagged = flaggedQuestions.has(index)
+                        const isCurrent =
+                          index === currentQuestionIndex
 
                         return (
                           <button
-                            key={idx}
+                            key={index}
                             type="button"
-                            onClick={() => setCurrentQuestionIndex(idx)}
+                            onClick={() =>
+                              setCurrentQuestionIndex(index)
+                            }
                             className={`grid size-10 place-items-center rounded-control text-caption font-bold transition-all ${
                               isCurrent
                                 ? 'ring-2 ring-primary ring-offset-1'
@@ -1711,11 +2063,11 @@ export function DashboardPage() {
                               isAnswered
                                 ? 'bg-primary text-primary-foreground'
                                 : isFlagged
-                                ? 'bg-primary-tint-4 text-primary-dark border border-primary-tint-3'
-                                : 'border border-border bg-surface text-muted hover:border-foreground'
+                                  ? 'bg-primary-tint-4 text-primary-dark border border-primary-tint-3'
+                                  : 'border border-border bg-surface text-muted hover:border-foreground'
                             }`}
                           >
-                            {idx + 1}
+                            {index + 1}
                           </button>
                         )
                       })}
@@ -1724,45 +2076,80 @@ export function DashboardPage() {
                     <div className="border-t border-border pt-3 space-y-2 text-caption text-muted">
                       <div className="flex items-center gap-2">
                         <span className="size-3 rounded-sm bg-primary" />
-                        <span>Answered ({Object.keys(userAnswers).length})</span>
+                        <span>
+                          Answered ({Object.keys(userAnswers).length})
+                        </span>
                       </div>
+
                       <div className="flex items-center gap-2">
                         <span className="size-3 rounded-sm bg-primary-tint-4 border border-primary-tint-3" />
-                        <span>Marked for Review ({flaggedQuestions.size})</span>
+                        <span>
+                          Marked for Review ({flaggedQuestions.size})
+                        </span>
                       </div>
+
                       <div className="flex items-center gap-2">
                         <span className="size-3 rounded-sm border border-border bg-surface" />
-                        <span>Unanswered ({UPSC_QUESTIONS.length - Object.keys(userAnswers).length})</span>
+                        <span>
+                          Unanswered (
+                          {UPSC_QUESTIONS.length -
+                            Object.keys(userAnswers).length}
+                          )
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
               ) : (
-                /* SCORECARD & DETAILED SOLUTIONS */
                 <div className="space-y-6">
                   <div className="grid gap-4 sm:grid-cols-3">
                     <div className="rounded-card border border-border bg-surface-elevated p-5 text-center">
-                      <span className="text-caption font-semibold text-muted">Total Score</span>
+                      <span className="text-caption font-semibold text-muted">
+                        Total Score
+                      </span>
+
                       <p className="mt-2 font-display text-heading-lg font-bold text-primary">
-                        {testScoreResult?.score} / {testScoreResult?.total}
+                        {testScoreResult?.score} /{' '}
+                        {testScoreResult?.total}
                       </p>
-                      <p className="mt-1 text-caption text-muted">Passing cutoff: 90 / 200</p>
-                    </div>
-                    <div className="rounded-card border border-border bg-surface-elevated p-5 text-center">
-                      <span className="text-caption font-semibold text-muted">Accuracy</span>
-                      <p className="mt-2 font-display text-heading-lg font-bold text-foreground-strong">
-                        {Math.round(((testScoreResult?.correctCount || 0) / UPSC_QUESTIONS.length) * 100)}%
-                      </p>
+
                       <p className="mt-1 text-caption text-muted">
-                        {testScoreResult?.correctCount} of {UPSC_QUESTIONS.length} correct
+                        Passing cutoff: 90 / 200
                       </p>
                     </div>
+
                     <div className="rounded-card border border-border bg-surface-elevated p-5 text-center">
-                      <span className="text-caption font-semibold text-muted">Time Utilized</span>
+                      <span className="text-caption font-semibold text-muted">
+                        Accuracy
+                      </span>
+
+                      <p className="mt-2 font-display text-heading-lg font-bold text-foreground-strong">
+                        {Math.round(
+                          ((testScoreResult?.correctCount || 0) /
+                            UPSC_QUESTIONS.length) *
+                            100,
+                        )}
+                        %
+                      </p>
+
+                      <p className="mt-1 text-caption text-muted">
+                        {testScoreResult?.correctCount} of{' '}
+                        {UPSC_QUESTIONS.length} correct
+                      </p>
+                    </div>
+
+                    <div className="rounded-card border border-border bg-surface-elevated p-5 text-center">
+                      <span className="text-caption font-semibold text-muted">
+                        Time Utilized
+                      </span>
+
                       <p className="mt-2 font-display text-heading-lg font-bold text-foreground-strong">
                         {formatTimer(600 - testTimeLeft)}
                       </p>
-                      <p className="mt-1 text-caption text-muted">Pace: Good speed</p>
+
+                      <p className="mt-1 text-caption text-muted">
+                        Pace: Good speed
+                      </p>
                     </div>
                   </div>
 
@@ -1771,61 +2158,85 @@ export function DashboardPage() {
                   </h3>
 
                   <div className="space-y-4">
-                    {UPSC_QUESTIONS.map((q, qIdx) => {
-                      const userChoice = userAnswers[qIdx]
-                      const isCorrect = userChoice === q.correctIndex
+                    {UPSC_QUESTIONS.map((question, questionIndex) => {
+                      const userChoice = userAnswers[questionIndex]
+                      const isCorrect =
+                        userChoice === question.correctIndex
 
                       return (
                         <div
-                          key={q.id}
+                          key={question.id}
                           className={`rounded-control border p-4 ${
-                            isCorrect ? 'border-primary bg-primary-soft/30' : 'border-border bg-surface-elevated'
+                            isCorrect
+                              ? 'border-primary bg-primary-soft/30'
+                              : 'border-border bg-surface-elevated'
                           }`}
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-caption font-bold text-muted">
-                              Question {qIdx + 1} · {q.subject}
+                              Question {questionIndex + 1} ·{' '}
+                              {question.subject}
                             </span>
+
                             <span
                               className={`text-caption font-bold ${
-                                isCorrect ? 'text-primary' : 'text-muted'
+                                isCorrect
+                                  ? 'text-primary'
+                                  : 'text-muted'
                               }`}
                             >
-                              {isCorrect ? 'Correct (+2 marks)' : userChoice !== undefined ? 'Incorrect (-0.66 marks)' : 'Unattempted'}
+                              {isCorrect
+                                ? 'Correct (+2 marks)'
+                                : userChoice !== undefined
+                                  ? 'Incorrect (-0.66 marks)'
+                                  : 'Unattempted'}
                             </span>
                           </div>
 
                           <p className="mt-2 whitespace-pre-line text-body-sm font-medium text-foreground-strong">
-                            {q.text}
+                            {question.text}
                           </p>
 
                           <div className="mt-3 grid gap-1.5 sm:grid-cols-2">
-                            {q.options.map((opt, oIdx) => {
-                              const isOfficialCorrect = oIdx === q.correctIndex
-                              const isCandidateChoice = userChoice === oIdx
+                            {question.options.map(
+                              (option, optionIndex) => {
+                                const isOfficialCorrect =
+                                  optionIndex ===
+                                  question.correctIndex
+                                const isCandidateChoice =
+                                  userChoice === optionIndex
 
-                              return (
-                                <div
-                                  key={oIdx}
-                                  className={`rounded-control border px-3 py-2 text-caption font-medium ${
-                                    isOfficialCorrect
-                                      ? 'border-primary bg-primary text-primary-foreground font-semibold'
-                                      : isCandidateChoice
-                                      ? 'border-border bg-surface line-through text-muted'
-                                      : 'border-border bg-surface text-muted'
-                                  }`}
-                                >
-                                  {String.fromCharCode(65 + oIdx)}. {opt}
-                                  {isOfficialCorrect && ' (Official Key)'}
-                                  {isCandidateChoice && !isOfficialCorrect && ' (Your Choice)'}
-                                </div>
-                              )
-                            })}
+                                return (
+                                  <div
+                                    key={optionIndex}
+                                    className={`rounded-control border px-3 py-2 text-caption font-medium ${
+                                      isOfficialCorrect
+                                        ? 'border-primary bg-primary text-primary-foreground font-semibold'
+                                        : isCandidateChoice
+                                          ? 'border-border bg-surface line-through text-muted'
+                                          : 'border-border bg-surface text-muted'
+                                    }`}
+                                  >
+                                    {String.fromCharCode(
+                                      65 + optionIndex,
+                                    )}
+                                    . {option}
+                                    {isOfficialCorrect &&
+                                      ' (Official Key)'}
+                                    {isCandidateChoice &&
+                                      !isOfficialCorrect &&
+                                      ' (Your Choice)'}
+                                  </div>
+                                )
+                              },
+                            )}
                           </div>
 
                           <div className="mt-3 rounded-control border border-border bg-surface p-3 text-caption text-muted">
-                            <span className="font-semibold text-foreground-strong">Explanation: </span>
-                            {q.explanation}
+                            <span className="font-semibold text-foreground-strong">
+                              Explanation:{' '}
+                            </span>
+                            {question.explanation}
                           </div>
                         </div>
                       )
@@ -1835,24 +2246,30 @@ export function DashboardPage() {
               )}
             </div>
 
-            {/* Modal Footer Controls */}
             <div className="flex items-center justify-between border-t border-border bg-surface-elevated px-6 py-4">
               {!testCompleted ? (
                 <>
                   <button
                     type="button"
                     disabled={currentQuestionIndex === 0}
-                    onClick={() => setCurrentQuestionIndex((prev) => Math.max(0, prev - 1))}
+                    onClick={() =>
+                      setCurrentQuestionIndex((prev) =>
+                        Math.max(0, prev - 1),
+                      )
+                    }
                     className="rounded-control border border-border bg-surface px-4 py-2 text-body-sm font-medium text-foreground-strong disabled:opacity-40"
                   >
                     Previous
                   </button>
 
                   <div className="flex items-center gap-2">
-                    {currentQuestionIndex < UPSC_QUESTIONS.length - 1 ? (
+                    {currentQuestionIndex <
+                    UPSC_QUESTIONS.length - 1 ? (
                       <button
                         type="button"
-                        onClick={() => setCurrentQuestionIndex((prev) => prev + 1)}
+                        onClick={() =>
+                          setCurrentQuestionIndex((prev) => prev + 1)
+                        }
                         className="rounded-control bg-primary px-4 py-2 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors"
                       >
                         Next Question
@@ -1870,7 +2287,10 @@ export function DashboardPage() {
                 </>
               ) : (
                 <div className="flex w-full items-center justify-between">
-                  <span className="text-caption text-muted">Result saved to your workspace performance history</span>
+                  <span className="text-caption text-muted">
+                    Result saved to your workspace performance history
+                  </span>
+
                   <button
                     type="button"
                     onClick={() => setIsTestModalOpen(false)}
@@ -1885,9 +2305,7 @@ export function DashboardPage() {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* 2. INTERACTIVE STUDY MODULE READER MODAL */}
-      {/* ========================================================================= */}
+      {/* STUDY MODULE READER MODAL */}
       {activeStudyModule && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="flex max-h-[85vh] w-full max-w-2xl flex-col rounded-card border border-border bg-surface shadow-2xl">
@@ -1896,10 +2314,12 @@ export function DashboardPage() {
                 <span className="text-caption font-bold uppercase tracking-wider text-primary">
                   {activeStudyModule.subject}
                 </span>
+
                 <h2 className="text-body font-semibold text-foreground-strong">
                   {activeStudyModule.title}
                 </h2>
               </div>
+
               <button
                 type="button"
                 onClick={() => setActiveStudyModule(null)}
@@ -1918,9 +2338,15 @@ export function DashboardPage() {
                 <span className="text-body-sm font-semibold text-foreground-strong">
                   Detailed Syllabus Digest:
                 </span>
-                {activeStudyModule.content.map((point, idx) => (
-                  <div key={idx} className="rounded-control border border-border bg-surface-elevated p-3 text-body-sm text-foreground-strong">
-                    <span className="font-semibold text-primary">Module Section {idx + 1}: </span>
+
+                {activeStudyModule.content.map((point, index) => (
+                  <div
+                    key={index}
+                    className="rounded-control border border-border bg-surface-elevated p-3 text-body-sm text-foreground-strong"
+                  >
+                    <span className="font-semibold text-primary">
+                      Module Section {index + 1}:{' '}
+                    </span>
                     {point}
                   </div>
                 ))}
@@ -1928,7 +2354,10 @@ export function DashboardPage() {
             </div>
 
             <div className="flex items-center justify-between border-t border-border bg-surface-elevated px-6 py-4">
-              <span className="text-caption text-muted">{activeStudyModule.pages} Pages Comprehensive PDF</span>
+              <span className="text-caption text-muted">
+                {activeStudyModule.pages} Pages Comprehensive PDF
+              </span>
+
               <button
                 type="button"
                 onClick={() => setActiveStudyModule(null)}
@@ -1941,9 +2370,7 @@ export function DashboardPage() {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* 3. INTERACTIVE FACULTY PAPER GRADING DRAWER */}
-      {/* ========================================================================= */}
+      {/* FACULTY PAPER GRADING DRAWER */}
       {gradingSubmission && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="flex max-h-[85vh] w-full max-w-xl flex-col rounded-card border border-border bg-surface shadow-2xl">
@@ -1952,10 +2379,13 @@ export function DashboardPage() {
                 <span className="text-caption font-bold uppercase tracking-wider text-primary">
                   Paper Evaluation
                 </span>
+
                 <h2 className="text-body font-semibold text-foreground-strong">
-                  {gradingSubmission.student} · {gradingSubmission.paper}
+                  {gradingSubmission.student} ·{' '}
+                  {gradingSubmission.paper}
                 </h2>
               </div>
+
               <button
                 type="button"
                 onClick={() => setGradingSubmission(null)}
@@ -1967,36 +2397,51 @@ export function DashboardPage() {
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               <div>
-                <span className="text-caption font-semibold text-muted">Candidate Answer Submission:</span>
+                <span className="text-caption font-semibold text-muted">
+                  Candidate Answer Submission:
+                </span>
+
                 <div className="mt-1.5 rounded-control border border-border bg-surface-elevated p-4 text-body-sm text-foreground-strong leading-relaxed italic">
                   "{gradingSubmission.studentAnswer}"
                 </div>
               </div>
 
               <div>
-                <label htmlFor="score-input" className="block text-body-sm font-semibold text-foreground-strong">
+                <label
+                  htmlFor="score-input"
+                  className="block text-body-sm font-semibold text-foreground-strong"
+                >
                   Awarded Marks (out of 100):
                 </label>
+
                 <input
                   id="score-input"
                   type="number"
                   min="0"
                   max="100"
                   value={assignedScore}
-                  onChange={(e) => setAssignedScore(e.target.value)}
+                  onChange={(event) =>
+                    setAssignedScore(event.target.value)
+                  }
                   className="mt-1 w-32 rounded-control border border-border bg-surface px-3 py-2 text-body-sm font-semibold outline-none focus:border-primary"
                 />
               </div>
 
               <div>
-                <label htmlFor="feedback-text" className="block text-body-sm font-semibold text-foreground-strong">
+                <label
+                  htmlFor="feedback-text"
+                  className="block text-body-sm font-semibold text-foreground-strong"
+                >
                   Faculty Mentor Feedback:
                 </label>
+
                 <textarea
                   id="feedback-text"
                   rows={3}
                   value={facultyFeedbackText}
-                  onChange={(e) => setFacultyFeedbackText(e.target.value)}
+                  onChange={(event) =>
+                    setFacultyFeedbackText(event.target.value)
+                  }
                   placeholder="Commend structure, cite relevant Supreme Court precedents or missing analytical angles..."
                   className="mt-1 w-full rounded-control border border-border bg-surface p-3 text-body-sm outline-none focus:border-primary"
                 />
@@ -2011,6 +2456,7 @@ export function DashboardPage() {
               >
                 Cancel
               </button>
+
               <button
                 type="button"
                 onClick={handleSaveGrade}
@@ -2023,21 +2469,22 @@ export function DashboardPage() {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* 4. INTERACTIVE NOTICE MODAL */}
-      {/* ========================================================================= */}
+      {/* NOTICE MODAL */}
       {activeNotice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-card border border-border bg-surface p-6 shadow-2xl">
             <span className="text-caption font-bold uppercase tracking-wider text-primary">
               Academic Notice · {activeNotice.date}
             </span>
+
             <h3 className="mt-1 font-semibold text-body text-foreground-strong">
               {activeNotice.title}
             </h3>
+
             <p className="mt-3 text-body-sm leading-relaxed text-muted">
               {activeNotice.content}
             </p>
+
             <div className="mt-6 flex justify-end">
               <button
                 type="button"
@@ -2051,23 +2498,26 @@ export function DashboardPage() {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* 5. INTERACTIVE 401 SESSION EXPIRED MODAL */}
-      {/* ========================================================================= */}
+      {/* 401 SESSION EXPIRED MODAL */}
       {isSessionExpiredModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
           <div className="w-full max-w-md rounded-card border border-border bg-surface-elevated p-6 shadow-xl space-y-4 text-center animate-in zoom-in-95 duration-200">
             <div className="mx-auto grid size-12 place-items-center rounded-full bg-primary-soft text-primary-dark">
               <AlertCircle size={24} />
             </div>
+
             <div>
               <h3 className="font-display text-heading-xs font-bold text-foreground-strong">
                 Session Inactivity Timeout
               </h3>
+
               <p className="mt-1 text-caption text-muted leading-relaxed">
-                Your secure session has reached its inactivity threshold. Refresh your session token to continue your work without losing test telemetry.
+                Your secure session has reached its inactivity threshold.
+                Refresh your session token to continue your work without
+                losing test telemetry.
               </p>
             </div>
+
             <div className="flex flex-col gap-2 pt-2">
               <button
                 type="button"
@@ -2075,9 +2525,14 @@ export function DashboardPage() {
                 disabled={isRefreshingToken}
                 className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm"
               >
-                <RefreshCw size={16} className={isRefreshingToken ? 'animate-spin' : ''} />
+                <RefreshCw
+                  size={16}
+                  className={isRefreshingToken ? 'animate-spin' : ''}
+                />
+
                 <span>Renew Session (Silent Token Rotation)</span>
               </button>
+
               <button
                 type="button"
                 onClick={handleLogout}
@@ -2093,23 +2548,49 @@ export function DashboardPage() {
   )
 }
 
-function StatCard({ title, value, subtitle }: { title: string; value: string; subtitle: string }) {
+function StatCard({
+  title,
+  value,
+  subtitle,
+}: {
+  title: string
+  value: string
+  subtitle: string
+}) {
   return (
     <div className="rounded-card border border-border bg-surface-elevated p-4 shadow-sm">
-      <span className="text-caption font-medium text-muted">{title}</span>
-      <p className="mt-1 font-display text-heading-sm font-bold text-foreground-strong">{value}</p>
+      <span className="text-caption font-medium text-muted">
+        {title}
+      </span>
+
+      <p className="mt-1 font-display text-heading-sm font-bold text-foreground-strong">
+        {value}
+      </p>
+
       <p className="mt-0.5 text-caption text-muted">{subtitle}</p>
     </div>
   )
 }
 
-function ProgressBar({ label, percentage }: { label: string; percentage: number }) {
+function ProgressBar({
+  label,
+  percentage,
+}: {
+  label: string
+  percentage: number
+}) {
   return (
     <div>
       <div className="flex justify-between text-caption">
-        <span className="font-medium text-foreground-strong">{label}</span>
-        <span className="font-semibold text-primary">{percentage}%</span>
+        <span className="font-medium text-foreground-strong">
+          {label}
+        </span>
+
+        <span className="font-semibold text-primary">
+          {percentage}%
+        </span>
       </div>
+
       <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-border">
         <div
           className="h-full rounded-full bg-primary transition-all duration-300"

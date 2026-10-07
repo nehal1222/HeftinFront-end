@@ -1,23 +1,20 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { createAccessProfile } from '@/lib/access'
-import { getAccessToken, getStoredUser, setStoredUser, setTokens } from '@/lib/storage'
+import { clearAuthStorage, getAccessToken, setStoredUser } from '@/lib/storage'
 import { AuthContext } from '@/contexts/auth-context'
 import { authService } from '@/services/auth.service'
-import type { AccessProfile, SubscriptionPlan, UserRole } from '@/types/access'
+import type { AccessProfile } from '@/types/access'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AccessProfile | null>(() => getStoredUser())
-  const [isLoadingSession, setIsLoadingSession] = useState(false)
+  const [user, setUser] = useState<AccessProfile | null>(null)
+  const [isLoadingSession, setIsLoadingSession] = useState(true)
   const [sessionError, setSessionError] = useState<string | null>(null)
 
   async function hydrateSession() {
     const token = getAccessToken()
-    if (!token) {
-      setIsLoadingSession(false)
-      return
-    }
 
-    if (token === 'demo-access-token') {
+    if (!token) {
+      setUser(null)
       setIsLoadingSession(false)
       return
     }
@@ -27,33 +24,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const me = await authService.getMe()
-      if (me) {
-        const current = getStoredUser()
-        const updated = createAccessProfile(
-          me.name || current?.displayName || 'User',
-          me.email || current?.email || '',
-          me.role || current?.role || 'student',
-          current?.plan || 'scholar',
-        )
-        setStoredUser(updated)
-        setUser(updated)
-      }
+
+      const profile = createAccessProfile(
+        me.name,
+        me.email,
+        me.role,
+        me.plan || 'scholar',
+      )
+
+      setStoredUser(profile)
+      setUser(profile)
     } catch {
-      // If server returned 401 or token is invalid
-      if (!getAccessToken()) {
-        setUser(null)
-        setSessionError('Your security session has expired or the token is invalid. Please sign in again.')
-      }
+      clearAuthStorage()
+      setUser(null)
+      setSessionError(
+        'Your session has expired or is invalid. Please sign in again.',
+      )
     } finally {
       setIsLoadingSession(false)
     }
   }
 
   useEffect(() => {
-    // Check for session_error query parameter for instant preview
     const params = new URLSearchParams(window.location.search)
+
     if (params.get('simulate_session_error') === 'true') {
-      setSessionError('Simulated session loading failure: JWT token signature expired (401 Unauthorized).')
+      setSessionError(
+        'Session verification failed: Authentication token is invalid.',
+      )
+      setIsLoadingSession(false)
       return
     }
 
@@ -62,7 +61,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   function triggerSessionError(customMessage?: string) {
     setSessionError(
-      customMessage || 'Session verification failed: Authentication token has expired or is invalid.'
+      customMessage ||
+        'Session verification failed: Authentication token has expired or is invalid.',
     )
   }
 
@@ -74,76 +74,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await hydrateSession()
   }
 
-  async function login(details: { displayName: string; email: string; role: UserRole; plan: SubscriptionPlan; password?: string }) {
-    const password = details.password?.trim() || ''
-    const validDemoPasswords = [
-      'password123',
-      'student123',
-      'faculty123',
-      'admin123',
-      'lead123',
-      'learner123',
-      'Test@1234',
-      'Heftin@2026',
-    ]
+  async function login(details: { email: string; password: string }) {
+    setSessionError(null)
 
-    // Simulate network authentication handshake (600ms)
-    await new Promise((resolve) => setTimeout(resolve, 600))
+    // Step 1: authenticate with the backend.
+    await authService.login({
+      email: details.email.trim(),
+      password: details.password,
+    })
 
-    try {
-      // Race backend call with 800ms timeout so offline/in-dev backend never freezes the UI
-      const backendPromise = authService.login({ email: details.email, password: password || 'Test@1234' })
-      const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Backend timeout')), 800)
-      )
+    // Step 2: get the authenticated user's real profile.
+    const me = await authService.getMe()
 
-      await Promise.race([backendPromise, timeoutPromise])
+    // Step 3: build the frontend access profile from backend data.
+    const profile = createAccessProfile(
+      me.name,
+      me.email,
+      me.role,
+      me.plan || 'scholar',
+    )
 
-      try {
-        const me = await authService.getMe()
-        if (me) {
-          const profile = createAccessProfile(me.name || details.displayName, me.email || details.email, me.role || details.role, details.plan)
-          setStoredUser(profile)
-          setUser(profile)
-          return
-        }
-      } catch {
-        // Backend /auth/me not available yet, continue with hydrated profile
-      }
-    } catch {
-      // Check credentials validity when backend is offline or throws
-      const isInvalid =
-        !password ||
-        !validDemoPasswords.includes(password) ||
-        password.toLowerCase().includes('wrong') ||
-        password.toLowerCase().includes('invalid') ||
-        password.toLowerCase().includes('false') ||
-        password.toLowerCase().includes('error')
-
-      if (isInvalid) {
-        throw new Error('Session verification failed: Invalid credentials or authentication token was rejected (401 Unauthorized).')
-      }
-    }
-
-    const profile = createAccessProfile(details.displayName, details.email, details.role, details.plan)
-    setTokens('demo-access-token', 'demo-refresh-token')
     setStoredUser(profile)
     setUser(profile)
-  }
-
-  function switchRole(newRole: UserRole) {
-    const roleProfiles: Record<UserRole, { name: string; email: string; plan: SubscriptionPlan }> = {
-      individual: { name: 'Ananya Sharma', email: 'ananya.learner@gmail.com', plan: 'scholar' },
-      student: { name: 'Arjun Kumar', email: 'student@dpa.edu', plan: 'institution' },
-      faculty: { name: 'Dr. Meera Patel', email: 'dr.meera@dpa.edu', plan: 'institution' },
-      org_admin: { name: 'Vikram Malhotra', email: 'admin@dpa.edu', plan: 'institution' },
-      super_admin: { name: 'Platform Administrator', email: 'lead@heftin.com', plan: 'pro' },
-    }
-
-    const cfg = roleProfiles[newRole] || roleProfiles.student
-    const updated = createAccessProfile(cfg.name, cfg.email, newRole, cfg.plan)
-    setStoredUser(updated)
-    setUser(updated)
   }
 
   async function logout() {
@@ -163,7 +115,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         clearSessionError,
         login,
         logout,
-        switchRole,
       }}
     >
       {children}

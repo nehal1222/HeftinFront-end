@@ -1,29 +1,33 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { AlertCircle, GraduationCap, Loader2, LogOut, RefreshCw, Sparkles } from 'lucide-react'
+import {
+  AlertCircle,
+  GraduationCap,
+  Loader2,
+  LogOut,
+  RefreshCw,
+} from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { ROUTES } from '@/lib/constants'
 
 export function SessionErrorPage() {
-  const { logout, switchRole } = useAuth()
+  const { logout, retrySession } = useAuth()
   const navigate = useNavigate()
   const [retrying, setRetrying] = useState(false)
 
-  function handleRetry() {
+  async function handleRetry() {
     setRetrying(true)
-    setTimeout(() => {
+
+    try {
+      await retrySession()
+    } finally {
       setRetrying(false)
-    }, 1000)
+    }
   }
 
   async function handleReturnToSignIn() {
     await logout()
     navigate(ROUTES.LOGIN)
-  }
-
-  function handleContinueDemo() {
-    switchRole('student')
-    navigate(ROUTES.WORKSPACE)
   }
 
   return (
@@ -34,6 +38,7 @@ export function SessionErrorPage() {
           <div className="grid size-9 place-items-center rounded-control bg-primary text-primary-foreground shadow-sm">
             <GraduationCap size={20} aria-hidden="true" />
           </div>
+
           <span className="font-display text-heading-sm font-semibold text-foreground-strong">
             Heftin Academy
           </span>
@@ -47,12 +52,16 @@ export function SessionErrorPage() {
               <div className="grid size-12 place-items-center rounded-control bg-primary-soft text-primary-dark animate-spin">
                 <Loader2 size={24} aria-hidden="true" />
               </div>
+
               <h1 className="mt-4 font-display text-heading-xs font-semibold text-foreground-strong">
                 Restoring Session
               </h1>
+
               <p className="mt-1 text-caption text-muted">
-                Verifying authentication token and renewing security permissions...
+                Verifying authentication token and renewing security
+                permissions...
               </p>
+
               <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-caption text-muted">
                 <span className="size-2 rounded-full bg-primary animate-pulse" />
                 <span>Contacting authorization gateway...</span>
@@ -65,10 +74,12 @@ export function SessionErrorPage() {
                 <div className="grid size-10 place-items-center rounded-control bg-primary-soft text-primary-dark">
                   <AlertCircle size={22} aria-hidden="true" />
                 </div>
+
                 <div>
                   <span className="text-caption font-semibold uppercase tracking-wider text-muted">
                     Authentication Status
                   </span>
+
                   <h1 className="font-display text-heading-sm font-semibold text-foreground-strong">
                     Session Error
                   </h1>
@@ -76,14 +87,16 @@ export function SessionErrorPage() {
               </div>
 
               <div className="mt-4 rounded-control border border-border bg-surface p-3.5 text-body-sm text-foreground-strong">
-                Session verification failed: Authentication token has expired or is invalid (401 Unauthorized).
+                Session verification failed: Authentication token has expired
+                or is invalid (401 Unauthorized).
               </div>
 
               <div className="mt-6 flex flex-col gap-2.5">
                 <button
                   type="button"
                   onClick={handleRetry}
-                  className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm"
+                  disabled={retrying}
+                  className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors shadow-sm disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <RefreshCw size={15} />
                   Retry Session Handshake
@@ -96,15 +109,6 @@ export function SessionErrorPage() {
                 >
                   <LogOut size={15} />
                   Return to Sign In
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleContinueDemo}
-                  className="mt-1 flex items-center justify-center gap-1.5 text-center text-caption font-medium text-primary hover:underline"
-                >
-                  <Sparkles size={13} />
-                  <span>Continue with demo session &rarr;</span>
                 </button>
               </div>
             </div>
@@ -119,7 +123,9 @@ export function SessionErrorPage() {
           >
             Back to Home
           </Link>
+
           <span className="text-muted text-caption">&middot;</span>
+
           <Link
             to={ROUTES.REQUEST_ACCESS}
             className="text-caption font-medium text-muted hover:text-foreground"

@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import type { AccessProfile, SubscriptionPlan, UserRole } from '@/types/access'
+import type { AccessProfile } from '@/types/access'
 
 export type AuthContextValue = {
   user: AccessProfile | null
@@ -9,9 +9,13 @@ export type AuthContextValue = {
   retrySession: () => Promise<void>
   triggerSessionError: (customMessage?: string) => void
   clearSessionError: () => void
-  login: (details: { displayName: string; email: string; role: UserRole; plan: SubscriptionPlan; password?: string }) => Promise<void> | void
-  logout: () => Promise<void> | void
-  switchRole: (role: UserRole) => void
+  login: (details: {
+    email: string
+    password: string
+  }) => Promise<void>
+  logout: () => Promise<void>
 }
 
-export const AuthContext = createContext<AuthContextValue | undefined>(undefined)
+export const AuthContext = createContext<AuthContextValue | undefined>(
+  undefined,
+)

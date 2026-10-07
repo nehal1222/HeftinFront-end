@@ -1,3 +1,4 @@
+
 export type UserRole = 'individual' | 'super_admin' | 'org_admin' | 'faculty' | 'student'
 
 export type SubscriptionPlan = 'free' | 'scholar' | 'pro' | 'institution'
@@ -44,3 +45,4 @@ export type NavigationItem = {
   permission: PermissionCode
   entitlement: EntitlementCode
 }
+

@@ -11,21 +11,23 @@ export function ProtectedRoute() {
     retrySession,
     clearSessionError,
     logout,
-    switchRole,
   } = useAuth()
+
   const location = useLocation()
 
-  // 1. Session Loading Output State
+  // 1. Session Loading State
   if (isLoadingSession) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center bg-surface p-6 font-sans text-foreground">
         <div className="flex flex-col items-center text-center">
-          <div className="grid size-12 place-items-center rounded-control bg-primary-soft text-primary-dark animate-spin">
+          <div className="grid size-12 animate-spin place-items-center rounded-control bg-primary-soft text-primary-dark">
             <Loader2 size={24} aria-hidden="true" />
           </div>
+
           <h1 className="mt-4 font-display text-heading-xs font-semibold text-foreground-strong">
             Restoring Session
           </h1>
+
           <p className="mt-1 text-caption text-muted">
             Verifying authentication token and permissions...
           </p>
@@ -34,7 +36,7 @@ export function ProtectedRoute() {
     )
   }
 
-  // 2. Error Loading Session Output State
+  // 2. Session Error State
   if (sessionError) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-surface p-6 font-sans text-foreground">
@@ -43,10 +45,12 @@ export function ProtectedRoute() {
             <div className="grid size-10 place-items-center rounded-control bg-primary-soft text-primary-dark">
               <AlertCircle size={22} aria-hidden="true" />
             </div>
+
             <div>
               <span className="text-caption font-semibold uppercase tracking-wider text-muted">
                 Authentication Status
               </span>
+
               <h1 className="font-display text-heading-sm font-semibold text-foreground-strong">
                 Session Error
               </h1>
@@ -61,9 +65,9 @@ export function ProtectedRoute() {
             <button
               type="button"
               onClick={retrySession}
-              className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors"
+              className="flex items-center justify-center gap-2 rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark"
             >
-              <RefreshCw size={15} />
+              <RefreshCw size={15} aria-hidden="true" />
               Retry Session
             </button>
 
@@ -72,21 +76,18 @@ export function ProtectedRoute() {
               onClick={async () => {
                 await logout()
               }}
-              className="flex items-center justify-center gap-2 rounded-control border border-border bg-surface py-2.5 text-body-sm font-semibold text-foreground-strong hover:border-primary transition-colors"
+              className="flex items-center justify-center gap-2 rounded-control border border-border bg-surface py-2.5 text-body-sm font-semibold text-foreground-strong transition-colors hover:border-primary"
             >
-              <LogOut size={15} />
+              <LogOut size={15} aria-hidden="true" />
               Return to Sign In
             </button>
 
             <button
               type="button"
-              onClick={() => {
-                clearSessionError()
-                switchRole('student')
-              }}
+              onClick={clearSessionError}
               className="mt-1 text-center text-caption font-medium text-primary hover:underline"
             >
-              Continue with demo profile &rarr;
+              Dismiss error
             </button>
           </div>
         </div>
@@ -96,8 +97,16 @@ export function ProtectedRoute() {
 
   // 3. Unauthenticated State
   if (!isAuthenticated) {
-    return <Navigate to={ROUTES.LOGIN} replace state={{ from: location.pathname }} />
+    return (
+      <Navigate
+        to={ROUTES.LOGIN}
+        replace
+        state={{ from: location.pathname }}
+      />
+    )
   }
 
+  // 4. Authenticated State
   return <Outlet />
 }
+
