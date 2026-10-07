@@ -4,6 +4,7 @@ import { LoginPage } from '@/pages/LoginPage'
 import { HomePage } from '@/pages/HomePage'
 import { UsersPage } from '@/pages/UsersPage'
 import { RolesPage } from '@/pages/RolesPage'
+import { PlatformPage } from '@/pages/PlatformPage'
 import { DesignSystemPage } from '@/pages/DesignSystemPage'
 import { ROUTES } from '@/lib/constants'
 import { RIGHTS } from '@/lib/rights'
@@ -35,6 +36,15 @@ export function AppRouter() {
         element={
           <ProtectedRoute requiredRight={RIGHTS.ROLES_VIEW}>
             <RolesPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={ROUTES.PLATFORM}
+        element={
+          <ProtectedRoute platformAdminOnly>
+            <PlatformPage />
           </ProtectedRoute>
         }
       />

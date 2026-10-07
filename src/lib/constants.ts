@@ -14,6 +14,7 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   USERS: '/users',
   ROLES: '/roles',
+  PLATFORM: '/platform',
   DESIGN_SYSTEM: '/design-system',
   NOT_FOUND: '*',
 } as const

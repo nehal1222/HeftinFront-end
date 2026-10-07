@@ -17,6 +17,7 @@ const PAGE_TITLES: Record<string, string> = {
   [ROUTES.DASHBOARD]: 'Dashboard',
   [ROUTES.USERS]: 'Users',
   [ROUTES.ROLES]: 'Roles',
+  [ROUTES.PLATFORM]: 'Platform',
   [ROUTES.DESIGN_SYSTEM]: 'Design System',
 }
 

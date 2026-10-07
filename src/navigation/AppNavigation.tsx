@@ -8,6 +8,7 @@ type NavItem = {
   label: string
   to: string
   requiredRight?: RightCode
+  platformAdminOnly?: boolean
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -25,14 +26,23 @@ const NAV_ITEMS: NavItem[] = [
     to: ROUTES.ROLES,
     requiredRight: RIGHTS.ROLES_VIEW,
   },
+  {
+    label: 'Platform',
+    to: ROUTES.PLATFORM,
+    platformAdminOnly: true,
+  },
 ]
 
 export function AppNavigation() {
-  const { hasRight } = useAuth()
+  const { hasRight, profile } = useAuth()
 
-  const visibleItems = NAV_ITEMS.filter(
-    (item) => !item.requiredRight || hasRight(item.requiredRight),
-  )
+  const visibleItems = NAV_ITEMS.filter((item) => {
+    if (item.platformAdminOnly) {
+      return profile.is_platform_admin
+    }
+
+    return !item.requiredRight || hasRight(item.requiredRight)
+  })
 
   return (
     <div className="space-y-1">
