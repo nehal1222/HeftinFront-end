@@ -322,7 +322,8 @@ body {
    BRAND
 ========================================= */
 
-.brand {
+.auth-wrapper .brand,
+.auth-card .brand {
 
     display: flex;
 
