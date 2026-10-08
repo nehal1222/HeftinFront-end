@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "build:firebase-dev": "tsc -b && vite build --mode firebase-development",
-    "deploy:firebase-dev": "npm run build:firebase-dev && firebase deploy --only hosting --project heftin-academy",
+    "deploy:firebase-dev": "firebase deploy --only hosting --project heftin-academy",
     "lint": "eslint .",
     "preview": "vite preview"
   },

@@ -51,7 +51,13 @@ Port **5174** so it does not clash with other Heftin apps on 5173.
 |---|---|
 | `npm run dev` | Local Vite server |
 | `npm run build` | Typecheck + production build |
+| `npm run build:firebase-dev` | Typecheck + Firebase development build with disposable test auth |
+| `npm run deploy:firebase-dev` | Build and deploy the Firebase development site |
 | `npm run lint` | ESLint |
+
+Firebase Hosting also runs `npm run build:firebase-dev` automatically before a
+hosting deployment, so `firebase deploy --only hosting` cannot upload a stale or
+ordinary production build.
 
 ## Product (what we will build)
 
