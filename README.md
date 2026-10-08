@@ -4,7 +4,7 @@ Vite + React 19 + TypeScript + Tailwind CSS v4.
 
 **Read `AGENTS.md` before you write code.** This is the e-examination product only (not NexGen Athlete, not Heftin IAS).
 
-This repo currently has the **basic structure** (folders, auth client, home page). Full schema, extra features, and AI add-ons are still a team plan.
+This repo currently has the **basic structure** (folders, auth client, sign-in and recovery flows, and a protected dashboard landing). Full schema, extra features, and AI add-ons are still a team plan.
 
 ## GitHub
 
@@ -40,7 +40,8 @@ npm run dev
 ```
 
 App: http://localhost:5174  
-API (backend): `VITE_API_BASE_URL` (default `http://localhost:8001/api/v1`)
+API (backend): `VITE_API_BASE_URL` (default `http://localhost:8001/api/v1`)  
+Invite activation URL: set `VITE_SIGNUP_URL` to enable the “Activate an invite token” link on the login page.
 
 Port **5174** so it does not clash with other Heftin apps on 5173.
 

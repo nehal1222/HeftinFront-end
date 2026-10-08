@@ -1,4 +1,5 @@
 export const APP_NAME = 'Heftin Academy'
+export const SIGNUP_URL = import.meta.env.VITE_SIGNUP_URL
 
 export const STORAGE_KEYS = {
   ACCESS_TOKEN: 'hac_access_token',
