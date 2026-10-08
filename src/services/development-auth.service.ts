@@ -14,14 +14,34 @@ type DevelopmentAccount = {
 
 const ACCESS_TOKEN_PREFIX = 'heftin-dev-access:'
 const REFRESH_TOKEN_PREFIX = 'heftin-dev-refresh:'
+const LOCAL_TEST_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+const IS_LOCAL_DEVELOPMENT_BUILD = import.meta.env.DEV
+const IS_FIREBASE_DEVELOPMENT_BUILD =
+  import.meta.env.MODE === 'firebase-development' &&
+  import.meta.env.VITE_DEPLOYMENT_ENV === 'firebase-development'
+const IS_TEST_AUTH_BUILD =
+  import.meta.env.VITE_ENABLE_TEST_AUTH === 'true' &&
+  (IS_LOCAL_DEVELOPMENT_BUILD || IS_FIREBASE_DEVELOPMENT_BUILD)
 
 function isEnabled() {
-  return import.meta.env.DEV && import.meta.env.VITE_ENABLE_TEST_AUTH === 'true'
+  if (!IS_TEST_AUTH_BUILD) return false
+
+  const currentHost = window.location.hostname.toLocaleLowerCase()
+  if (IS_LOCAL_DEVELOPMENT_BUILD && LOCAL_TEST_HOSTS.includes(currentHost)) return true
+
+  const configuredHosts = (import.meta.env.VITE_TEST_AUTH_ALLOWED_HOSTS ?? '')
+    .split(',')
+    .map((host) => host.trim().toLocaleLowerCase())
+    .filter(Boolean)
+
+  return (
+    IS_FIREBASE_DEVELOPMENT_BUILD &&
+    window.location.protocol === 'https:' &&
+    configuredHosts.includes(currentHost)
+  )
 }
 
-function getAccounts(): DevelopmentAccount[] {
-  if (!isEnabled()) return []
-
+function buildAccounts(): DevelopmentAccount[] {
   const organization = {
     id: 'heftin-academy-test-org',
     name: 'Heftin Academy Test Organization',
@@ -78,6 +98,12 @@ function getAccounts(): DevelopmentAccount[] {
   return accounts.filter((account): account is DevelopmentAccount => account !== null)
 }
 
+const CONFIGURED_ACCOUNTS = IS_TEST_AUTH_BUILD ? buildAccounts() : []
+
+function getAccounts(): DevelopmentAccount[] {
+  return isEnabled() ? CONFIGURED_ACCOUNTS : []
+}
+
 function findAccountByToken(token: string | null | undefined, prefix: string) {
   if (!token?.startsWith(prefix)) return undefined
   const userId = token.slice(prefix.length)
@@ -103,6 +129,8 @@ function createTokenResponse(account: DevelopmentAccount): AuthTokenResponse {
 }
 
 export const developmentAuthService = {
+  isEnabled,
+
   login(payload: LoginRequest): AuthTokenResponse | null {
     const normalizedLogin = payload.login.trim().toLocaleLowerCase()
     const account = getAccounts().find(

@@ -15,6 +15,9 @@ export const authService = {
   async login(payload: LoginRequest) {
     const developmentResponse = developmentAuthService.login(payload)
     if (developmentResponse) return developmentResponse
+    if (developmentAuthService.isEnabled()) {
+      throw new Error('The test email or password is incorrect.')
+    }
 
     const { data } = await api.post<AuthTokenResponse>(
       '/auth/login',
