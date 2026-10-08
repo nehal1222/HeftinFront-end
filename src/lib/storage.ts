@@ -18,7 +18,10 @@ export function setTokens(accessToken: string, refreshToken?: string, rememberMe
     localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ||
     localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN),
   )
-  clearAuthStorage()
+  for (const storage of [localStorage, sessionStorage]) {
+    storage.removeItem(STORAGE_KEYS.ACCESS_TOKEN)
+    storage.removeItem(STORAGE_KEYS.REFRESH_TOKEN)
+  }
   const storage = persistSession ? localStorage : sessionStorage
   storage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken)
   if (refreshToken) storage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken)

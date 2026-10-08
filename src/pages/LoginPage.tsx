@@ -1,9 +1,9 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { ROUTES, SIGNUP_URL } from '@/lib/constants'
+import { ROUTES, SESSION_KEYS, SIGNUP_URL } from '@/lib/constants'
 import { getErrorMessage, getFieldErrors } from '@/lib/axios'
 import { useAuth } from '@/contexts/useAuth'
 
@@ -20,7 +20,19 @@ export function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [serverError, setServerError] = useState('')
+  const [sessionMessage, setSessionMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(SESSION_KEYS.SESSION_EXPIRED) === 'true') {
+        setSessionMessage('Your session has expired. Please sign in again.')
+        sessionStorage.removeItem(SESSION_KEYS.SESSION_EXPIRED)
+      }
+    } catch {
+      // Keep login usable when session storage is unavailable.
+    }
+  }, [])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -38,9 +50,10 @@ export function LoginPage() {
         throw new Error('Sign-in failed because the server did not return an access token.')
       }
 
-      const from = new URLSearchParams(location.search).get('from')
-      const destination = from?.startsWith('/') && !from.startsWith('//')
-        ? from
+      const params = new URLSearchParams(location.search)
+      const returnTo = params.get('returnTo') ?? params.get('from')
+      const destination = returnTo?.startsWith('/') && !returnTo.startsWith('//')
+        ? returnTo
         : ROUTES.DASHBOARD
 
       navigate(destination, { replace: true })
@@ -90,6 +103,7 @@ export function LoginPage() {
         ) : (
           <>
             <form className="login-form" onSubmit={handleSubmit} noValidate>
+              {sessionMessage && <div className="login-alert" role="status">{sessionMessage}</div>}
               {serverError && <div className="login-alert" role="alert">{serverError}</div>}
 
               <label className="login-field" htmlFor="login">

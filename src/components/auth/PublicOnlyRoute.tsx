@@ -1,4 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom'
+import { AsyncState } from '@/components/ui/AsyncState'
 import { useAuth } from '@/contexts/useAuth'
 import { ROUTES } from '@/lib/constants'
 
@@ -6,13 +7,7 @@ export function PublicOnlyRoute() {
   const { isAuthenticated, isLoading } = useAuth()
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-surface">
-        <p className="text-sm text-muted">
-          Loading...
-        </p>
-      </div>
-    )
+    return <AsyncState state="loading" />
   }
 
   if (isAuthenticated) {

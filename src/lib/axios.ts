@@ -3,11 +3,18 @@ import axios, {
   type AxiosInstance,
   type InternalAxiosRequestConfig,
 } from 'axios'
+import { ROUTES, SESSION_KEYS, STORAGE_KEYS } from '@/lib/constants'
 import { clearAuthStorage, getAccessToken, getRefreshToken, setTokens } from '@/lib/storage'
 import type { RefreshResponse } from '@/types/auth'
 
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
-  _retry?: boolean
+  _authRetry?: boolean
+}
+
+type FlexibleRefreshResponse = Partial<RefreshResponse> & {
+  accessToken?: string
+  refreshToken?: string
+  data?: FlexibleRefreshResponse
 }
 
 const api: AxiosInstance = axios.create({
@@ -18,10 +25,12 @@ const api: AxiosInstance = axios.create({
   timeout: 30000,
 })
 
+let refreshRequest: Promise<string> | null = null
+
 api.interceptors.request.use((config) => {
   const accessToken = getAccessToken()
 
-  if (accessToken && config.url !== '/auth/login' && config.url !== '/auth/refresh') {
+  if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`
   }
 
@@ -32,40 +41,85 @@ api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as RetryableRequestConfig | undefined
+    const url = originalRequest?.url ?? ''
+    const isAuthEndpoint = /(?:^|\/)auth\/(?:login|refresh)(?:\/|$)/.test(url)
 
     if (
       error.response?.status !== 401 ||
       !originalRequest ||
-      originalRequest._retry ||
-      originalRequest.url === '/auth/login' ||
-      originalRequest.url === '/auth/refresh'
+      originalRequest._authRetry ||
+      isAuthEndpoint
     ) {
       return Promise.reject(error)
     }
 
-    const refreshToken = getRefreshToken()
-    if (!refreshToken) {
-      clearAuthStorage()
-      return Promise.reject(error)
-    }
-
-    originalRequest._retry = true
+    originalRequest._authRetry = true
 
     try {
-      const { data } = await api.post<RefreshResponse>('/auth/refresh', {
-        refresh_token: refreshToken,
-      })
-
-      setTokens(data.access_token, data.refresh_token)
-      originalRequest.headers.Authorization = `Bearer ${data.access_token}`
+      const accessToken = await getRefreshedAccessToken()
+      originalRequest.headers.Authorization = `Bearer ${accessToken}`
 
       return api(originalRequest)
-    } catch (refreshError) {
-      clearAuthStorage()
-      return Promise.reject(refreshError)
+    } catch {
+      try {
+        clearAuthStorage()
+      } catch {
+        try {
+          localStorage.removeItem(STORAGE_KEYS.USER)
+        } catch {
+          // Continue to login even when browser storage is unavailable.
+        }
+      }
+
+      if (window.location.pathname !== ROUTES.LOGIN) {
+        const returnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`
+
+        try {
+          sessionStorage.setItem(SESSION_KEYS.SESSION_EXPIRED, 'true')
+        } catch {
+          // Continue to login even when session storage is unavailable.
+        }
+
+        window.location.replace(
+          `${ROUTES.LOGIN}?returnTo=${encodeURIComponent(returnTo)}`,
+        )
+      }
+
+      return Promise.reject(error)
     }
   },
 )
+
+function getRefreshedAccessToken() {
+  if (refreshRequest) return refreshRequest
+
+  const refreshToken = getRefreshToken()
+  if (!refreshToken) {
+    return Promise.reject(new Error('No refresh token is available.'))
+  }
+
+  refreshRequest = api
+    .post<FlexibleRefreshResponse>('/auth/refresh', {
+      refresh_token: refreshToken,
+    })
+    .then(({ data }) => {
+      const payload = data.data ?? data
+      const accessToken = payload.access_token ?? payload.accessToken
+      const nextRefreshToken = payload.refresh_token ?? payload.refreshToken ?? refreshToken
+
+      if (!accessToken) {
+        throw new Error('Refresh response did not include an access token.')
+      }
+
+      setTokens(accessToken, nextRefreshToken)
+      return accessToken
+    })
+    .finally(() => {
+      refreshRequest = null
+    })
+
+  return refreshRequest
+}
 
 type ApiErrorBody = {
   message?: unknown

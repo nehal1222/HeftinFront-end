@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage'
 import { LoginPage } from '@/pages/LoginPage'
+import { NotFoundPage } from '@/pages/NotFoundPage'
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
 import { PublicOnlyRoute } from '@/components/auth/PublicOnlyRoute'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
@@ -52,9 +53,8 @@ export function AppRouter() {
           <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
           <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
         </Route>
+        <Route path={ROUTES.NOT_FOUND} element={<NotFoundPage />} />
       </Route>
-
-      <Route path={ROUTES.NOT_FOUND} element={<Navigate to={ROUTES.DASHBOARD} replace />} />
     </Routes>
   )
 }

@@ -1,6 +1,9 @@
 import type { ReactNode } from 'react'
-import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { AsyncState } from '@/components/ui/AsyncState'
+import { Button } from '@/components/ui/Button'
 import { useAuth } from '@/contexts/useAuth'
+import { AppLayout } from '@/layouts/AppLayout'
 import { ROUTES } from '@/lib/constants'
 import type { RightCode } from '@/types/auth'
 
@@ -12,30 +15,38 @@ type ProtectedRouteProps = {
 export function ProtectedRoute({ children, requiredRight }: ProtectedRouteProps) {
   const { hasRight, isAuthenticated, isLoading } = useAuth()
   const location = useLocation()
+  const navigate = useNavigate()
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-surface">
-        <p className="text-sm text-muted">
-          Loading...
-        </p>
-      </div>
-    )
+    return <AsyncState state="loading" />
   }
 
   if (!isAuthenticated) {
-    const from = `${location.pathname}${location.search}${location.hash}`
+    const returnTo = `${location.pathname}${location.search}${location.hash}`
 
     return (
       <Navigate
-        to={`${ROUTES.LOGIN}?from=${encodeURIComponent(from)}`}
+        to={`${ROUTES.LOGIN}?returnTo=${encodeURIComponent(returnTo)}`}
         replace
       />
     )
   }
 
   if (requiredRight && !hasRight(requiredRight)) {
-    return <Navigate to={ROUTES.DASHBOARD} replace />
+    return (
+      <AppLayout>
+        <div className="flex flex-col items-center">
+          <AsyncState state="forbidden" />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate(ROUTES.DASHBOARD)}
+          >
+            Go to dashboard
+          </Button>
+        </div>
+      </AppLayout>
+    )
   }
 
   return children ?? <Outlet />

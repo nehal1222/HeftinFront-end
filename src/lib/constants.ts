@@ -6,6 +6,9 @@ export const STORAGE_KEYS = {
   REFRESH_TOKEN: 'hac_refresh_token',
   USER: 'hac_user',
 } as const
+export const SESSION_KEYS = {
+  SESSION_EXPIRED: 'hac_session_expired',
+} as const
 
 export const ROUTES = {
   HOME: '/',
