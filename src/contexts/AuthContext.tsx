@@ -30,9 +30,27 @@ function normalizeUser(me: AuthMeResponse, fallback?: AuthUser | null): AuthUser
     full_name: me.full_name ?? me.name ?? fallback?.full_name ?? me.email,
     status: me.status ?? fallback?.status ?? 'active',
     must_change_password: me.must_change_password ?? fallback?.must_change_password ?? false,
-    roles: me.roles ?? fallback?.roles ?? [],
-    rights: me.rights ?? fallback?.rights ?? [],
-    current_organization: me.current_organization ?? fallback?.current_organization ?? null,
+    roles: me.roles,
+    rights: me.rights,
+    current_organization: me.current_organization ?? null,
+  }
+}
+
+function assertAccessToken(accessToken: unknown): asserts accessToken is string {
+  if (typeof accessToken !== 'string' || !accessToken.trim()) {
+    throw new Error('Sign-in failed because the server did not return an access token.')
+  }
+}
+
+function assertAuthMe(me: AuthMeResponse) {
+  if (
+    !me ||
+    typeof me.id !== 'string' ||
+    typeof me.email !== 'string' ||
+    !Array.isArray(me.roles) ||
+    !Array.isArray(me.rights)
+  ) {
+    throw new Error('Sign-in failed because the account profile is incomplete.')
   }
 }
 
@@ -58,6 +76,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       const me = await authService.getMe()
+      assertAuthMe(me)
       const sessionUser = normalizeUser(me, storedUser)
       setStoredUser(sessionUser, isPersistentSession())
       setUser(sessionUser)
@@ -83,12 +102,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = useCallback(async (payload: LoginRequest, rememberMe = true) => {
     const response = await authService.login(payload)
-    const sessionUser: AuthUser = {
-      ...response.user,
-      roles: response.roles ?? [],
-      rights: response.rights ?? [],
-      current_organization: response.current_organization,
-    }
+    assertAccessToken(response.access_token)
 
     setTokens(
       response.access_token,
@@ -96,9 +110,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
       rememberMe,
     )
 
-    setStoredUser(sessionUser, rememberMe)
-    setUser(sessionUser)
-    setSessionError(null)
+    try {
+      const me = await authService.getMe()
+      assertAuthMe(me)
+      const sessionUser = normalizeUser(me)
+
+      setStoredUser(sessionUser, rememberMe)
+      setUser(sessionUser)
+      setSessionError(null)
+    } catch (error) {
+      clearAuthStorage()
+      setUser(null)
+      throw error
+    }
 
     return response
   }, [])

@@ -2407,10 +2407,6 @@ header h1 {
     margin: 0 auto;
 }
 
-.hidden {
-    display: none !important;
-}
-
 @media (max-width: 640px) {
     .b2b-contact {
         padding: 70px 20px 100px;

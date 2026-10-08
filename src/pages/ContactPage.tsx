@@ -61,7 +61,7 @@ export function ContactPage() {
   }
 
   return (
-    <>
+    <div className="legacy-auth-page">
       {/* ================================
            ANIMATED FLOATING BACKGROUND
       ================================= */}
@@ -445,6 +445,6 @@ export function ContactPage() {
           )}
         </section>
       </main>
-    </>
+    </div>
   )
 }

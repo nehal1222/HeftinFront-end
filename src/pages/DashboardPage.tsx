@@ -13,6 +13,7 @@ import {
   Key,
   LayoutDashboard,
   LogOut,
+  Menu,
   RefreshCw,
   ShieldAlert,
   Sparkles,
@@ -27,6 +28,7 @@ import { b2bService } from '@/services/b2b.service'
 import { authService } from '@/services/auth.service'
 import { getRefreshToken } from '@/lib/storage'
 import { AppNavigation } from '@/navigation/AppNavigation'
+import { RIGHTS } from '@/lib/rights'
 
 type NavTab =
   | 'overview'
@@ -301,6 +303,7 @@ export function DashboardPage() {
   const navigate = useNavigate()
 
   const [activeTab, setActiveTab] = useState<NavTab>('overview')
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
   const [exams, setExams] = useState<ExamItem[]>(INITIAL_EXAMS)
   const [submissions, setSubmissions] =
     useState<FacultySubmission[]>(INITIAL_SUBMISSIONS)
@@ -396,10 +399,17 @@ export function DashboardPage() {
   }, [isTestModalOpen, testCompleted, testTimeLeft])
 
   const isIndividual = !user?.current_organization
-  const canManageBatches = hasRight('batches.view')
-  const canReviewEvaluations = hasRight('evaluations.review')
+  const canViewExams = hasRight(RIGHTS.EXAMS_VIEW)
+  const canViewStudyMaterial = hasRight(RIGHTS.STUDY_MATERIAL_VIEW)
+  const canViewPerformance = hasRight(RIGHTS.PERFORMANCE_VIEW)
+  const canManageBatches = hasRight(RIGHTS.BATCHES_VIEW)
+  const canReviewEvaluations = hasRight(RIGHTS.EVALUATIONS_REVIEW)
+  const hasAdministrationLinks =
+    hasRight(RIGHTS.USERS_VIEW) ||
+    hasRight(RIGHTS.ROLES_VIEW) ||
+    hasRight(RIGHTS.PLATFORM_VIEW)
   const isStaff = canManageBatches || canReviewEvaluations
-  const isReviewer = canReviewEvaluations && !hasRight('roles.view')
+  const isReviewer = canReviewEvaluations && !hasRight(RIGHTS.ROLES_VIEW)
   const primaryRole = user?.roles?.[0] ?? 'user'
   const displayName = user?.full_name || user?.email || 'User'
   const organizationName = user?.current_organization?.name
@@ -408,6 +418,37 @@ export function DashboardPage() {
     : isIndividual
       ? 'Personal Learner'
       : 'Organization Workspace'
+
+  useEffect(() => {
+    const canAccessActiveTab =
+      activeTab === 'overview' ||
+      activeTab === 'security' ||
+      (activeTab === 'exams' && canViewExams) ||
+      (activeTab === 'courses' && canViewStudyMaterial) ||
+      (activeTab === 'analytics' && canViewPerformance) ||
+      (activeTab === 'batches' && canManageBatches) ||
+      (activeTab === 'grading' && canReviewEvaluations)
+
+    if (!canAccessActiveTab) setActiveTab('overview')
+  }, [
+    activeTab,
+    canManageBatches,
+    canReviewEvaluations,
+    canViewExams,
+    canViewPerformance,
+    canViewStudyMaterial,
+  ])
+
+  useEffect(() => {
+    if (!isMobileNavOpen) return
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') setIsMobileNavOpen(false)
+    }
+
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [isMobileNavOpen])
 
   useEffect(() => {
     if (user && isStaff) {
@@ -531,10 +572,28 @@ export function DashboardPage() {
       .padStart(2, '0')}`
   }
 
+  function handleTabChange(tab: NavTab) {
+    setActiveTab(tab)
+    setIsMobileNavOpen(false)
+  }
+
   return (
-    <div className="flex min-h-screen bg-surface font-sans text-foreground">
+    <div className="flex h-screen overflow-hidden bg-surface font-sans text-foreground">
+      {isMobileNavOpen && (
+        <button
+          type="button"
+          className="fixed inset-0 z-40 bg-primary-shade-5/45 lg:hidden"
+          aria-label="Close navigation"
+          onClick={() => setIsMobileNavOpen(false)}
+        />
+      )}
+
       {/* Sidebar Navigation */}
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-surface-elevated md:flex">
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-72 shrink-0 flex-col border-r border-border bg-surface-elevated shadow-xl lg:static lg:z-auto lg:flex lg:shadow-none ${
+          isMobileNavOpen ? 'flex' : 'hidden'
+        }`}
+      >
         <div className="flex h-16 items-center gap-3 border-b border-border px-6">
           <div className="grid size-9 place-items-center rounded-control bg-primary text-primary-foreground shadow-sm">
             <GraduationCap size={20} aria-hidden="true" />
@@ -548,67 +607,84 @@ export function DashboardPage() {
               Academy
             </span>
           </div>
+
+          <button
+            type="button"
+            className="ml-auto rounded-control p-2 text-muted hover:bg-surface hover:text-foreground lg:hidden"
+            aria-label="Close navigation"
+            onClick={() => setIsMobileNavOpen(false)}
+          >
+            <X size={18} aria-hidden="true" />
+          </button>
         </div>
 
-        <div className="flex flex-1 flex-col justify-between p-4">
-          <nav className="space-y-1">
-            <div className="mb-4 border-b border-border pb-4">
-              <AppNavigation />
+        <div className="flex min-h-0 flex-1 flex-col justify-between overflow-y-auto p-4">
+          <nav className="space-y-1" aria-label="Dashboard navigation">
+            <div className="pb-1">
+              <span className="px-3 text-caption font-semibold uppercase tracking-wider text-muted">
+                Workspace
+              </span>
             </div>
 
             <button
               type="button"
-              onClick={() => setActiveTab('overview')}
+              onClick={() => handleTabChange('overview')}
               className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
                 activeTab === 'overview'
                   ? 'bg-primary text-primary-foreground shadow-sm'
                   : 'text-muted hover:bg-surface hover:text-foreground'
               }`}
             >
-              <LayoutDashboard size={17} />
+              <LayoutDashboard size={17} aria-hidden="true" />
               Overview
             </button>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('exams')}
-              className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
-                activeTab === 'exams'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted hover:bg-surface hover:text-foreground'
-              }`}
-            >
-              <FileText size={17} />
-              Test Series
-            </button>
+            {canViewExams && (
+              <button
+                type="button"
+                onClick={() => handleTabChange('exams')}
+                className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
+                  activeTab === 'exams'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-muted hover:bg-surface hover:text-foreground'
+                }`}
+              >
+                <FileText size={17} aria-hidden="true" />
+                Test Series
+              </button>
+            )}
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('courses')}
-              className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
-                activeTab === 'courses'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted hover:bg-surface hover:text-foreground'
-              }`}
-            >
-              <BookOpen size={17} />
-              Study Material
-            </button>
+            {canViewStudyMaterial && (
+              <button
+                type="button"
+                onClick={() => handleTabChange('courses')}
+                className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
+                  activeTab === 'courses'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-muted hover:bg-surface hover:text-foreground'
+                }`}
+              >
+                <BookOpen size={17} aria-hidden="true" />
+                Study Material
+              </button>
+            )}
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('analytics')}
-              className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
-                activeTab === 'analytics'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted hover:bg-surface hover:text-foreground'
-              }`}
-            >
-              <BarChart3 size={17} />
-              Performance
-            </button>
+            {canViewPerformance && (
+              <button
+                type="button"
+                onClick={() => handleTabChange('analytics')}
+                className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
+                  activeTab === 'analytics'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-muted hover:bg-surface hover:text-foreground'
+                }`}
+              >
+                <BarChart3 size={17} aria-hidden="true" />
+                Performance
+              </button>
+            )}
 
-            {isStaff && (
+            {(canManageBatches || canReviewEvaluations) && (
               <>
                 <div className="pt-4 pb-1">
                   <span className="px-3 text-caption font-semibold uppercase tracking-wider text-muted">
@@ -616,50 +692,68 @@ export function DashboardPage() {
                   </span>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('batches')}
-                  className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
-                    activeTab === 'batches'
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'text-muted hover:bg-surface hover:text-foreground'
-                  }`}
-                >
-                  <Users size={17} />
-                  Batches & Cohorts
-                </button>
+                {canManageBatches && (
+                  <button
+                    type="button"
+                    onClick={() => handleTabChange('batches')}
+                    className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
+                      activeTab === 'batches'
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'text-muted hover:bg-surface hover:text-foreground'
+                    }`}
+                  >
+                    <Users size={17} aria-hidden="true" />
+                    Batches &amp; Cohorts
+                  </button>
+                )}
 
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('grading')}
-                  className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
-                    activeTab === 'grading'
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'text-muted hover:bg-surface hover:text-foreground'
-                  }`}
-                >
-                  <CheckCircle2 size={17} />
-                  Paper Grading
-                </button>
+                {canReviewEvaluations && (
+                  <button
+                    type="button"
+                    onClick={() => handleTabChange('grading')}
+                    className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
+                      activeTab === 'grading'
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'text-muted hover:bg-surface hover:text-foreground'
+                    }`}
+                  >
+                    <CheckCircle2 size={17} aria-hidden="true" />
+                    Paper Grading
+                  </button>
+                )}
               </>
+            )}
+
+            {hasAdministrationLinks && (
+              <div className="pt-4">
+                <div className="pb-1">
+                  <span className="px-3 text-caption font-semibold uppercase tracking-wider text-muted">
+                    Administration
+                  </span>
+                </div>
+                <AppNavigation
+                  includeDashboard={false}
+                  onNavigate={() => setIsMobileNavOpen(false)}
+                />
+              </div>
             )}
 
             <div className="pt-4 pb-1">
               <span className="px-3 text-caption font-semibold uppercase tracking-wider text-muted">
-                Platform Security
+                Account
               </span>
             </div>
 
             <button
               type="button"
-              onClick={() => setActiveTab('security')}
+              onClick={() => handleTabChange('security')}
               className={`flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-body-sm font-semibold transition-colors ${
                 activeTab === 'security'
                   ? 'bg-primary text-primary-foreground shadow-sm'
                   : 'text-muted hover:bg-surface hover:text-foreground'
               }`}
             >
-              <Key size={17} />
+              <Key size={17} aria-hidden="true" />
               Session &amp; Security
             </button>
           </nav>
@@ -696,6 +790,16 @@ export function DashboardPage() {
         {/* Top Header */}
         <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-surface-elevated px-4 sm:px-6">
           <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              className="rounded-control border border-border bg-surface p-2 text-muted transition-colors hover:border-primary hover:text-primary-dark lg:hidden"
+              aria-label="Open navigation"
+              aria-expanded={isMobileNavOpen}
+              onClick={() => setIsMobileNavOpen(true)}
+            >
+              <Menu size={18} aria-hidden="true" />
+            </button>
+
             <span className="text-body-sm font-medium text-muted">
               Dashboard
             </span>
@@ -711,7 +815,7 @@ export function DashboardPage() {
             <button
               type="button"
               onClick={() => setActiveTab('security')}
-              className="hidden sm:flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-caption font-semibold text-foreground hover:border-primary transition-colors"
+              className="hidden xl:flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-caption font-semibold text-foreground hover:border-primary transition-colors"
               title="Click to view live session telemetry"
             >
               <span className="size-2 rounded-full bg-primary animate-pulse" />
@@ -725,7 +829,7 @@ export function DashboardPage() {
                 {displayName.slice(0, 2).toUpperCase()}
               </span>
 
-              <div className="hidden sm:block text-left leading-tight">
+              <div className="hidden lg:block text-left leading-tight">
                 <span className="block text-body-sm font-semibold text-foreground-strong">
                   {displayName}
                 </span>
@@ -743,7 +847,7 @@ export function DashboardPage() {
               className="flex items-center gap-1.5 rounded-control border border-border bg-surface px-3 py-1.5 text-body-sm font-medium text-muted transition-colors hover:border-primary hover:text-primary-dark"
             >
               <LogOut size={15} />
-              <span className="hidden sm:inline">Sign out</span>
+              <span className="hidden lg:inline">Sign out</span>
             </button>
           </div>
         </header>
@@ -780,6 +884,7 @@ export function DashboardPage() {
 
         {/* Dynamic Tab Body */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+          <div className="mx-auto w-full max-w-[1440px]">
           {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
@@ -828,14 +933,16 @@ export function DashboardPage() {
                     </button>
                   )}
 
-                  <button
-                    type="button"
-                    onClick={handleStartTest}
-                    className="inline-flex items-center gap-2 rounded-control border border-border bg-surface px-4 py-2 text-body-sm font-semibold text-foreground-strong hover:border-primary hover:text-primary transition-colors"
-                  >
-                    <FileText size={16} />
-                    Launch Mock Drill
-                  </button>
+                  {canViewExams && (
+                    <button
+                      type="button"
+                      onClick={handleStartTest}
+                      className="inline-flex items-center gap-2 rounded-control border border-border bg-surface px-4 py-2 text-body-sm font-semibold text-foreground-strong hover:border-primary hover:text-primary transition-colors"
+                    >
+                      <FileText size={16} aria-hidden="true" />
+                      Launch Mock Drill
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -948,11 +1055,11 @@ export function DashboardPage() {
                       <button
                         type="button"
                         onClick={() =>
-                          setActiveTab(isStaff ? 'grading' : 'exams')
+                          handleTabChange(canReviewEvaluations ? 'grading' : 'exams')
                         }
                         className="text-caption font-semibold text-primary hover:underline self-start sm:self-auto"
                       >
-                        View all ({isStaff ? submissions.length : exams.length})
+                        View all ({canReviewEvaluations ? submissions.length : exams.length})
                       </button>
                     </div>
 
@@ -1072,7 +1179,7 @@ export function DashboardPage() {
 
                       <button
                         type="button"
-                        onClick={() => setActiveTab('courses')}
+                        onClick={() => handleTabChange('courses')}
                         className="text-caption font-semibold text-primary hover:underline"
                       >
                         All modules
@@ -1216,7 +1323,7 @@ export function DashboardPage() {
           )}
 
           {/* TAB 2: TEST SERIES */}
-          {activeTab === 'exams' && (
+          {activeTab === 'exams' && canViewExams && (
             <div className="space-y-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -1342,7 +1449,7 @@ export function DashboardPage() {
           )}
 
           {/* TAB 3: STUDY MATERIAL */}
-          {activeTab === 'courses' && (
+          {activeTab === 'courses' && canViewStudyMaterial && (
             <div className="space-y-6">
               <div>
                 <h1 className="font-display text-heading-md font-semibold text-foreground-strong">
@@ -1428,7 +1535,7 @@ export function DashboardPage() {
           )}
 
           {/* TAB 4: PERFORMANCE & ANALYTICS */}
-          {activeTab === 'analytics' && (
+          {activeTab === 'analytics' && canViewPerformance && (
             <div className="space-y-6">
               <div>
                 <h1 className="font-display text-heading-md font-semibold text-foreground-strong">
@@ -1576,7 +1683,7 @@ export function DashboardPage() {
           )}
 
           {/* TAB 5: BATCHES & COHORTS */}
-          {activeTab === 'batches' && isStaff && (
+          {activeTab === 'batches' && canManageBatches && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -1656,7 +1763,7 @@ export function DashboardPage() {
           )}
 
           {/* TAB 6: PAPER GRADING */}
-          {activeTab === 'grading' && isStaff && (
+          {activeTab === 'grading' && canReviewEvaluations && (
             <div className="space-y-6">
               <div>
                 <h1 className="font-display text-heading-md font-semibold text-foreground-strong">
@@ -1931,6 +2038,7 @@ export function DashboardPage() {
               </div>
             </div>
           )}
+          </div>
         </main>
       </div>
 

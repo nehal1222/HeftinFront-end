@@ -1,5 +1,6 @@
 import api from '@/lib/axios'
-import { clearAuthStorage } from '@/lib/storage'
+import { clearAuthStorage, getAccessToken } from '@/lib/storage'
+import { developmentAuthService } from '@/services/development-auth.service'
 import type {
   AuthTokenResponse,
   AuthMeResponse,
@@ -12,6 +13,9 @@ import type {
 
 export const authService = {
   async login(payload: LoginRequest) {
+    const developmentResponse = developmentAuthService.login(payload)
+    if (developmentResponse) return developmentResponse
+
     const { data } = await api.post<AuthTokenResponse>(
       '/auth/login',
       payload,
@@ -21,6 +25,9 @@ export const authService = {
   },
 
   async refresh(payload: RefreshRequest) {
+    const developmentResponse = developmentAuthService.refresh(payload.refresh_token)
+    if (developmentResponse) return developmentResponse
+
     const { data } = await api.post<RefreshResponse>(
       '/auth/refresh',
       payload,
@@ -30,8 +37,10 @@ export const authService = {
   },
 
   async logout() {
+    const isDevelopmentSession = developmentAuthService.isAccessToken(getAccessToken())
+
     try {
-      await api.post('/auth/logout')
+      if (!isDevelopmentSession) await api.post('/auth/logout')
     } catch {
       // Local logout must still complete when the backend is unavailable.
     } finally {
@@ -40,6 +49,9 @@ export const authService = {
   },
 
   async getMe() {
+    const developmentUser = developmentAuthService.getMe(getAccessToken())
+    if (developmentUser) return developmentUser
+
     const { data } = await api.get<AuthMeResponse>('/auth/me')
     return data
   },

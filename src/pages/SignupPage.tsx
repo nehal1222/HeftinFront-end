@@ -234,7 +234,7 @@ export function SignupPage({
   }
 
   return (
-    <>
+    <div className="legacy-auth-page">
       <div className="background" aria-hidden="true">
         <div className="circle circle-one" />
         <div className="circle circle-two" />
@@ -1417,6 +1417,6 @@ export function SignupPage({
           )}
         </section>
       </main>
-    </>
+    </div>
   )
 }
