@@ -2,6 +2,7 @@ import api from '@/lib/axios'
 import { clearAuthStorage } from '@/lib/storage'
 import type {
   AuthTokenResponse,
+  AuthMeResponse,
   ForgotPasswordRequest,
   LoginRequest,
   RefreshRequest,
@@ -29,28 +30,27 @@ export const authService = {
   },
 
   async logout() {
-    // The backend does not expose /auth/logout yet.
-    // Clear the local session until that endpoint is available.
-    clearAuthStorage()
+    try {
+      await api.post('/auth/logout')
+    } catch {
+      // Local logout must still complete when the backend is unavailable.
+    } finally {
+      clearAuthStorage()
+    }
+  },
+
+  async getMe() {
+    const { data } = await api.get<AuthMeResponse>('/auth/me')
+    return data
   },
 
   async forgotPassword(payload: ForgotPasswordRequest) {
-    // Keep mocked until the backend password-reset endpoint
-    // is available on the checked-out backend.
-    void payload
-
-    return {
-      message: 'If the account exists, password reset instructions have been sent.',
-    }
+    const { data } = await api.post<{ message: string }>('/auth/forgot-password', payload)
+    return data
   },
 
   async resetPassword(payload: ResetPasswordRequest) {
-    // Keep mocked until the backend password-reset endpoint
-    // is available on the checked-out backend.
-    void payload
-
-    return {
-      message: 'Password reset successfully.',
-    }
+    const { data } = await api.post<{ message: string }>('/auth/reset-password', payload)
+    return data
   },
 }

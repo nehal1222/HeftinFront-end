@@ -13,6 +13,13 @@ export function getRefreshToken() {
   return getStoredValue(STORAGE_KEYS.REFRESH_TOKEN)
 }
 
+export function isPersistentSession() {
+  return Boolean(
+    localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ||
+    localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN),
+  )
+}
+
 export function setTokens(accessToken: string, refreshToken?: string, rememberMe?: boolean) {
   const persistSession = rememberMe ?? Boolean(
     localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ||

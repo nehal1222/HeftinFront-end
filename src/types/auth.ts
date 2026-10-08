@@ -24,6 +24,16 @@ export type AuthUser = {
   must_change_password: boolean
   roles?: string[]
   rights?: RightCode[]
+  current_organization?: Record<string, unknown> | null
+}
+
+export type AuthMeResponse = Partial<AuthUser> & {
+  id: string
+  email: string
+  name?: string
+  roles?: string[]
+  rights?: RightCode[]
+  current_organization?: Record<string, unknown> | null
 }
 
 export type AuthTokenResponse = {

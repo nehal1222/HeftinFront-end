@@ -13,12 +13,16 @@ type ProtectedRouteProps = {
 }
 
 export function ProtectedRoute({ children, requiredRight }: ProtectedRouteProps) {
-  const { hasRight, isAuthenticated, isLoading } = useAuth()
+  const { hasRight, isAuthenticated, isLoading, sessionError } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
 
   if (isLoading) {
     return <AsyncState state="loading" />
+  }
+
+  if (sessionError) {
+    return <Navigate to={ROUTES.SESSION_ERROR} replace />
   }
 
   if (!isAuthenticated) {

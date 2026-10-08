@@ -12,10 +12,17 @@ export const SESSION_KEYS = {
 
 export const ROUTES = {
   HOME: '/',
+  REQUEST_ACCESS: '/request-access',
+  SIGNUP: '/signup',
   LOGIN: '/login',
+  CONTACT: '/contact',
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
   DASHBOARD: '/dashboard',
+  WORKSPACE: '/workspace',
+  SESSION_ERROR: '/session-error',
+  SUPER_ADMIN: '/super-admin',
+  ORG_ADMIN: '/org-admin',
   USERS: '/users',
   ROLES: '/roles',
   PLATFORM: '/platform',
