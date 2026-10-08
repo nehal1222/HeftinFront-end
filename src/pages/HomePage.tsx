@@ -4,6 +4,11 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import '@/landing.css'
 
+const SIGNUP_ROUTE = (ROUTES as Record<string, string>).SIGNUP || '/signup'
+const REQUEST_ACCESS_ROUTE = (ROUTES as Record<string, string>).REQUEST_ACCESS || '/request-access'
+const CONTACT_ROUTE = (ROUTES as Record<string, string>).CONTACT || '/contact'
+const WORKSPACE_ROUTE = (ROUTES as Record<string, string>).WORKSPACE || ROUTES.DASHBOARD || '/dashboard'
+
 export function HomePage() {
   const { isAuthenticated, logout } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -93,16 +98,16 @@ export function HomePage() {
           <div className={`navbar-collapse ${isMobileMenuOpen ? 'is-open' : ''}`} id="navCollapse">
             <ul>
               <li><a href="#exams" style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>Explore</a></li>
-              <li><Link to={ROUTES.REQUEST_ACCESS} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>For Institutes</Link></li>
+              <li><Link to={REQUEST_ACCESS_ROUTE} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>For Institutes</Link></li>
               <li><a href="#about" style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>About</a></li>
               <li><a href="#product" style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>Product</a></li>
-              <li><Link to={ROUTES.CONTACT} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>Contact</Link></li>
+              <li><Link to={CONTACT_ROUTE} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>Contact</Link></li>
             </ul>
             <div className="nav-actions-inner" style={{ whiteSpace: 'nowrap' }}>
-              <Link to={ROUTES.REQUEST_ACCESS} className="go-premium" style={{ whiteSpace: 'nowrap' }}>Go Premium</Link>
+              <Link to={REQUEST_ACCESS_ROUTE} className="go-premium" style={{ whiteSpace: 'nowrap' }}>Go Premium</Link>
               {isAuthenticated ? (
                 <>
-                  <Link to={ROUTES.WORKSPACE} className="login" style={{ whiteSpace: 'nowrap' }}>Dashboard</Link>
+                  <Link to={WORKSPACE_ROUTE} className="login" style={{ whiteSpace: 'nowrap' }}>Dashboard</Link>
                   <button
                     type="button"
                     onClick={logout}
@@ -115,7 +120,7 @@ export function HomePage() {
               ) : (
                 <>
                   <Link to={ROUTES.LOGIN} className="login" style={{ whiteSpace: 'nowrap' }}>Login</Link>
-                  <Link to={ROUTES.SIGNUP} className="start-button" style={{ whiteSpace: 'nowrap' }}>Get Started</Link>
+                  <Link to={SIGNUP_ROUTE} className="start-button" style={{ whiteSpace: 'nowrap' }}>Get Started</Link>
                 </>
               )}
             </div>
@@ -140,7 +145,7 @@ export function HomePage() {
             <p>
               Real exam conditions, honest scoring, and analytics<br /> that actually tell you what to fix next — built <br /> for aspirants who take their rank seriously.
             </p>
-            <Link to={ROUTES.SIGNUP} className="start-button">Get Started</Link>
+            <Link to={SIGNUP_ROUTE} className="start-button">Get Started</Link>
 
             <div className="hero-stats">
               <div className="hero-stat"><strong>50K+</strong><span>Students preparing</span></div>
@@ -276,7 +281,7 @@ export function HomePage() {
               <p>
                 Heftin Academy is a leading online learning platform that provides high-quality educational content and resources for students of all ages. Our mission is to empower learners to achieve their academic goals and succeed in their chosen fields.
               </p>
-              <Link to={ROUTES.WORKSPACE} className="why-cta">See your dashboard &rarr;</Link>
+              <Link to={WORKSPACE_ROUTE} className="why-cta">See your dashboard &rarr;</Link>
             </div>
 
             <div className="hero-visual corner-marks">
@@ -490,8 +495,8 @@ export function HomePage() {
             <ul>
               <li><a href="#product">Product Overview</a></li>
               <li><Link to={`${ROUTES.LOGIN}?role=student`}>Test Series</Link></li>
-              <li><Link to={ROUTES.WORKSPACE}>Performance</Link></li>
-              <li><Link to={ROUTES.REQUEST_ACCESS}>Pricing</Link></li>
+              <li><Link to={WORKSPACE_ROUTE}>Performance</Link></li>
+              <li><Link to={REQUEST_ACCESS_ROUTE}>Pricing</Link></li>
             </ul>
           </div>
 
@@ -499,10 +504,10 @@ export function HomePage() {
             <h4>Company</h4>
             <ul>
               <li><a href="#about">About Us</a></li>
-              <li><Link to={ROUTES.REQUEST_ACCESS}>For Institutes</Link></li>
-              <li><Link to={ROUTES.REQUEST_ACCESS}>Activate Invite / Onboarding</Link></li>
+              <li><Link to={REQUEST_ACCESS_ROUTE}>For Institutes</Link></li>
+              <li><Link to={REQUEST_ACCESS_ROUTE}>Activate Invite / Onboarding</Link></li>
               <li><Link to={ROUTES.HOME}>Careers</Link></li>
-              <li><Link to={ROUTES.CONTACT}>Contact</Link></li>
+              <li><Link to={CONTACT_ROUTE}>Contact</Link></li>
             </ul>
           </div>
 
@@ -510,8 +515,8 @@ export function HomePage() {
             <h4>Platform</h4>
             <ul>
               <li><Link to={ROUTES.LOGIN}>Organizational Portal</Link></li>
-              <li><Link to={ROUTES.REQUEST_ACCESS}>Enterprise Solutions</Link></li>
-              <li><Link to={ROUTES.REQUEST_ACCESS}>Tenant Governance</Link></li>
+              <li><Link to={REQUEST_ACCESS_ROUTE}>Enterprise Solutions</Link></li>
+              <li><Link to={REQUEST_ACCESS_ROUTE}>Tenant Governance</Link></li>
             </ul>
           </div>
 
