@@ -17,7 +17,14 @@ export function ProtectedRoute() {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to={ROUTES.LOGIN} replace state={{ from: location }} />
+    const from = `${location.pathname}${location.search}${location.hash}`
+
+    return (
+      <Navigate
+        to={`${ROUTES.LOGIN}?from=${encodeURIComponent(from)}`}
+        replace
+      />
+    )
   }
 
   return <Outlet />

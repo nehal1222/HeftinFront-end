@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -11,6 +11,7 @@ type AccountType = 'organization' | 'individual'
 
 export function LoginPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { login: authenticate } = useAuth()
   const [accountType, setAccountType] = useState<AccountType>('organization')
   const [login, setLogin] = useState('')
@@ -36,7 +37,13 @@ export function LoginPage() {
       if (typeof response.access_token !== 'string' || !response.access_token.trim()) {
         throw new Error('Sign-in failed because the server did not return an access token.')
       }
-      navigate(ROUTES.DASHBOARD, { replace: true })
+
+      const from = new URLSearchParams(location.search).get('from')
+      const destination = from?.startsWith('/') && !from.startsWith('//')
+        ? from
+        : ROUTES.DASHBOARD
+
+      navigate(destination, { replace: true })
     } catch (error) {
       setServerError(getErrorMessage(error, 'We could not sign you in. Check your details and try again.'))
       const fieldErrors = getFieldErrors(error)
