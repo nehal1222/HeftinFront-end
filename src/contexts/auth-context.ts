@@ -3,6 +3,7 @@ import type {
   AuthTokenResponse,
   AuthUser,
   LoginRequest,
+  RightCode,
 } from '@/types/auth'
 
 export type AuthContextValue = {
@@ -11,6 +12,7 @@ export type AuthContextValue = {
   isAuthenticated: boolean
   login: (payload: LoginRequest, rememberMe?: boolean) => Promise<AuthTokenResponse>
   logout: () => Promise<void>
+  hasRight: (right: RightCode) => boolean
 }
 
 export const AuthContext = createContext<AuthContextValue | undefined>(

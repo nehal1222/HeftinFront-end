@@ -13,8 +13,9 @@ import {
   setStoredUser,
   setTokens,
 } from '@/lib/storage'
-import type { AuthUser, LoginRequest } from '@/types/auth'
+import type { AuthUser, LoginRequest, RightCode } from '@/types/auth'
 import { AuthContext } from '@/contexts/auth-context'
+import { hasRight as userHasRight } from '@/lib/rights'
 
 type AuthProviderProps = {
   children: ReactNode
@@ -40,6 +41,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = useCallback(async (payload: LoginRequest, rememberMe = true) => {
     const response = await authService.login(payload)
+    const sessionUser: AuthUser = {
+      ...response.user,
+      roles: response.roles ?? [],
+      rights: response.rights ?? [],
+    }
 
     setTokens(
       response.access_token,
@@ -47,8 +53,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       rememberMe,
     )
 
-    setStoredUser(response.user, rememberMe)
-    setUser(response.user)
+    setStoredUser(sessionUser, rememberMe)
+    setUser(sessionUser)
 
     return response
   }, [])
@@ -58,6 +64,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null)
   }, [])
 
+  const hasRight = useCallback(
+    (right: RightCode) => userHasRight(user?.rights ?? [], right),
+    [user],
+  )
+
   const value = useMemo(
     () => ({
       user,
@@ -65,8 +76,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       isAuthenticated: Boolean(user),
       login,
       logout,
+      hasRight,
     }),
-    [user, isLoading, login, logout],
+    [user, isLoading, login, logout, hasRight],
   )
 
   return (

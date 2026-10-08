@@ -6,7 +6,12 @@ import { PublicOnlyRoute } from '@/components/auth/PublicOnlyRoute'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { DashboardPage } from '@/pages/DashboardPage'
+import { DesignSystemPage } from '@/pages/DesignSystemPage'
+import { PlatformPage } from '@/pages/PlatformPage'
+import { RolesPage } from '@/pages/RolesPage'
+import { UsersPage } from '@/pages/UsersPage'
 import { ROUTES } from '@/lib/constants'
+import { RIGHTS } from '@/lib/rights'
 
 export function AppRouter() {
   return (
@@ -14,6 +19,31 @@ export function AppRouter() {
       <Route element={<ProtectedRoute />}>
         <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.DASHBOARD} replace />} />
         <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+        <Route
+          path={ROUTES.USERS}
+          element={
+            <ProtectedRoute requiredRight={RIGHTS.USERS_VIEW}>
+              <UsersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.ROLES}
+          element={
+            <ProtectedRoute requiredRight={RIGHTS.ROLES_VIEW}>
+              <RolesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.PLATFORM}
+          element={
+            <ProtectedRoute requiredRight={RIGHTS.PLATFORM_VIEW}>
+              <PlatformPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path={ROUTES.DESIGN_SYSTEM} element={<DesignSystemPage />} />
       </Route>
 
       <Route element={<AuthLayout />}>

@@ -1,9 +1,16 @@
+import type { ReactNode } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '@/contexts/useAuth'
 import { ROUTES } from '@/lib/constants'
+import type { RightCode } from '@/types/auth'
 
-export function ProtectedRoute() {
-  const { isAuthenticated, isLoading } = useAuth()
+type ProtectedRouteProps = {
+  children?: ReactNode
+  requiredRight?: RightCode
+}
+
+export function ProtectedRoute({ children, requiredRight }: ProtectedRouteProps) {
+  const { hasRight, isAuthenticated, isLoading } = useAuth()
   const location = useLocation()
 
   if (isLoading) {
@@ -27,5 +34,9 @@ export function ProtectedRoute() {
     )
   }
 
-  return <Outlet />
+  if (requiredRight && !hasRight(requiredRight)) {
+    return <Navigate to={ROUTES.DASHBOARD} replace />
+  }
+
+  return children ?? <Outlet />
 }

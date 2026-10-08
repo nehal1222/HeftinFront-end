@@ -13,6 +13,8 @@ export type ResetPasswordRequest = {
   password_confirmation: string
 }
 
+export type RightCode = string
+
 export type AuthUser = {
   id: string
   email: string
@@ -20,6 +22,8 @@ export type AuthUser = {
   full_name: string
   status: string
   must_change_password: boolean
+  roles?: string[]
+  rights?: RightCode[]
 }
 
 export type AuthTokenResponse = {
@@ -29,7 +33,7 @@ export type AuthTokenResponse = {
   user: AuthUser
   current_organization: Record<string, unknown> | null
   roles: string[]
-  rights: string[]
+  rights: RightCode[]
 }
 
 export type RefreshRequest = {

@@ -13,6 +13,9 @@ export const ROUTES = {
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
   DASHBOARD: '/dashboard',
+  USERS: '/users',
+  ROLES: '/roles',
+  PLATFORM: '/platform',
   DESIGN_SYSTEM: '/design-system',
   NOT_FOUND: '*',
 } as const
