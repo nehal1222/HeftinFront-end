@@ -1,8 +1,8 @@
-
 import { useState, type ReactNode } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/contexts/useAuth'
 
 type AppLayoutProps = {
   children: ReactNode
@@ -18,6 +18,34 @@ export function AppLayout({
   className,
 }: AppLayoutProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const { user, logout } = useAuth()
+
+  async function handleLogout() {
+    await logout()
+  }
+
+  const defaultProfile = (
+    <Card className="space-y-3 p-3">
+      <div>
+        <p className="text-sm font-medium text-foreground">
+          {user?.full_name || 'User'}
+        </p>
+
+        <p className="truncate text-xs text-muted">
+          {user?.email || ''}
+        </p>
+      </div>
+
+      <Button
+        variant="outline"
+        size="sm"
+        className="w-full"
+        onClick={() => void handleLogout()}
+      >
+        Sign out
+      </Button>
+    </Card>
+  )
 
   return (
     <div className="flex h-screen overflow-hidden bg-surface text-foreground">
@@ -41,13 +69,7 @@ export function AppLayout({
         </nav>
 
         <div className="border-t border-border p-4">
-          {profile ?? (
-            <Card className="p-3">
-              <p className="text-sm font-medium text-foreground">
-                User Profile
-              </p>
-            </Card>
-          )}
+          {profile ?? defaultProfile}
         </div>
       </aside>
 
@@ -73,7 +95,7 @@ export function AppLayout({
                 aria-label="Close navigation"
                 onClick={() => setMobileNavOpen(false)}
               >
-                ✕
+                X
               </Button>
             </div>
 
@@ -90,13 +112,7 @@ export function AppLayout({
             </nav>
 
             <div className="border-t border-border p-4">
-              {profile ?? (
-                <Card className="p-3">
-                  <p className="text-sm font-medium text-foreground">
-                    User Profile
-                  </p>
-                </Card>
-              )}
+              {profile ?? defaultProfile}
             </div>
           </aside>
         </div>

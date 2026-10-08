@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { ROUTES, SIGNUP_URL } from '@/lib/constants'
 import { getErrorMessage, getFieldErrors } from '@/lib/axios'
-import { setTokens } from '@/lib/storage'
-import { authService } from '@/services/auth.service'
+import { useAuth } from '@/contexts/useAuth'
 
 type AccountType = 'organization' | 'individual'
 
 export function LoginPage() {
   const navigate = useNavigate()
+  const { login: authenticate } = useAuth()
   const [accountType, setAccountType] = useState<AccountType>('organization')
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
@@ -32,11 +32,10 @@ export function LoginPage() {
 
     setIsSubmitting(true)
     try {
-      const response = await authService.login({ login: login.trim(), password })
+      const response = await authenticate({ login: login.trim(), password }, rememberMe)
       if (typeof response.access_token !== 'string' || !response.access_token.trim()) {
         throw new Error('Sign-in failed because the server did not return an access token.')
       }
-      setTokens(response.access_token, response.refresh_token, rememberMe)
       navigate(ROUTES.DASHBOARD, { replace: true })
     } catch (error) {
       setServerError(getErrorMessage(error, 'We could not sign you in. Check your details and try again.'))

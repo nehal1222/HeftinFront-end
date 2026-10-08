@@ -1,4 +1,14 @@
-import axios, { type AxiosInstance } from 'axios'
+import axios, {
+  type AxiosError,
+  type AxiosInstance,
+  type InternalAxiosRequestConfig,
+} from 'axios'
+import { clearAuthStorage, getAccessToken, getRefreshToken, setTokens } from '@/lib/storage'
+import type { RefreshResponse } from '@/types/auth'
+
+type RetryableRequestConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean
+}
 
 const api: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -7,6 +17,55 @@ const api: AxiosInstance = axios.create({
   },
   timeout: 30000,
 })
+
+api.interceptors.request.use((config) => {
+  const accessToken = getAccessToken()
+
+  if (accessToken && config.url !== '/auth/login' && config.url !== '/auth/refresh') {
+    config.headers.Authorization = `Bearer ${accessToken}`
+  }
+
+  return config
+})
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as RetryableRequestConfig | undefined
+
+    if (
+      error.response?.status !== 401 ||
+      !originalRequest ||
+      originalRequest._retry ||
+      originalRequest.url === '/auth/login' ||
+      originalRequest.url === '/auth/refresh'
+    ) {
+      return Promise.reject(error)
+    }
+
+    const refreshToken = getRefreshToken()
+    if (!refreshToken) {
+      clearAuthStorage()
+      return Promise.reject(error)
+    }
+
+    originalRequest._retry = true
+
+    try {
+      const { data } = await api.post<RefreshResponse>('/auth/refresh', {
+        refresh_token: refreshToken,
+      })
+
+      setTokens(data.access_token, data.refresh_token)
+      originalRequest.headers.Authorization = `Bearer ${data.access_token}`
+
+      return api(originalRequest)
+    } catch (refreshError) {
+      clearAuthStorage()
+      return Promise.reject(refreshError)
+    }
+  },
+)
 
 type ApiErrorBody = {
   message?: unknown
