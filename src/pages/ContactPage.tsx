@@ -248,10 +248,6 @@ export function ContactPage() {
                   <span className="line-1">Inquiry</span>
                   <span className="line-2">received</span>
                 </h1>
-                <p>
-                  {response.message ||
-                    'Thank you for reaching out. Our institutional partnerships team has received your inquiry and will contact you within 1 business day.'}
-                </p>
               </div>
 
               <div
@@ -542,7 +538,7 @@ export function ContactPage() {
                         fontFamily: 'inherit',
                       }}
                     >
-                      <option value="institutional">Institutional Demo &amp; Licensing</option>
+                      <option value="institutional">Institutional Access &amp; Licensing</option>
                       <option value="general">General Academy Inquiry</option>
                       <option value="partnership">Content &amp; Faculty Partnership</option>
                       <option value="support">Technical &amp; Session Support</option>
@@ -640,7 +636,7 @@ export function ContactPage() {
                       style={{ marginTop: '2px', accentColor: 'var(--primary)' }}
                     />
                     <span>
-                      I agree to the Terms of Service and Privacy Policy, and consent to Heftin Academy contacting me regarding institutional demo services.
+                      I agree to the Terms of Service and Privacy Policy, and consent to Heftin Academy contacting me regarding my inquiry.
                     </span>
                   </label>
                   {fieldErrors.consent && (
