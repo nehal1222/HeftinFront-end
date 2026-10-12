@@ -3,36 +3,23 @@ import type { ContactInquiry, ContactResponse } from '@/types/contact'
 
 export const contactService = {
   /**
-   * Placeholder API for contact inquiries, institutional demos, and feedback.
-   * Dispatches POST /contact with graceful fallback if the endpoint is not yet wired to a live backend.
+   * Dispatches a public inquiry (demo request, institutional licensing, or support).
+   * Passes skipAuth: true so anonymous calls never attach stale tokens or trigger 401 refresh loops.
    */
   async submitContact(payload: ContactInquiry): Promise<ContactResponse> {
-    try {
-      const { data } = await api.post<ContactResponse>('/contact', payload)
-      return data
-    } catch {
-      // Graceful API placeholder fallback for prototype and frontend testing
-      return {
-        success: true,
-        message: 'Your inquiry has been received. Our team will contact you shortly.',
-        ticketId: `CT-${Date.now().toString(36).toUpperCase()}`,
-        timestamp: new Date().toISOString(),
-      }
-    }
+    const { data } = await api.post<ContactResponse>('/contact', payload, {
+      skipAuth: true,
+    })
+    return data
   },
 
   /**
-   * Placeholder API to query contact gateway availability.
+   * Checks gateway reachability and returns official support channels.
    */
   async getStatus(): Promise<{ available: boolean; supportEmail: string }> {
-    try {
-      const { data } = await api.get<{ available: boolean; supportEmail: string }>('/contact/status')
-      return data
-    } catch {
-      return {
-        available: true,
-        supportEmail: 'hello@heftin.com',
-      }
-    }
+    const { data } = await api.get<{ available: boolean; supportEmail: string }>('/contact/status', {
+      skipAuth: true,
+    })
+    return data
   },
 }

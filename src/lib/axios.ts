@@ -7,8 +7,15 @@ import { ROUTES, SESSION_KEYS, STORAGE_KEYS } from '@/lib/constants'
 import { clearAuthStorage, getAccessToken, getRefreshToken, setTokens } from '@/lib/storage'
 import type { RefreshResponse } from '@/types/auth'
 
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    skipAuth?: boolean
+  }
+}
+
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
   _authRetry?: boolean
+  skipAuth?: boolean
 }
 
 type FlexibleRefreshResponse = Partial<RefreshResponse> & {
@@ -28,6 +35,16 @@ const api: AxiosInstance = axios.create({
 let refreshRequest: Promise<string> | null = null
 
 api.interceptors.request.use((config) => {
+  const customConfig = config as InternalAxiosRequestConfig & { skipAuth?: boolean }
+
+  // If request explicitly opts out of auth (e.g. public inquiry, lead form), skip attaching Bearer token
+  if (customConfig.skipAuth) {
+    if (config.headers && config.headers.Authorization) {
+      delete config.headers.Authorization
+    }
+    return config
+  }
+
   const accessToken = getAccessToken()
 
   if (accessToken) {
@@ -43,12 +60,14 @@ api.interceptors.response.use(
     const originalRequest = error.config as RetryableRequestConfig | undefined
     const url = originalRequest?.url ?? ''
     const isAuthEndpoint = /(?:^|\/)auth\/(?:login|refresh)(?:\/|$)/.test(url)
+    const isPublicEndpoint = Boolean(originalRequest?.skipAuth)
 
     if (
       error.response?.status !== 401 ||
       !originalRequest ||
       originalRequest._authRetry ||
-      isAuthEndpoint
+      isAuthEndpoint ||
+      isPublicEndpoint
     ) {
       return Promise.reject(error)
     }

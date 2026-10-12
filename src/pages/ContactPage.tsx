@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@/lib/constants'
+import { getErrorMessage, getFieldErrors } from '@/lib/axios'
 import { contactService } from '@/services/contact.service'
-import type { ContactInquiry, ContactResponse } from '@/types/contact'
+import type { ContactFieldErrors, ContactInquiry, ContactResponse, InquiryCategory } from '@/types/contact'
 import '@/auth.css'
 
 export function ContactPage() {
@@ -14,33 +15,160 @@ export function ContactPage() {
     category: 'institutional',
     subject: '',
     message: '',
+    consent: false,
+    honeypot: '',
   })
 
   const [isLoading, setIsLoading] = useState(false)
   const [response, setResponse] = useState<ContactResponse | null>(null)
   const [errorMessage, setErrorMessage] = useState('')
+  const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({})
+  const [ariaStatus, setAriaStatus] = useState('')
+
+  // Read URL query parameters on mount (category pre-selection & UTM marketing attribution)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search)
+      const cat = params.get('category') as InquiryCategory | null
+      const source = params.get('utm_source')
+      const medium = params.get('utm_medium')
+      const campaign = params.get('utm_campaign')
+      const term = params.get('utm_term')
+      const content = params.get('utm_content')
+
+      setForm((prev) => ({
+        ...prev,
+        ...(cat && ['institutional', 'general', 'partnership', 'support'].includes(cat)
+          ? { category: cat }
+          : {}),
+        ...(source ? { utm_source: source } : {}),
+        ...(medium ? { utm_medium: medium } : {}),
+        ...(campaign ? { utm_campaign: campaign } : {}),
+        ...(term ? { utm_term: term } : {}),
+        ...(content ? { utm_content: content } : {}),
+      }))
+    } catch {
+      // Safe fallback if URL search parameters cannot be parsed
+    }
+  }, [])
 
   function updateField<K extends keyof ContactInquiry>(field: K, value: ContactInquiry[K]) {
     setForm((prev) => ({ ...prev, [field]: value }))
     if (errorMessage) setErrorMessage('')
+    if (fieldErrors[field]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev }
+        delete next[field]
+        return next
+      })
+    }
+  }
+
+  function validateClientSide(): ContactFieldErrors {
+    const errors: ContactFieldErrors = {}
+
+    // Name validation
+    const trimmedName = form.name.trim()
+    if (!trimmedName) {
+      errors.name = 'Please enter your full name.'
+    } else if (trimmedName.length < 2) {
+      errors.name = 'Full name must be at least 2 characters.'
+    } else if (trimmedName.length > 100) {
+      errors.name = 'Full name cannot exceed 100 characters.'
+    }
+
+    // Email validation
+    const trimmedEmail = form.email.trim()
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!trimmedEmail) {
+      errors.email = 'Please enter your work email.'
+    } else if (!emailRegex.test(trimmedEmail)) {
+      errors.email = 'Please enter a valid email address.'
+    } else if (trimmedEmail.length > 255) {
+      errors.email = 'Email cannot exceed 255 characters.'
+    }
+
+    // Phone validation (optional, but validated if entered)
+    const trimmedPhone = form.phone?.trim()
+    if (trimmedPhone) {
+      const phoneRegex = /^[+]?[0-9\s\-()]{7,20}$/
+      if (!phoneRegex.test(trimmedPhone)) {
+        errors.phone = 'Please enter a valid phone number (7-20 digits).'
+      }
+    }
+
+    // Organization validation (mandatory for institutional inquiries)
+    if (form.category === 'institutional' && !form.organization?.trim()) {
+      errors.organization = 'Please provide your institution or organization name.'
+    }
+
+    // Message validation
+    const trimmedMessage = form.message.trim()
+    if (!trimmedMessage) {
+      errors.message = 'Please enter your message or requirements.'
+    } else if (trimmedMessage.length < 10) {
+      errors.message = 'Message must be at least 10 characters.'
+    } else if (trimmedMessage.length > 2000) {
+      errors.message = 'Message cannot exceed 2000 characters.'
+    }
+
+    // Consent validation
+    if (!form.consent) {
+      errors.consent = 'You must consent to be contacted to submit this inquiry.'
+    }
+
+    return errors
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
-      setErrorMessage('Please fill in your name, email, and message.')
+    setErrorMessage('')
+    setFieldErrors({})
+
+    // Bot Honeypot Mitigation: silently reject automated bot entries
+    if (form.honeypot && form.honeypot.trim() !== '') {
+      setIsLoading(true)
+      setTimeout(() => {
+        setIsLoading(false)
+        setErrorMessage('Unable to dispatch inquiry. Please refresh and try again.')
+        setAriaStatus('Submission rejected by spam detection.')
+      }, 500)
+      return
+    }
+
+    // Run client-side validation
+    const validationErrors = validateClientSide()
+    if (Object.keys(validationErrors).length > 0) {
+      setFieldErrors(validationErrors)
+      const firstErrorMessage = Object.values(validationErrors)[0]
+      setErrorMessage(firstErrorMessage || 'Please complete all required fields.')
+      setAriaStatus(`Validation error: ${firstErrorMessage}`)
       return
     }
 
     setIsLoading(true)
-    setErrorMessage('')
+    setAriaStatus('Submitting inquiry...')
 
     try {
       const res = await contactService.submitContact(form)
       setResponse(res)
+      setAriaStatus('Inquiry submitted successfully.')
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Unable to dispatch inquiry.'
-      setErrorMessage(msg)
+      // Map server 422 field errors directly to their input fields
+      const serverFieldErrors = getFieldErrors(err)
+      if (Object.keys(serverFieldErrors).length > 0) {
+        setFieldErrors(serverFieldErrors)
+        const firstServerMsg = Object.values(serverFieldErrors)[0]
+        setErrorMessage(firstServerMsg || 'Please correct the highlighted fields.')
+        setAriaStatus(`Validation error: ${firstServerMsg}`)
+      } else {
+        const errorDetail = getErrorMessage(
+          err,
+          'Unable to dispatch inquiry. Please check your connection or contact hello@heftin.com directly.',
+        )
+        setErrorMessage(errorDetail)
+        setAriaStatus(`Error: ${errorDetail}`)
+      }
     } finally {
       setIsLoading(false)
     }
@@ -55,13 +183,22 @@ export function ContactPage() {
       category: 'institutional',
       subject: '',
       message: '',
+      consent: false,
+      honeypot: '',
     })
     setResponse(null)
     setErrorMessage('')
+    setFieldErrors({})
+    setAriaStatus('')
   }
 
   return (
     <div className="legacy-auth-page">
+      {/* Accessible live status announcer for screen readers */}
+      <div role="status" aria-live="polite" className="sr-only">
+        {ariaStatus}
+      </div>
+
       {/* ================================
            ANIMATED FLOATING BACKGROUND
       ================================= */}
@@ -72,7 +209,7 @@ export function ContactPage() {
       </div>
 
       {/* ================================
-           MAIN WRAPPER & UNIFIED 500PX CARD
+           MAIN WRAPPER & UNIFIED CARD
       ================================= */}
       <main className="auth-wrapper font-sans">
         <section className="auth-card">
@@ -86,7 +223,7 @@ export function ContactPage() {
 
           {response ? (
             /* ================================
-                 SUCCESS CONFIRMATION VIEW
+                 APPROVED SUCCESS VIEW
             ================================= */
             <div style={{ textAlign: 'center', padding: '12px 4px' }}>
               <div
@@ -111,29 +248,38 @@ export function ContactPage() {
                   <span className="line-1">Inquiry</span>
                   <span className="line-2">received</span>
                 </h1>
-                <p>{response.message}</p>
+                <p>
+                  {response.message ||
+                    'Thank you for reaching out. Our institutional partnerships team has received your inquiry and will contact you within 1 business day.'}
+                </p>
               </div>
 
               <div
                 style={{
-                  padding: '12px 14px',
+                  padding: '14px 16px',
                   margin: '18px 0',
                   borderRadius: '10px',
                   background: 'var(--white)',
                   border: '1px solid var(--border)',
-                  fontSize: '11.5px',
+                  fontSize: '12px',
                   textAlign: 'left',
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ color: 'var(--muted)' }}>Reference Ticket:</span>
-                  <strong style={{ color: 'var(--primary)', fontFamily: 'monospace' }}>
-                    {response.ticketId ?? 'CT-REC-001'}
-                  </strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                {response.inquiry_id && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ color: 'var(--muted)' }}>Inquiry Reference:</span>
+                    <strong style={{ color: 'var(--primary)', fontFamily: 'monospace' }}>
+                      {response.inquiry_id}
+                    </strong>
+                  </div>
+                )}
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span style={{ color: 'var(--muted)' }}>Contact Person:</span>
-                  <strong style={{ color: 'var(--error)' }}>{form.name}</strong>
+                  <strong style={{ color: 'var(--foreground-strong, #003439)' }}>{form.name}</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span style={{ color: 'var(--muted)' }}>Notification Email:</span>
+                  <strong style={{ color: 'var(--foreground-strong, #003439)' }}>{form.email}</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--muted)' }}>Response SLA:</span>
@@ -146,9 +292,9 @@ export function ContactPage() {
                   type="button"
                   onClick={handleReset}
                   className="primary-button"
-                  style={{ flex: 1, background: '#fff', color: 'var(--error)', border: '1px solid var(--border)' }}
+                  style={{ flex: 1, background: '#fff', color: 'var(--primary)', border: '1.5px solid var(--border)' }}
                 >
-                  Send another message
+                  Send another inquiry
                 </button>
                 <Link to={ROUTES.HOME} className="primary-button" style={{ flex: 1 }}>
                   Return to Home &rarr;
@@ -157,10 +303,10 @@ export function ContactPage() {
             </div>
           ) : (
             /* ================================
-                 CONTACT FORM VIEW
+                 PUBLIC CONTACT FORM VIEW
             ================================= */
             <>
-              {/* TOP MODE TOGGLES */}
+              {/* TOP NAVIGATION SHORTCUTS */}
               <div
                 style={{
                   display: 'flex',
@@ -180,7 +326,7 @@ export function ContactPage() {
                     borderRadius: '8px',
                     border: '1px solid var(--border)',
                     background: '#fff',
-                    color: 'var(--error)',
+                    color: 'var(--muted)',
                     fontSize: '11px',
                     fontWeight: 700,
                     textDecoration: 'none',
@@ -200,7 +346,7 @@ export function ContactPage() {
                     borderRadius: '8px',
                     border: '1px solid var(--border)',
                     background: '#fff',
-                    color: 'var(--error)',
+                    color: 'var(--muted)',
                     fontSize: '11px',
                     fontWeight: 700,
                     textDecoration: 'none',
@@ -210,10 +356,11 @@ export function ContactPage() {
                     transition: 'all 0.2s',
                   }}
                 >
-                  Activate Invite
+                  Get Started
                 </Link>
                 <button
                   type="button"
+                  disabled
                   style={{
                     flex: 1,
                     padding: '8px 6px',
@@ -227,7 +374,6 @@ export function ContactPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    transition: 'all 0.2s',
                   }}
                 >
                   Contact Us
@@ -241,13 +387,26 @@ export function ContactPage() {
                   <span className="line-2">touch</span>
                 </h1>
                 <p>
-                  Have questions about institutional access, test batches, or partnerships? Send us a
-                  message.
+                  Inquire about institutional licensing, faculty test batches, or general academy access.
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} noValidate>
-                {/* 2-COLUMN: NAME & WORK EMAIL */}
+                {/* BOT HONEYPOT FIELD (Hidden from sighted & screen reader users) */}
+                <div style={{ display: 'none', position: 'absolute', left: '-9999px', opacity: 0 }} aria-hidden="true">
+                  <label htmlFor="contact-hp">Leave this field blank</label>
+                  <input
+                    id="contact-hp"
+                    type="text"
+                    name="organization_website_url"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={form.honeypot || ''}
+                    onChange={(e) => updateField('honeypot', e.target.value)}
+                  />
+                </div>
+
+                {/* 2-COLUMN: FULL NAME & WORK EMAIL */}
                 <div
                   style={{
                     display: 'grid',
@@ -257,7 +416,9 @@ export function ContactPage() {
                   }}
                 >
                   <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label htmlFor="contact-name">Full name</label>
+                    <label htmlFor="contact-name">
+                      Full name <span style={{ color: 'var(--error, #e53e3e)' }}>*</span>
+                    </label>
                     <div className="input-wrapper">
                       <span className="input-icon">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -269,16 +430,28 @@ export function ContactPage() {
                         id="contact-name"
                         type="text"
                         required
+                        disabled={isLoading}
+                        aria-required="true"
+                        aria-invalid={Boolean(fieldErrors.name)}
+                        aria-describedby={fieldErrors.name ? 'contact-name-error' : undefined}
                         value={form.name}
                         onChange={(e) => updateField('name', e.target.value)}
                         placeholder="Your full name"
                         autoComplete="name"
+                        style={fieldErrors.name ? { borderColor: 'var(--error, #e53e3e)' } : undefined}
                       />
                     </div>
+                    {fieldErrors.name && (
+                      <p id="contact-name-error" style={{ color: 'var(--error, #e53e3e)', fontSize: '11px', marginTop: '4px' }}>
+                        {fieldErrors.name}
+                      </p>
+                    )}
                   </div>
 
                   <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label htmlFor="contact-email">Work email</label>
+                    <label htmlFor="contact-email">
+                      Work email <span style={{ color: 'var(--error, #e53e3e)' }}>*</span>
+                    </label>
                     <div className="input-wrapper">
                       <span className="input-icon">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -290,12 +463,22 @@ export function ContactPage() {
                         id="contact-email"
                         type="email"
                         required
+                        disabled={isLoading}
+                        aria-required="true"
+                        aria-invalid={Boolean(fieldErrors.email)}
+                        aria-describedby={fieldErrors.email ? 'contact-email-error' : undefined}
                         value={form.email}
                         onChange={(e) => updateField('email', e.target.value)}
                         placeholder="you@institution.com"
                         autoComplete="email"
+                        style={fieldErrors.email ? { borderColor: 'var(--error, #e53e3e)' } : undefined}
                       />
                     </div>
+                    {fieldErrors.email && (
+                      <p id="contact-email-error" style={{ color: 'var(--error, #e53e3e)', fontSize: '11px', marginTop: '4px' }}>
+                        {fieldErrors.email}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -319,21 +502,33 @@ export function ContactPage() {
                       <input
                         id="contact-phone"
                         type="tel"
-                        value={form.phone}
+                        disabled={isLoading}
+                        aria-invalid={Boolean(fieldErrors.phone)}
+                        aria-describedby={fieldErrors.phone ? 'contact-phone-error' : undefined}
+                        value={form.phone || ''}
                         onChange={(e) => updateField('phone', e.target.value)}
                         placeholder="+91 98765 43210"
                         autoComplete="tel"
+                        style={fieldErrors.phone ? { borderColor: 'var(--error, #e53e3e)' } : undefined}
                       />
                     </div>
+                    {fieldErrors.phone && (
+                      <p id="contact-phone-error" style={{ color: 'var(--error, #e53e3e)', fontSize: '11px', marginTop: '4px' }}>
+                        {fieldErrors.phone}
+                      </p>
+                    )}
                   </div>
 
                   <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label htmlFor="contact-category">Inquiry category</label>
+                    <label htmlFor="contact-category">
+                      Inquiry category <span style={{ color: 'var(--error, #e53e3e)' }}>*</span>
+                    </label>
                     <select
                       id="contact-category"
+                      disabled={isLoading}
                       value={form.category}
                       onChange={(e) =>
-                        updateField('category', e.target.value as ContactInquiry['category'])
+                        updateField('category', e.target.value as InquiryCategory)
                       }
                       style={{
                         width: '100%',
@@ -343,7 +538,7 @@ export function ContactPage() {
                         borderRadius: '11px',
                         fontSize: '13px',
                         background: 'var(--white)',
-                        color: 'var(--error)',
+                        color: 'var(--foreground-strong, #003439)',
                         fontFamily: 'inherit',
                       }}
                     >
@@ -355,16 +550,55 @@ export function ContactPage() {
                   </div>
                 </div>
 
-                {/* MESSAGE */}
-                <div className="form-group" style={{ marginBottom: '16px' }}>
-                  <label htmlFor="contact-message">Message &amp; requirements</label>
+                {/* ORGANIZATION / INSTITUTE NAME */}
+                <div className="form-group" style={{ marginBottom: '12px' }}>
+                  <label htmlFor="contact-organization">
+                    Organization / Institute name{' '}
+                    {form.category === 'institutional' && (
+                      <span style={{ color: 'var(--error, #e53e3e)' }}>*</span>
+                    )}
+                  </label>
+                  <div className="input-wrapper">
+                    <span className="input-icon">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                        <path d="M3 21h18M3 7v14M21 7v14M6 7V3h12v4M9 11h2M9 15h2M13 11h2M13 15h2" />
+                      </svg>
+                    </span>
+                    <input
+                      id="contact-organization"
+                      type="text"
+                      disabled={isLoading}
+                      aria-invalid={Boolean(fieldErrors.organization)}
+                      aria-describedby={fieldErrors.organization ? 'contact-org-error' : undefined}
+                      value={form.organization || ''}
+                      onChange={(e) => updateField('organization', e.target.value)}
+                      placeholder="e.g. Apex IAS Academy / Delhi Coaching Institute"
+                      style={fieldErrors.organization ? { borderColor: 'var(--error, #e53e3e)' } : undefined}
+                    />
+                  </div>
+                  {fieldErrors.organization && (
+                    <p id="contact-org-error" style={{ color: 'var(--error, #e53e3e)', fontSize: '11px', marginTop: '4px' }}>
+                      {fieldErrors.organization}
+                    </p>
+                  )}
+                </div>
+
+                {/* MESSAGE & REQUIREMENTS */}
+                <div className="form-group" style={{ marginBottom: '12px' }}>
+                  <label htmlFor="contact-message">
+                    Message &amp; requirements <span style={{ color: 'var(--error, #e53e3e)' }}>*</span>
+                  </label>
                   <textarea
                     id="contact-message"
                     required
+                    disabled={isLoading}
                     rows={3}
+                    aria-required="true"
+                    aria-invalid={Boolean(fieldErrors.message)}
+                    aria-describedby={fieldErrors.message ? 'contact-message-error' : undefined}
                     value={form.message}
                     onChange={(e) => updateField('message', e.target.value)}
-                    placeholder="Tell us about your organization, batches, or questions."
+                    placeholder="Tell us about your student batches, target examinations, or inquiry details."
                     style={{
                       width: '100%',
                       padding: '10px 12px',
@@ -373,11 +607,50 @@ export function ContactPage() {
                       fontSize: '13px',
                       fontFamily: 'inherit',
                       resize: 'vertical',
+                      borderColor: fieldErrors.message ? 'var(--error, #e53e3e)' : 'var(--border)',
                     }}
                   />
+                  {fieldErrors.message && (
+                    <p id="contact-message-error" style={{ color: 'var(--error, #e53e3e)', fontSize: '11px', marginTop: '4px' }}>
+                      {fieldErrors.message}
+                    </p>
+                  )}
                 </div>
 
-                {/* ERROR FEEDBACK */}
+                {/* PRIVACY & DPDP CONSENT CHECKBOX */}
+                <div style={{ marginBottom: '16px' }}>
+                  <label
+                    htmlFor="contact-consent"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '8px',
+                      fontSize: '11.5px',
+                      color: 'var(--muted)',
+                      cursor: 'pointer',
+                      lineHeight: '1.4',
+                    }}
+                  >
+                    <input
+                      id="contact-consent"
+                      type="checkbox"
+                      disabled={isLoading}
+                      checked={form.consent}
+                      onChange={(e) => updateField('consent', e.target.checked)}
+                      style={{ marginTop: '2px', accentColor: 'var(--primary)' }}
+                    />
+                    <span>
+                      I agree to the Terms of Service and Privacy Policy, and consent to Heftin Academy contacting me regarding institutional demo services.
+                    </span>
+                  </label>
+                  {fieldErrors.consent && (
+                    <p style={{ color: 'var(--error, #e53e3e)', fontSize: '11px', marginTop: '4px' }}>
+                      {fieldErrors.consent}
+                    </p>
+                  )}
+                </div>
+
+                {/* GENERAL ERROR BANNER */}
                 {errorMessage && (
                   <div className="form-message error" style={{ display: 'block', marginBottom: '14px' }}>
                     {errorMessage}
@@ -405,25 +678,25 @@ export function ContactPage() {
                 </button>
               </form>
 
-              {/* DIRECT CHANNELS */}
+              {/* DIRECT FALLBACK CHANNELS */}
               <div
                 style={{
                   marginTop: '20px',
-                  padding: '12px',
+                  padding: '12px 14px',
                   border: '1px solid var(--border)',
                   borderRadius: '12px',
                   background: 'var(--white)',
-                  fontSize: '11px',
+                  fontSize: '11.5px',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}
               >
                 <div>
-                  <strong style={{ display: 'block', color: 'var(--error)' }}>
+                  <strong style={{ display: 'block', color: 'var(--foreground-strong, #003439)' }}>
                     Direct Support Line
                   </strong>
-                  <span style={{ color: 'var(--muted)' }}>hello@heftin.com &middot; Delhi, India</span>
+                  <span style={{ color: 'var(--muted)' }}>hello@heftin.com &middot; New Delhi, India</span>
                 </div>
                 <a
                   href="mailto:hello@heftin.com"
@@ -431,7 +704,7 @@ export function ContactPage() {
                     color: 'var(--primary)',
                     fontWeight: 700,
                     textDecoration: 'none',
-                    fontSize: '11px',
+                    fontSize: '11.5px',
                   }}
                 >
                   Write Email &rarr;

@@ -23,11 +23,9 @@ export const b2bService = {
   },
 
   async requestOnboarding(payload: Record<string, unknown>) {
-    try {
-      const { data } = await api.post('/onboarding/request', payload)
-      return data
-    } catch {
-      return { success: true }
-    }
+    const { data } = await api.post('/onboarding/request', payload, {
+      skipAuth: true,
+    })
+    return data
   },
 }
