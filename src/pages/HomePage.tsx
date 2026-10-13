@@ -2,16 +2,17 @@ import { useEffect, useRef, useState } from 'react'
 import { ROUTES } from '@/lib/constants'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
+import { ContactModal } from '@/components/contact/ContactModal'
 import '@/landing.css'
 
 const SIGNUP_ROUTE = (ROUTES as Record<string, string>).SIGNUP || '/signup'
 const REQUEST_ACCESS_ROUTE = (ROUTES as Record<string, string>).REQUEST_ACCESS || '/request-access'
-const CONTACT_ROUTE = (ROUTES as Record<string, string>).CONTACT || '/contact'
 const WORKSPACE_ROUTE = (ROUTES as Record<string, string>).WORKSPACE || ROUTES.DASHBOARD || '/dashboard'
 
 export function HomePage() {
   const { isAuthenticated, logout } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const [preloaderHidden, setPreloaderHidden] = useState(false)
 
   const dotRef = useRef<HTMLDivElement>(null)
@@ -101,7 +102,19 @@ export function HomePage() {
               <li><Link to={REQUEST_ACCESS_ROUTE} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>For Institutes</Link></li>
               <li><a href="#about" style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>About</a></li>
               <li><a href="#product" style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>Product</a></li>
-              <li><Link to={CONTACT_ROUTE} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>Contact</Link></li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false)
+                    setIsContactModalOpen(true)
+                  }}
+                  className="nav-link-btn"
+                  style={{ whiteSpace: 'nowrap' }}
+                >
+                  Contact
+                </button>
+              </li>
             </ul>
             <div className="nav-actions-inner" style={{ whiteSpace: 'nowrap' }}>
               <Link to={REQUEST_ACCESS_ROUTE} className="go-premium" style={{ whiteSpace: 'nowrap' }}>Go Premium</Link>
@@ -487,7 +500,16 @@ export function HomePage() {
               <span className="brand-name">Heftin Academy</span>
             </Link>
             <p>Every mock test brings you closer to rank one.</p>
-            <p className="footer-contact">Contact: <a href="mailto:hello@example.com">hello@example.com</a></p>
+            <p className="footer-contact">
+              Contact:{' '}
+              <button
+                type="button"
+                onClick={() => setIsContactModalOpen(true)}
+                className="footer-contact-link"
+              >
+                Contact Support
+              </button>
+            </p>
           </div>
 
           <div className="footer-col">
@@ -507,7 +529,15 @@ export function HomePage() {
               <li><Link to={REQUEST_ACCESS_ROUTE}>For Institutes</Link></li>
               <li><Link to={REQUEST_ACCESS_ROUTE}>Activate Invite / Onboarding</Link></li>
               <li><Link to={ROUTES.HOME}>Careers</Link></li>
-              <li><Link to={CONTACT_ROUTE}>Contact</Link></li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setIsContactModalOpen(true)}
+                  className="footer-link-btn"
+                >
+                  Contact Us
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -534,6 +564,12 @@ export function HomePage() {
           <p>&copy; 2026 Heftin Academy. All rights reserved.</p>
         </div>
       </footer>
+
+      {/* Contact Inquiry Modal */}
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+      />
     </div>
   )
 }
