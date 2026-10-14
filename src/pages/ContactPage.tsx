@@ -42,8 +42,6 @@ export function ContactPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [submissionDetails, setSubmissionDetails] = useState<{
     inquiry_id?: string
-    name: string
-    email: string
   } | null>(null)
   const [errorMessage, setErrorMessage] = useState('')
   const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({})
@@ -176,8 +174,6 @@ export function ContactPage() {
       const res = await contactService.submitContact(form)
       setSubmissionDetails({
         inquiry_id: res.inquiry_id,
-        name: form.name,
-        email: form.email,
       })
       setAriaStatus('Inquiry submitted successfully. Thank you for contacting us!')
     } catch (err) {
@@ -330,32 +326,18 @@ export function ContactPage() {
                 We have received your message. Our team will review your inquiry and get in touch with you shortly.
               </p>
 
-              {/* Official Confirmation Card */}
-              <div className="my-6 rounded-xl border border-[#cce6e8] bg-[#f4fbfb] p-4 text-left text-xs space-y-2.5">
-                {submissionDetails.inquiry_id && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#557477]">Inquiry Reference:</span>
-                    <strong className="font-mono text-[#00828e] font-semibold">
-                      {submissionDetails.inquiry_id}
-                    </strong>
-                  </div>
-                )}
-                <div className="flex justify-between items-center">
-                  <span className="text-[#557477]">Contact Person:</span>
-                  <strong className="text-[#003439]">{submissionDetails.name}</strong>
+              {/* Inquiry Reference (if returned by server) */}
+              {submissionDetails.inquiry_id && (
+                <div className="my-6 rounded-xl border border-[#cce6e8] bg-[#f4fbfb] p-3.5 text-center text-xs">
+                  <span className="text-[#557477]">Inquiry Reference:</span>{' '}
+                  <strong className="font-mono text-[#00828e] font-semibold">
+                    {submissionDetails.inquiry_id}
+                  </strong>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-[#557477]">Notification Email:</span>
-                  <strong className="text-[#003439]">{submissionDetails.email}</strong>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-[#557477]">Response SLA:</span>
-                  <strong className="text-[#00828e]">Within 1 business day</strong>
-                </div>
-              </div>
+              )}
 
               {/* Actions */}
-              <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
+              <div className={`flex flex-col sm:flex-row gap-2.5 ${submissionDetails.inquiry_id ? 'pt-1' : 'pt-6'}`}>
                 <button
                   type="button"
                   onClick={handleReset}
