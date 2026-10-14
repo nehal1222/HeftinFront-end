@@ -1,31 +1,52 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import {
+  Building2,
+  CheckCircle2,
+  Mail,
+  MessageSquare,
+  Phone,
+  User,
+} from 'lucide-react'
 import { ROUTES } from '@/lib/constants'
 import { getErrorMessage, getFieldErrors } from '@/lib/axios'
 import { contactService } from '@/services/contact.service'
-import type { ContactFieldErrors, ContactInquiry, ContactResponse, InquiryCategory } from '@/types/contact'
-import '@/auth.css'
+import { useAuth } from '@/hooks/useAuth'
+import type {
+  ContactFieldErrors,
+  ContactInquiry,
+  ContactResponse,
+  InquiryCategory,
+} from '@/types/contact'
+import '@/landing.css'
+
+const SIGNUP_ROUTE = (ROUTES as Record<string, string>).SIGNUP || '/signup'
+const REQUEST_ACCESS_ROUTE = (ROUTES as Record<string, string>).REQUEST_ACCESS || '/request-access'
+const WORKSPACE_ROUTE = (ROUTES as Record<string, string>).WORKSPACE || ROUTES.DASHBOARD || '/dashboard'
+
+const defaultFormState: ContactInquiry = {
+  name: '',
+  email: '',
+  phone: '',
+  organization: '',
+  category: 'institutional',
+  subject: '',
+  message: '',
+  consent: false,
+  honeypot: '',
+}
 
 export function ContactPage() {
-  const [form, setForm] = useState<ContactInquiry>({
-    name: '',
-    email: '',
-    phone: '',
-    organization: '',
-    category: 'institutional',
-    subject: '',
-    message: '',
-    consent: false,
-    honeypot: '',
-  })
-
+  const { isAuthenticated, logout } = useAuth()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [form, setForm] = useState<ContactInquiry>(defaultFormState)
   const [isLoading, setIsLoading] = useState(false)
   const [response, setResponse] = useState<ContactResponse | null>(null)
   const [errorMessage, setErrorMessage] = useState('')
   const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({})
   const [ariaStatus, setAriaStatus] = useState('')
 
-  // Read URL query parameters on mount (category pre-selection & UTM marketing attribution)
+  // Sync category & capture URL marketing UTM parameters on mount
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search)
@@ -48,7 +69,7 @@ export function ContactPage() {
         ...(content ? { utm_content: content } : {}),
       }))
     } catch {
-      // Safe fallback if URL search parameters cannot be parsed
+      // Safe fallback
     }
   }, [])
 
@@ -88,7 +109,7 @@ export function ContactPage() {
       errors.email = 'Email cannot exceed 255 characters.'
     }
 
-    // Phone validation (optional, but validated if entered)
+    // Phone validation (optional)
     const trimmedPhone = form.phone?.trim()
     if (trimmedPhone) {
       const phoneRegex = /^[+]?[0-9\s\-()]{7,20}$/
@@ -97,7 +118,7 @@ export function ContactPage() {
       }
     }
 
-    // Organization validation (mandatory for institutional inquiries)
+    // Organization validation for institutional inquiries
     if (form.category === 'institutional' && !form.organization?.trim()) {
       errors.organization = 'Please provide your institution or organization name.'
     }
@@ -125,7 +146,7 @@ export function ContactPage() {
     setErrorMessage('')
     setFieldErrors({})
 
-    // Bot Honeypot Mitigation: silently reject automated bot entries
+    // Bot Honeypot Mitigation: silently reject automated bots
     if (form.honeypot && form.honeypot.trim() !== '') {
       setIsLoading(true)
       setTimeout(() => {
@@ -136,13 +157,12 @@ export function ContactPage() {
       return
     }
 
-    // Run client-side validation
     const validationErrors = validateClientSide()
     if (Object.keys(validationErrors).length > 0) {
       setFieldErrors(validationErrors)
-      const firstErrorMessage = Object.values(validationErrors)[0]
-      setErrorMessage(firstErrorMessage || 'Please complete all required fields.')
-      setAriaStatus(`Validation error: ${firstErrorMessage}`)
+      const firstError = Object.values(validationErrors)[0]
+      setErrorMessage(firstError || 'Please complete all required fields.')
+      setAriaStatus(`Validation error: ${firstError}`)
       return
     }
 
@@ -154,13 +174,12 @@ export function ContactPage() {
       setResponse(res)
       setAriaStatus('Inquiry submitted successfully.')
     } catch (err) {
-      // Map server 422 field errors directly to their input fields
       const serverFieldErrors = getFieldErrors(err)
       if (Object.keys(serverFieldErrors).length > 0) {
         setFieldErrors(serverFieldErrors)
-        const firstServerMsg = Object.values(serverFieldErrors)[0]
-        setErrorMessage(firstServerMsg || 'Please correct the highlighted fields.')
-        setAriaStatus(`Validation error: ${firstServerMsg}`)
+        const firstMsg = Object.values(serverFieldErrors)[0]
+        setErrorMessage(firstMsg || 'Please correct the highlighted fields.')
+        setAriaStatus(`Validation error: ${firstMsg}`)
       } else {
         const errorDetail = getErrorMessage(
           err,
@@ -175,17 +194,7 @@ export function ContactPage() {
   }
 
   function handleReset() {
-    setForm({
-      name: '',
-      email: '',
-      phone: '',
-      organization: '',
-      category: 'institutional',
-      subject: '',
-      message: '',
-      consent: false,
-      honeypot: '',
-    })
+    setForm(defaultFormState)
     setResponse(null)
     setErrorMessage('')
     setFieldErrors({})
@@ -193,203 +202,181 @@ export function ContactPage() {
   }
 
   return (
-    <div className="legacy-auth-page">
-      {/* Accessible live status announcer for screen readers */}
+    <div className="landing-page-root" style={{ background: 'var(--cream, #f7faf9)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Screen reader status announcer */}
       <div role="status" aria-live="polite" className="sr-only">
         {ariaStatus}
       </div>
 
-      {/* ================================
-           ANIMATED FLOATING BACKGROUND
-      ================================= */}
-      <div className="background" aria-hidden="true">
-        <div className="circle circle-one" />
-        <div className="circle circle-two" />
-        <div className="circle circle-three" />
-      </div>
+      {/* 1. Header / Navbar */}
+      <nav className="navbar" style={{ position: 'sticky', top: 0, zIndex: 40 }}>
+        <div className="navbar-inner">
+          <Link to={ROUTES.HOME} className="brand">
+            <img src="/images/logo.jpeg" alt="Heftin Academy" className="brand-logo" />
+            <span className="brand-name">Heftin Academy</span>
+          </Link>
 
-      {/* ================================
-           MAIN WRAPPER & UNIFIED CARD
-      ================================= */}
-      <main className="auth-wrapper font-sans">
-        <section className="auth-card">
-          {/* BRAND LOGO */}
-          <div className="brand">
-            <div className="brand-icon">
-              <img src="/images/logo.jpeg" alt="Heftin Academy" className="brand-icon-img" />
+          <button
+            type="button"
+            className={`nav-toggle ${isMobileMenuOpen ? 'is-open' : ''}`}
+            aria-label="Toggle menu"
+            aria-expanded={isMobileMenuOpen}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            <span></span><span></span><span></span>
+          </button>
+
+          <div className={`navbar-collapse ${isMobileMenuOpen ? 'is-open' : ''}`} id="navCollapse">
+            <ul>
+              <li>
+                <Link to={`${ROUTES.HOME}#exams`} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  Explore
+                </Link>
+              </li>
+              <li>
+                <Link to={REQUEST_ACCESS_ROUTE} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  For Institutes
+                </Link>
+              </li>
+              <li>
+                <Link to={`${ROUTES.HOME}#about`} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link to={`${ROUTES.HOME}#product`} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  Product
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={ROUTES.CONTACT}
+                  style={{ whiteSpace: 'nowrap', color: 'var(--teal, #00828e)', fontWeight: 700 }}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Contact
+                </Link>
+              </li>
+            </ul>
+            <div className="nav-actions-inner" style={{ whiteSpace: 'nowrap' }}>
+              <Link to={REQUEST_ACCESS_ROUTE} className="go-premium" style={{ whiteSpace: 'nowrap' }}>
+                Go Premium
+              </Link>
+              {isAuthenticated ? (
+                <>
+                  <Link to={WORKSPACE_ROUTE} className="login" style={{ whiteSpace: 'nowrap' }}>
+                    Dashboard
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={logout}
+                    className="start-button"
+                    style={{ whiteSpace: 'nowrap', cursor: 'pointer', border: 'none' }}
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to={ROUTES.LOGIN} className="login" style={{ whiteSpace: 'nowrap' }}>
+                    Login
+                  </Link>
+                  <Link to={SIGNUP_ROUTE} className="start-button" style={{ whiteSpace: 'nowrap' }}>
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
-            <span>Heftin Academy</span>
+          </div>
+        </div>
+      </nav>
+
+      {/* 2. Main Contact Form Section */}
+      <main className="flex-1 flex items-center justify-center py-12 sm:py-16 px-4">
+        <div className="w-full max-w-xl rounded-2xl bg-white p-6 sm:p-10 shadow-lg border border-[#cce6e8] text-[#003439] font-sans">
+          {/* Brand Header */}
+          <div className="mb-4 flex items-center gap-2.5">
+            <img
+              src="/images/logo.jpeg"
+              alt="Heftin Academy"
+              className="size-7 rounded-md object-contain"
+            />
+            <span className="font-semibold text-sm tracking-tight text-[#001a1c]">
+              Heftin Academy
+            </span>
           </div>
 
           {response ? (
-            /* ================================
-                 APPROVED SUCCESS VIEW
-            ================================= */
-            <div style={{ textAlign: 'center', padding: '12px 4px' }}>
-              <div
-                style={{
-                  width: '44px',
-                  height: '44px',
-                  margin: '0 auto 14px',
-                  display: 'grid',
-                  placeItems: 'center',
-                  borderRadius: '50%',
-                  background: 'rgba(0, 130, 142, 0.1)',
-                  color: 'var(--primary)',
-                }}
-              >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+            /* =========================================
+               SUCCESS VIEW (Zero redundant subtitle copy)
+               ========================================= */
+            <div className="py-4 text-center">
+              <div className="mx-auto mb-4 grid size-12 place-items-center rounded-full bg-[#00828e]/10 text-[#00828e]">
+                <CheckCircle2 size={26} aria-hidden="true" />
               </div>
 
-              <div className="auth-heading" style={{ marginBottom: '14px' }}>
-                <h1 style={{ fontSize: '26px' }}>
-                  <span className="line-1">Inquiry</span>
-                  <span className="line-2">received</span>
-                </h1>
-              </div>
+              <h1 className="text-2xl font-bold tracking-tight text-[#003439] font-serif">
+                Inquiry received
+              </h1>
 
-              <div
-                style={{
-                  padding: '14px 16px',
-                  margin: '18px 0',
-                  borderRadius: '10px',
-                  background: 'var(--white)',
-                  border: '1px solid var(--border)',
-                  fontSize: '12px',
-                  textAlign: 'left',
-                }}
-              >
+              {/* Official Confirmation Card */}
+              <div className="my-6 rounded-xl border border-[#cce6e8] bg-[#f4fbfb] p-4 text-left text-xs space-y-2.5">
                 {response.inquiry_id && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                    <span style={{ color: 'var(--muted)' }}>Inquiry Reference:</span>
-                    <strong style={{ color: 'var(--primary)', fontFamily: 'monospace' }}>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#557477]">Inquiry Reference:</span>
+                    <strong className="font-mono text-[#00828e] font-semibold">
                       {response.inquiry_id}
                     </strong>
                   </div>
                 )}
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ color: 'var(--muted)' }}>Contact Person:</span>
-                  <strong style={{ color: 'var(--foreground-strong, #003439)' }}>{form.name}</strong>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#557477]">Contact Person:</span>
+                  <strong className="text-[#003439]">{form.name}</strong>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ color: 'var(--muted)' }}>Notification Email:</span>
-                  <strong style={{ color: 'var(--foreground-strong, #003439)' }}>{form.email}</strong>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#557477]">Notification Email:</span>
+                  <strong className="text-[#003439]">{form.email}</strong>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--muted)' }}>Response SLA:</span>
-                  <strong style={{ color: 'var(--primary)' }}>Within 1 business day</strong>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#557477]">Response SLA:</span>
+                  <strong className="text-[#00828e]">Within 1 business day</strong>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '8px', marginTop: '20px' }}>
+              {/* Actions */}
+              <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="primary-button"
-                  style={{ flex: 1, background: '#fff', color: 'var(--primary)', border: '1.5px solid var(--border)' }}
+                  className="flex-1 rounded-lg border border-[#cce6e8] bg-white py-2.5 px-4 text-xs font-semibold text-[#00828e] hover:bg-[#cce6e8]/20 transition-colors cursor-pointer"
                 >
                   Send another inquiry
                 </button>
-                <Link to={ROUTES.HOME} className="primary-button" style={{ flex: 1 }}>
+                <Link
+                  to={ROUTES.HOME}
+                  className="flex-1 rounded-lg bg-[#00828e] py-2.5 px-4 text-xs font-semibold text-white hover:bg-[#006f79] text-center transition-colors"
+                >
                   Return to Home &rarr;
                 </Link>
               </div>
             </div>
           ) : (
-            /* ================================
-                 PUBLIC CONTACT FORM VIEW
-            ================================= */
+            /* =========================================
+               FORM VIEW
+               ========================================= */
             <>
-              {/* TOP NAVIGATION SHORTCUTS */}
-              <div
-                style={{
-                  display: 'flex',
-                  gap: '4px',
-                  marginBottom: '20px',
-                  padding: '4px',
-                  border: '1px solid var(--border)',
-                  borderRadius: '12px',
-                  background: 'var(--white)',
-                }}
-              >
-                <Link
-                  to={ROUTES.LOGIN}
-                  style={{
-                    flex: 1,
-                    padding: '8px 6px',
-                    borderRadius: '8px',
-                    border: '1px solid var(--border)',
-                    background: '#fff',
-                    color: 'var(--muted)',
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    textDecoration: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  Sign In
-                </Link>
-                <Link
-                  to={ROUTES.SIGNUP}
-                  style={{
-                    flex: 1,
-                    padding: '8px 6px',
-                    borderRadius: '8px',
-                    border: '1px solid var(--border)',
-                    background: '#fff',
-                    color: 'var(--muted)',
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    textDecoration: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  Get Started
-                </Link>
-                <button
-                  type="button"
-                  disabled
-                  style={{
-                    flex: 1,
-                    padding: '8px 6px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background: 'var(--primary)',
-                    color: '#fff',
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    cursor: 'default',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  Contact Us
-                </button>
-              </div>
-
-              {/* HEADING */}
-              <div className="auth-heading">
-                <h1>
-                  <span className="line-1">Get in</span>
-                  <span className="line-2">touch</span>
+              <div className="mb-6">
+                <h1 className="text-2xl font-bold tracking-tight text-[#003439] font-serif">
+                  Get in touch
                 </h1>
-                <p>
+                <p className="mt-1 text-xs text-[#557477]">
                   Inquire about institutional licensing, faculty test batches, or general academy access.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} noValidate>
-                {/* BOT HONEYPOT FIELD (Hidden from sighted & screen reader users) */}
-                <div style={{ display: 'none', position: 'absolute', left: '-9999px', opacity: 0 }} aria-hidden="true">
+              <form onSubmit={handleSubmit} noValidate className="space-y-4">
+                {/* Invisible Bot Honeypot */}
+                <div className="sr-only" aria-hidden="true">
                   <label htmlFor="contact-hp">Leave this field blank</label>
                   <input
                     id="contact-hp"
@@ -402,25 +389,18 @@ export function ContactPage() {
                   />
                 </div>
 
-                {/* 2-COLUMN: FULL NAME & WORK EMAIL */}
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: '12px',
-                    marginBottom: '12px',
-                  }}
-                >
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label htmlFor="contact-name">
-                      Full name <span style={{ color: 'var(--error, #e53e3e)' }}>*</span>
+                {/* 2-Column: Full Name & Work Email */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div>
+                    <label
+                      htmlFor="contact-name"
+                      className="block text-xs font-semibold text-[#003439] mb-1.5"
+                    >
+                      Full name <span className="text-[#dc2626]">*</span>
                     </label>
-                    <div className="input-wrapper">
-                      <span className="input-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                          <circle cx="12" cy="8" r="4" />
-                          <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" />
-                        </svg>
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3 text-[#557477] pointer-events-none">
+                        <User size={16} aria-hidden="true" />
                       </span>
                       <input
                         id="contact-name"
@@ -434,26 +414,30 @@ export function ContactPage() {
                         onChange={(e) => updateField('name', e.target.value)}
                         placeholder="Your full name"
                         autoComplete="name"
-                        style={fieldErrors.name ? { borderColor: 'var(--error, #e53e3e)' } : undefined}
+                        className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors ${
+                          fieldErrors.name
+                            ? 'border-[#dc2626] focus:border-[#dc2626]'
+                            : 'border-[#cce6e8] focus:border-[#00828e]'
+                        }`}
                       />
                     </div>
                     {fieldErrors.name && (
-                      <p id="contact-name-error" style={{ color: 'var(--error, #e53e3e)', fontSize: '11px', marginTop: '4px' }}>
+                      <p id="contact-name-error" className="mt-1 text-[11px] text-[#dc2626]">
                         {fieldErrors.name}
                       </p>
                     )}
                   </div>
 
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label htmlFor="contact-email">
-                      Work email <span style={{ color: 'var(--error, #e53e3e)' }}>*</span>
+                  <div>
+                    <label
+                      htmlFor="contact-email"
+                      className="block text-xs font-semibold text-[#003439] mb-1.5"
+                    >
+                      Work email <span className="text-[#dc2626]">*</span>
                     </label>
-                    <div className="input-wrapper">
-                      <span className="input-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                          <rect x="3" y="5" width="18" height="14" rx="2" />
-                          <path d="m3 7 9 6 9-6" />
-                        </svg>
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3 text-[#557477] pointer-events-none">
+                        <Mail size={16} aria-hidden="true" />
                       </span>
                       <input
                         id="contact-email"
@@ -465,35 +449,35 @@ export function ContactPage() {
                         aria-describedby={fieldErrors.email ? 'contact-email-error' : undefined}
                         value={form.email}
                         onChange={(e) => updateField('email', e.target.value)}
-                        placeholder="you@institution.com"
+                        placeholder="you@institution.co"
                         autoComplete="email"
-                        style={fieldErrors.email ? { borderColor: 'var(--error, #e53e3e)' } : undefined}
+                        className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors ${
+                          fieldErrors.email
+                            ? 'border-[#dc2626] focus:border-[#dc2626]'
+                            : 'border-[#cce6e8] focus:border-[#00828e]'
+                        }`}
                       />
                     </div>
                     {fieldErrors.email && (
-                      <p id="contact-email-error" style={{ color: 'var(--error, #e53e3e)', fontSize: '11px', marginTop: '4px' }}>
+                      <p id="contact-email-error" className="mt-1 text-[11px] text-[#dc2626]">
                         {fieldErrors.email}
                       </p>
                     )}
                   </div>
                 </div>
 
-                {/* 2-COLUMN: PHONE & CATEGORY */}
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: '12px',
-                    marginBottom: '12px',
-                  }}
-                >
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label htmlFor="contact-phone">Phone number (optional)</label>
-                    <div className="input-wrapper">
-                      <span className="input-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                        </svg>
+                {/* 2-Column: Phone & Category */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div>
+                    <label
+                      htmlFor="contact-phone"
+                      className="block text-xs font-semibold text-[#003439] mb-1.5"
+                    >
+                      Phone number <span className="text-[#557477] font-normal">(optional)</span>
+                    </label>
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3 text-[#557477] pointer-events-none">
+                        <Phone size={16} aria-hidden="true" />
                       </span>
                       <input
                         id="contact-phone"
@@ -505,63 +489,68 @@ export function ContactPage() {
                         onChange={(e) => updateField('phone', e.target.value)}
                         placeholder="+91 98765 43210"
                         autoComplete="tel"
-                        style={fieldErrors.phone ? { borderColor: 'var(--error, #e53e3e)' } : undefined}
+                        className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors ${
+                          fieldErrors.phone
+                            ? 'border-[#dc2626] focus:border-[#dc2626]'
+                            : 'border-[#cce6e8] focus:border-[#00828e]'
+                        }`}
                       />
                     </div>
                     {fieldErrors.phone && (
-                      <p id="contact-phone-error" style={{ color: 'var(--error, #e53e3e)', fontSize: '11px', marginTop: '4px' }}>
+                      <p id="contact-phone-error" className="mt-1 text-[11px] text-[#dc2626]">
                         {fieldErrors.phone}
                       </p>
                     )}
                   </div>
 
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label htmlFor="contact-category">
-                      Inquiry category <span style={{ color: 'var(--error, #e53e3e)' }}>*</span>
-                    </label>
-                    <select
-                      id="contact-category"
-                      disabled={isLoading}
-                      value={form.category}
-                      onChange={(e) =>
-                        updateField('category', e.target.value as InquiryCategory)
-                      }
-                      style={{
-                        width: '100%',
-                        height: '46px',
-                        padding: '10px 12px',
-                        border: '1px solid var(--border)',
-                        borderRadius: '11px',
-                        fontSize: '13px',
-                        background: 'var(--white)',
-                        color: 'var(--foreground-strong, #003439)',
-                        fontFamily: 'inherit',
-                      }}
+                  <div>
+                    <label
+                      htmlFor="contact-category"
+                      className="block text-xs font-semibold text-[#003439] mb-1.5"
                     >
-                      <option value="institutional">Institutional Access &amp; Licensing</option>
-                      <option value="general">General Academy Inquiry</option>
-                      <option value="partnership">Content &amp; Faculty Partnership</option>
-                      <option value="support">Technical &amp; Session Support</option>
-                    </select>
+                      Inquiry category <span className="text-[#dc2626]">*</span>
+                    </label>
+                    <div className="relative flex items-center">
+                      <select
+                        id="contact-category"
+                        disabled={isLoading}
+                        value={form.category}
+                        onChange={(e) => updateField('category', e.target.value as InquiryCategory)}
+                        className="w-full appearance-none rounded-lg border border-[#cce6e8] bg-white py-2.5 px-3 text-xs text-[#001a1c] outline-none focus:border-[#00828e] transition-colors cursor-pointer"
+                      >
+                        <option value="institutional">Institutional Access &amp; Licensing</option>
+                        <option value="general">General Academy Inquiry</option>
+                        <option value="partnership">Content &amp; Faculty Partnership</option>
+                        <option value="support">Technical &amp; Session Support</option>
+                      </select>
+                      <span className="pointer-events-none absolute right-3 text-[#557477]">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                {/* ORGANIZATION / INSTITUTE NAME */}
-                <div className="form-group" style={{ marginBottom: '12px' }}>
-                  <label htmlFor="contact-organization">
+                {/* Organization Field */}
+                <div>
+                  <label
+                    htmlFor="contact-org"
+                    className="block text-xs font-semibold text-[#003439] mb-1.5"
+                  >
                     Organization / Institute name{' '}
-                    {form.category === 'institutional' && (
-                      <span style={{ color: 'var(--error, #e53e3e)' }}>*</span>
+                    {form.category === 'institutional' ? (
+                      <span className="text-[#dc2626]">*</span>
+                    ) : (
+                      <span className="text-[#557477] font-normal">(optional)</span>
                     )}
                   </label>
-                  <div className="input-wrapper">
-                    <span className="input-icon">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                        <path d="M3 21h18M3 7v14M21 7v14M6 7V3h12v4M9 11h2M9 15h2M13 11h2M13 15h2" />
-                      </svg>
+                  <div className="relative flex items-center">
+                    <span className="absolute left-3 text-[#557477] pointer-events-none">
+                      <Building2 size={16} aria-hidden="true" />
                     </span>
                     <input
-                      id="contact-organization"
+                      id="contact-org"
                       type="text"
                       disabled={isLoading}
                       aria-invalid={Boolean(fieldErrors.organization)}
@@ -569,151 +558,169 @@ export function ContactPage() {
                       value={form.organization || ''}
                       onChange={(e) => updateField('organization', e.target.value)}
                       placeholder="e.g. Apex IAS Academy / Delhi Coaching Institute"
-                      style={fieldErrors.organization ? { borderColor: 'var(--error, #e53e3e)' } : undefined}
+                      className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors ${
+                        fieldErrors.organization
+                          ? 'border-[#dc2626] focus:border-[#dc2626]'
+                          : 'border-[#cce6e8] focus:border-[#00828e]'
+                      }`}
                     />
                   </div>
                   {fieldErrors.organization && (
-                    <p id="contact-org-error" style={{ color: 'var(--error, #e53e3e)', fontSize: '11px', marginTop: '4px' }}>
+                    <p id="contact-org-error" className="mt-1 text-[11px] text-[#dc2626]">
                       {fieldErrors.organization}
                     </p>
                   )}
                 </div>
 
-                {/* MESSAGE & REQUIREMENTS */}
-                <div className="form-group" style={{ marginBottom: '12px' }}>
-                  <label htmlFor="contact-message">
-                    Message &amp; requirements <span style={{ color: 'var(--error, #e53e3e)' }}>*</span>
+                {/* Message Field */}
+                <div>
+                  <label
+                    htmlFor="contact-message"
+                    className="block text-xs font-semibold text-[#003439] mb-1.5"
+                  >
+                    Message &amp; requirements <span className="text-[#dc2626]">*</span>
                   </label>
-                  <textarea
-                    id="contact-message"
-                    required
-                    disabled={isLoading}
-                    rows={3}
-                    aria-required="true"
-                    aria-invalid={Boolean(fieldErrors.message)}
-                    aria-describedby={fieldErrors.message ? 'contact-message-error' : undefined}
-                    value={form.message}
-                    onChange={(e) => updateField('message', e.target.value)}
-                    placeholder="Tell us about your student batches, target examinations, or inquiry details."
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      border: '1px solid var(--border)',
-                      borderRadius: '11px',
-                      fontSize: '13px',
-                      fontFamily: 'inherit',
-                      resize: 'vertical',
-                      borderColor: fieldErrors.message ? 'var(--error, #e53e3e)' : 'var(--border)',
-                    }}
-                  />
+                  <div className="relative flex">
+                    <span className="absolute left-3 top-3 text-[#557477] pointer-events-none">
+                      <MessageSquare size={16} aria-hidden="true" />
+                    </span>
+                    <textarea
+                      id="contact-message"
+                      rows={3}
+                      required
+                      disabled={isLoading}
+                      aria-required="true"
+                      aria-invalid={Boolean(fieldErrors.message)}
+                      aria-describedby={fieldErrors.message ? 'contact-msg-error' : undefined}
+                      value={form.message}
+                      onChange={(e) => updateField('message', e.target.value)}
+                      placeholder="Tell us about your student batches, target examinations, or inquiry details."
+                      className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors resize-y ${
+                        fieldErrors.message
+                          ? 'border-[#dc2626] focus:border-[#dc2626]'
+                          : 'border-[#cce6e8] focus:border-[#00828e]'
+                      }`}
+                    />
+                  </div>
                   {fieldErrors.message && (
-                    <p id="contact-message-error" style={{ color: 'var(--error, #e53e3e)', fontSize: '11px', marginTop: '4px' }}>
+                    <p id="contact-msg-error" className="mt-1 text-[11px] text-[#dc2626]">
                       {fieldErrors.message}
                     </p>
                   )}
                 </div>
 
-                {/* PRIVACY & DPDP CONSENT CHECKBOX */}
-                <div style={{ marginBottom: '16px' }}>
-                  <label
-                    htmlFor="contact-consent"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '8px',
-                      fontSize: '11.5px',
-                      color: 'var(--muted)',
-                      cursor: 'pointer',
-                      lineHeight: '1.4',
-                    }}
-                  >
+                {/* DPDP Consent */}
+                <div>
+                  <label className="flex items-start gap-2.5 text-[11.5px] text-[#557477] leading-relaxed cursor-pointer select-none">
                     <input
                       id="contact-consent"
                       type="checkbox"
                       disabled={isLoading}
                       checked={form.consent}
                       onChange={(e) => updateField('consent', e.target.checked)}
-                      style={{ marginTop: '2px', accentColor: 'var(--primary)' }}
+                      className="mt-0.5 size-3.5 rounded border-[#cce6e8] text-[#00828e] focus:ring-[#00828e] cursor-pointer"
                     />
                     <span>
                       I agree to the Terms of Service and Privacy Policy, and consent to Heftin Academy contacting me regarding my inquiry.
                     </span>
                   </label>
                   {fieldErrors.consent && (
-                    <p style={{ color: 'var(--error, #e53e3e)', fontSize: '11px', marginTop: '4px' }}>
+                    <p className="mt-1 text-[11px] text-[#dc2626]">
                       {fieldErrors.consent}
                     </p>
                   )}
                 </div>
 
-                {/* GENERAL ERROR BANNER */}
+                {/* Error Banner */}
                 {errorMessage && (
-                  <div className="form-message error" style={{ display: 'block', marginBottom: '14px' }}>
+                  <div
+                    role="alert"
+                    className="rounded-lg bg-[#001a1c] p-3 text-xs text-white"
+                  >
                     {errorMessage}
                   </div>
                 )}
 
-                {/* SUBMIT BUTTON */}
+                {/* Submit Button */}
                 <button
-                  type="submit"
-                  className="primary-button"
                   id="contactSubmitBtn"
+                  type="submit"
                   disabled={isLoading}
+                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#00828e] py-3 px-4 text-xs font-semibold text-white hover:bg-[#006f79] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed transition-all cursor-pointer shadow-sm"
                 >
                   {isLoading ? (
                     <>
-                      <span className="loader" style={{ display: 'inline-block' }} />
-                      <span className="button-text">Transmitting inquiry...</span>
+                      <span className="size-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Sending inquiry...</span>
                     </>
                   ) : (
-                    <>
-                      <span className="button-text">Submit inquiry to partnerships</span>
-                      <span className="button-arrow">&rarr;</span>
-                    </>
+                    <span>Submit inquiry to partnerships &rarr;</span>
                   )}
                 </button>
               </form>
-
-              {/* DIRECT FALLBACK CHANNELS */}
-              <div
-                style={{
-                  marginTop: '20px',
-                  padding: '12px 14px',
-                  border: '1px solid var(--border)',
-                  borderRadius: '12px',
-                  background: 'var(--white)',
-                  fontSize: '11.5px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <div>
-                  <strong style={{ display: 'block', color: 'var(--foreground-strong, #003439)' }}>
-                    Direct Support Line
-                  </strong>
-                  <span style={{ color: 'var(--muted)' }}>hello@heftin.com &middot; New Delhi, India</span>
-                </div>
-                <a
-                  href="mailto:hello@heftin.com"
-                  style={{
-                    color: 'var(--primary)',
-                    fontWeight: 700,
-                    textDecoration: 'none',
-                    fontSize: '11.5px',
-                  }}
-                >
-                  Write Email &rarr;
-                </a>
-              </div>
-
-              <p className="bottom-text" style={{ marginTop: '16px' }}>
-                Need to access your workspace? <Link to={ROUTES.LOGIN}>Sign in</Link>
-              </p>
             </>
           )}
-        </section>
+        </div>
       </main>
+
+      {/* 3. Site Footer */}
+      <footer className="site-footer">
+        <div className="footer-inner">
+          <div className="footer-brand">
+            <Link to={ROUTES.HOME} className="brand footer-brand-logo" style={{ marginBottom: '14px' }}>
+              <img src="/images/logo.jpeg" alt="Heftin Academy" className="brand-logo" />
+              <span className="brand-name">Heftin Academy</span>
+            </Link>
+            <p>Every mock test brings you closer to rank one.</p>
+            <p className="footer-contact">
+              Contact: <a href="mailto:hello@heftin.com">hello@heftin.com</a>
+            </p>
+          </div>
+
+          <div className="footer-col">
+            <h4>Product</h4>
+            <ul>
+              <li><Link to={`${ROUTES.HOME}#product`}>Product Overview</Link></li>
+              <li><Link to={`${ROUTES.LOGIN}?role=student`}>Test Series</Link></li>
+              <li><Link to={WORKSPACE_ROUTE}>Performance</Link></li>
+              <li><Link to={REQUEST_ACCESS_ROUTE}>Pricing</Link></li>
+            </ul>
+          </div>
+
+          <div className="footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><Link to={`${ROUTES.HOME}#about`}>About Us</Link></li>
+              <li><Link to={REQUEST_ACCESS_ROUTE}>For Institutes</Link></li>
+              <li><Link to={REQUEST_ACCESS_ROUTE}>Activate Invite / Onboarding</Link></li>
+              <li><Link to={ROUTES.HOME}>Careers</Link></li>
+              <li><Link to={ROUTES.CONTACT}>Contact Us</Link></li>
+            </ul>
+          </div>
+
+          <div className="footer-col">
+            <h4>Platform</h4>
+            <ul>
+              <li><Link to={ROUTES.LOGIN}>Organizational Portal</Link></li>
+              <li><Link to={REQUEST_ACCESS_ROUTE}>Enterprise Solutions</Link></li>
+              <li><Link to={REQUEST_ACCESS_ROUTE}>Tenant Governance</Link></li>
+            </ul>
+          </div>
+
+          <div className="footer-col">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">Refund Policy</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <p>&copy; 2026 Heftin Academy. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   )
 }

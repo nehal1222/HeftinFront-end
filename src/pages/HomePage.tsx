@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { ROUTES } from '@/lib/constants'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
-import { ContactModal } from '@/components/contact/ContactModal'
 import '@/landing.css'
 
 const SIGNUP_ROUTE = (ROUTES as Record<string, string>).SIGNUP || '/signup'
@@ -12,7 +11,6 @@ const WORKSPACE_ROUTE = (ROUTES as Record<string, string>).WORKSPACE || ROUTES.D
 export function HomePage() {
   const { isAuthenticated, logout } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const [preloaderHidden, setPreloaderHidden] = useState(false)
 
   const dotRef = useRef<HTMLDivElement>(null)
@@ -103,17 +101,9 @@ export function HomePage() {
               <li><a href="#about" style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>About</a></li>
               <li><a href="#product" style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>Product</a></li>
               <li>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsMobileMenuOpen(false)
-                    setIsContactModalOpen(true)
-                  }}
-                  className="nav-link-btn"
-                  style={{ whiteSpace: 'nowrap' }}
-                >
+                <Link to={ROUTES.CONTACT} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>
                   Contact
-                </button>
+                </Link>
               </li>
             </ul>
             <div className="nav-actions-inner" style={{ whiteSpace: 'nowrap' }}>
@@ -501,14 +491,7 @@ export function HomePage() {
             </Link>
             <p>Every mock test brings you closer to rank one.</p>
             <p className="footer-contact">
-              Contact:{' '}
-              <button
-                type="button"
-                onClick={() => setIsContactModalOpen(true)}
-                className="footer-contact-link"
-              >
-                Contact Support
-              </button>
+              Contact: <a href="mailto:hello@heftin.com">hello@heftin.com</a>
             </p>
           </div>
 
@@ -530,13 +513,7 @@ export function HomePage() {
               <li><Link to={REQUEST_ACCESS_ROUTE}>Activate Invite / Onboarding</Link></li>
               <li><Link to={ROUTES.HOME}>Careers</Link></li>
               <li>
-                <button
-                  type="button"
-                  onClick={() => setIsContactModalOpen(true)}
-                  className="footer-link-btn"
-                >
-                  Contact Us
-                </button>
+                <Link to={ROUTES.CONTACT}>Contact Us</Link>
               </li>
             </ul>
           </div>
@@ -564,12 +541,6 @@ export function HomePage() {
           <p>&copy; 2026 Heftin Academy. All rights reserved.</p>
         </div>
       </footer>
-
-      {/* Contact Inquiry Modal */}
-      <ContactModal
-        isOpen={isContactModalOpen}
-        onClose={() => setIsContactModalOpen(false)}
-      />
     </div>
   )
 }
