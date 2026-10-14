@@ -7,6 +7,7 @@ import {
   MessageSquare,
   Phone,
   User,
+  X,
 } from 'lucide-react'
 import { ROUTES } from '@/lib/constants'
 import { getErrorMessage, getFieldErrors } from '@/lib/axios'
@@ -40,6 +41,7 @@ export function ContactPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [form, setForm] = useState<ContactInquiry>(defaultFormState)
   const [isLoading, setIsLoading] = useState(false)
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false)
   const [submissionDetails, setSubmissionDetails] = useState<{
     inquiry_id?: string
   } | null>(null)
@@ -175,6 +177,7 @@ export function ContactPage() {
       setSubmissionDetails({
         inquiry_id: res.inquiry_id,
       })
+      setShowSuccessPopup(true)
       setAriaStatus('Inquiry submitted successfully. Thank you for contacting us!')
     } catch (err) {
       const serverFieldErrors = getFieldErrors(err)
@@ -196,7 +199,8 @@ export function ContactPage() {
     }
   }
 
-  function handleReset() {
+  function closeSuccessPopup() {
+    setShowSuccessPopup(false)
     setSubmissionDetails(null)
     setForm(defaultFormState)
     setErrorMessage('')
@@ -297,65 +301,16 @@ export function ContactPage() {
       {/* 2. Main Contact Form Section */}
       <main className="flex-1 flex items-center justify-center py-12 sm:py-16 px-4">
         <div className="w-full max-w-xl rounded-2xl bg-white p-6 sm:p-10 shadow-lg border border-[#cce6e8] text-[#003439] font-sans">
-          {submissionDetails ? (
-            /* =========================================
-               THANK YOU VIEW (Displayed after submitting form)
-               ========================================= */
-            <div className="py-4 text-center">
-              <div className="mx-auto mb-4 grid size-14 place-items-center rounded-full bg-[#00828e]/10 text-[#00828e]">
-                <CheckCircle2 size={32} aria-hidden="true" />
-              </div>
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold tracking-tight text-[#003439] font-serif">
+              Get in touch
+            </h1>
+            <p className="mt-1 text-xs text-[#557477]">
+              Inquire about institutional licensing, faculty test batches, or general academy access.
+            </p>
+          </div>
 
-              <h1 className="text-2xl font-bold tracking-tight text-[#003439] font-serif">
-                Thank you for contacting us!
-              </h1>
-
-              <p className="mt-2 text-xs text-[#557477] leading-relaxed max-w-md mx-auto">
-                We have received your message. Our team will review your inquiry and get in touch with you shortly.
-              </p>
-
-              {/* Inquiry Reference (if returned by server) */}
-              {submissionDetails.inquiry_id && (
-                <div className="my-6 rounded-xl border border-[#cce6e8] bg-[#f4fbfb] p-3.5 text-center text-xs">
-                  <span className="text-[#557477]">Inquiry Reference:</span>{' '}
-                  <strong className="font-mono text-[#00828e] font-semibold">
-                    {submissionDetails.inquiry_id}
-                  </strong>
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className={`flex flex-col sm:flex-row gap-2.5 ${submissionDetails.inquiry_id ? 'pt-1' : 'pt-6'}`}>
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="flex-1 rounded-lg border border-[#cce6e8] bg-white py-2.5 px-4 text-xs font-semibold text-[#00828e] hover:bg-[#cce6e8]/20 transition-colors cursor-pointer"
-                >
-                  Send another inquiry
-                </button>
-                <Link
-                  to={ROUTES.HOME}
-                  className="flex-1 rounded-lg bg-[#00828e] py-2.5 px-4 text-xs font-semibold text-white hover:bg-[#006f79] text-center transition-colors"
-                >
-                  Return to Home &rarr;
-                </Link>
-              </div>
-            </div>
-          ) : (
-            /* =========================================
-               FORM VIEW
-               ========================================= */
-            <>
-              <div className="mb-6">
-                <h1 className="text-2xl font-bold tracking-tight text-[#003439] font-serif">
-                  Get in touch
-                </h1>
-                <p className="mt-1 text-xs text-[#557477]">
-                  Inquire about institutional licensing, faculty test batches, or general academy access.
-                </p>
-              </div>
-
-              <form onSubmit={handleSubmit} noValidate className="space-y-4">
+          <form onSubmit={handleSubmit} noValidate className="space-y-4">
                 {/* Invisible Bot Honeypot */}
                 <div className="sr-only" aria-hidden="true">
                   <label htmlFor="contact-hp">Leave this field blank</label>
@@ -639,8 +594,6 @@ export function ContactPage() {
                   )}
                 </button>
               </form>
-            </>
-          )}
         </div>
       </main>
 
@@ -702,6 +655,77 @@ export function ContactPage() {
           <p>&copy; 2026 Heftin Academy. All rights reserved.</p>
         </div>
       </footer>
+
+      {/* 4. Thank You Pop-up Message Modal with Blurred Background */}
+      {showSuccessPopup && submissionDetails && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="success-popup-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md animate-fade-in"
+          onClick={closeSuccessPopup}
+        >
+          <div
+            className="relative w-full max-w-md rounded-2xl bg-white p-7 sm:p-8 shadow-2xl border border-[#cce6e8] text-center font-sans transition-all"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close 'X' Button */}
+            <button
+              type="button"
+              onClick={closeSuccessPopup}
+              aria-label="Close message"
+              className="absolute top-4 right-4 grid size-8 place-items-center rounded-full text-[#557477] hover:text-[#003439] hover:bg-[#cce6e8]/40 transition-colors cursor-pointer"
+            >
+              <X size={18} aria-hidden="true" />
+            </button>
+
+            {/* Checkmark Icon */}
+            <div className="mx-auto mb-4 grid size-14 place-items-center rounded-full bg-[#00828e]/10 text-[#00828e]">
+              <CheckCircle2 size={32} aria-hidden="true" />
+            </div>
+
+            {/* Heading */}
+            <h2
+              id="success-popup-title"
+              className="text-2xl font-bold tracking-tight text-[#003439] font-serif"
+            >
+              Thank you for contacting us!
+            </h2>
+
+            {/* Friendly Copy */}
+            <p className="mt-2 text-xs text-[#557477] leading-relaxed">
+              We have received your message. Our team will review your inquiry and get in touch with you shortly.
+            </p>
+
+            {/* Inquiry Reference (if returned by server) */}
+            {submissionDetails.inquiry_id && (
+              <div className="my-5 rounded-xl border border-[#cce6e8] bg-[#f4fbfb] p-3 text-xs text-center">
+                <span className="text-[#557477]">Inquiry Reference:</span>{' '}
+                <strong className="font-mono text-[#00828e] font-semibold">
+                  {submissionDetails.inquiry_id}
+                </strong>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className={`flex flex-col sm:flex-row gap-2.5 ${submissionDetails.inquiry_id ? 'pt-1' : 'pt-5'}`}>
+              <button
+                type="button"
+                onClick={closeSuccessPopup}
+                className="flex-1 rounded-lg border border-[#cce6e8] bg-white py-2.5 px-4 text-xs font-semibold text-[#00828e] hover:bg-[#cce6e8]/20 transition-colors cursor-pointer"
+              >
+                Done
+              </button>
+              <Link
+                to={ROUTES.HOME}
+                className="flex-1 rounded-lg bg-[#00828e] py-2.5 px-4 text-xs font-semibold text-white hover:bg-[#006f79] text-center transition-colors"
+              >
+                Return to Home &rarr;
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
