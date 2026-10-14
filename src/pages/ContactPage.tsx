@@ -297,18 +297,6 @@ export function ContactPage() {
       {/* 2. Main Contact Form Section */}
       <main className="flex-1 flex items-center justify-center py-12 sm:py-16 px-4">
         <div className="w-full max-w-xl rounded-2xl bg-white p-6 sm:p-10 shadow-lg border border-[#cce6e8] text-[#003439] font-sans">
-          {/* Brand Header */}
-          <div className="mb-4 flex items-center gap-2.5">
-            <img
-              src="/images/logo.jpeg"
-              alt="Heftin Academy"
-              className="size-7 rounded-md object-contain"
-            />
-            <span className="font-semibold text-sm tracking-tight text-[#001a1c]">
-              Heftin Academy
-            </span>
-          </div>
-
           {submissionDetails ? (
             /* =========================================
                THANK YOU VIEW (Displayed after submitting form)
