@@ -7,7 +7,6 @@ import {
   MessageSquare,
   Phone,
   User,
-  X,
 } from 'lucide-react'
 import { ROUTES } from '@/lib/constants'
 import { getErrorMessage, getFieldErrors } from '@/lib/axios'
@@ -41,7 +40,6 @@ export function ContactPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [form, setForm] = useState<ContactInquiry>(defaultFormState)
   const [isLoading, setIsLoading] = useState(false)
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false)
   const [submissionDetails, setSubmissionDetails] = useState<{
     inquiry_id?: string
     name: string
@@ -77,26 +75,6 @@ export function ContactPage() {
       // Safe fallback
     }
   }, [])
-
-  // Escape key listener & body scroll lock when success popup is open
-  useEffect(() => {
-    if (!showSuccessPopup) return
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        closeSuccessPopup()
-      }
-    }
-
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      document.body.style.overflow = previousOverflow
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [showSuccessPopup])
 
   function updateField<K extends keyof ContactInquiry>(field: K, value: ContactInquiry[K]) {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -201,7 +179,6 @@ export function ContactPage() {
         name: form.name,
         email: form.email,
       })
-      setShowSuccessPopup(true)
       setAriaStatus('Inquiry submitted successfully. Thank you for contacting us!')
     } catch (err) {
       const serverFieldErrors = getFieldErrors(err)
@@ -223,11 +200,12 @@ export function ContactPage() {
     }
   }
 
-  function closeSuccessPopup() {
-    setShowSuccessPopup(false)
+  function handleReset() {
+    setSubmissionDetails(null)
     setForm(defaultFormState)
     setErrorMessage('')
     setFieldErrors({})
+    setAriaStatus('')
   }
 
   return (
@@ -335,299 +313,364 @@ export function ContactPage() {
             </span>
           </div>
 
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold tracking-tight text-[#003439] font-serif">
-              Get in touch
-            </h1>
-            <p className="mt-1 text-xs text-[#557477]">
-              Inquire about institutional licensing, faculty test batches, or general academy access.
-            </p>
-          </div>
+          {submissionDetails ? (
+            /* =========================================
+               THANK YOU VIEW (Displayed after submitting form)
+               ========================================= */
+            <div className="py-4 text-center">
+              <div className="mx-auto mb-4 grid size-14 place-items-center rounded-full bg-[#00828e]/10 text-[#00828e]">
+                <CheckCircle2 size={32} aria-hidden="true" />
+              </div>
 
-          <form onSubmit={handleSubmit} noValidate className="space-y-4">
-            {/* Invisible Bot Honeypot */}
-            <div className="sr-only" aria-hidden="true">
-              <label htmlFor="contact-hp">Leave this field blank</label>
-              <input
-                id="contact-hp"
-                type="text"
-                name="organization_website_url"
-                tabIndex={-1}
-                autoComplete="off"
-                value={form.honeypot || ''}
-                onChange={(e) => updateField('honeypot', e.target.value)}
-              />
-            </div>
+              <h1 className="text-2xl font-bold tracking-tight text-[#003439] font-serif">
+                Thank you for contacting us!
+              </h1>
 
-            {/* 2-Column: Full Name & Work Email */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <div>
-                <label
-                  htmlFor="contact-name"
-                  className="block text-xs font-semibold text-[#003439] mb-1.5"
+              <p className="mt-2 text-xs text-[#557477] leading-relaxed max-w-md mx-auto">
+                We have received your message. Our team will review your inquiry and get in touch with you shortly.
+              </p>
+
+              {/* Official Confirmation Card */}
+              <div className="my-6 rounded-xl border border-[#cce6e8] bg-[#f4fbfb] p-4 text-left text-xs space-y-2.5">
+                {submissionDetails.inquiry_id && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#557477]">Inquiry Reference:</span>
+                    <strong className="font-mono text-[#00828e] font-semibold">
+                      {submissionDetails.inquiry_id}
+                    </strong>
+                  </div>
+                )}
+                <div className="flex justify-between items-center">
+                  <span className="text-[#557477]">Contact Person:</span>
+                  <strong className="text-[#003439]">{submissionDetails.name}</strong>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#557477]">Notification Email:</span>
+                  <strong className="text-[#003439]">{submissionDetails.email}</strong>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#557477]">Response SLA:</span>
+                  <strong className="text-[#00828e]">Within 1 business day</strong>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="flex-1 rounded-lg border border-[#cce6e8] bg-white py-2.5 px-4 text-xs font-semibold text-[#00828e] hover:bg-[#cce6e8]/20 transition-colors cursor-pointer"
                 >
-                  Full name <span className="text-[#dc2626]">*</span>
-                </label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3 text-[#557477] pointer-events-none">
-                    <User size={16} aria-hidden="true" />
-                  </span>
+                  Send another inquiry
+                </button>
+                <Link
+                  to={ROUTES.HOME}
+                  className="flex-1 rounded-lg bg-[#00828e] py-2.5 px-4 text-xs font-semibold text-white hover:bg-[#006f79] text-center transition-colors"
+                >
+                  Return to Home &rarr;
+                </Link>
+              </div>
+            </div>
+          ) : (
+            /* =========================================
+               FORM VIEW
+               ========================================= */
+            <>
+              <div className="mb-6">
+                <h1 className="text-2xl font-bold tracking-tight text-[#003439] font-serif">
+                  Get in touch
+                </h1>
+                <p className="mt-1 text-xs text-[#557477]">
+                  Inquire about institutional licensing, faculty test batches, or general academy access.
+                </p>
+              </div>
+
+              <form onSubmit={handleSubmit} noValidate className="space-y-4">
+                {/* Invisible Bot Honeypot */}
+                <div className="sr-only" aria-hidden="true">
+                  <label htmlFor="contact-hp">Leave this field blank</label>
                   <input
-                    id="contact-name"
+                    id="contact-hp"
                     type="text"
-                    required
-                    disabled={isLoading}
-                    aria-required="true"
-                    aria-invalid={Boolean(fieldErrors.name)}
-                    aria-describedby={fieldErrors.name ? 'contact-name-error' : undefined}
-                    value={form.name}
-                    onChange={(e) => updateField('name', e.target.value)}
-                    placeholder="Your full name"
-                    autoComplete="name"
-                    className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors ${
-                      fieldErrors.name
-                        ? 'border-[#dc2626] focus:border-[#dc2626]'
-                        : 'border-[#cce6e8] focus:border-[#00828e]'
-                    }`}
+                    name="organization_website_url"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={form.honeypot || ''}
+                    onChange={(e) => updateField('honeypot', e.target.value)}
                   />
                 </div>
-                {fieldErrors.name && (
-                  <p id="contact-name-error" className="mt-1 text-[11px] text-[#dc2626]">
-                    {fieldErrors.name}
-                  </p>
-                )}
-              </div>
 
-              <div>
-                <label
-                  htmlFor="contact-email"
-                  className="block text-xs font-semibold text-[#003439] mb-1.5"
-                >
-                  Work email <span className="text-[#dc2626]">*</span>
-                </label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3 text-[#557477] pointer-events-none">
-                    <Mail size={16} aria-hidden="true" />
-                  </span>
-                  <input
-                    id="contact-email"
-                    type="email"
-                    required
-                    disabled={isLoading}
-                    aria-required="true"
-                    aria-invalid={Boolean(fieldErrors.email)}
-                    aria-describedby={fieldErrors.email ? 'contact-email-error' : undefined}
-                    value={form.email}
-                    onChange={(e) => updateField('email', e.target.value)}
-                    placeholder="you@institution.co"
-                    autoComplete="email"
-                    className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors ${
-                      fieldErrors.email
-                        ? 'border-[#dc2626] focus:border-[#dc2626]'
-                        : 'border-[#cce6e8] focus:border-[#00828e]'
-                    }`}
-                  />
+                {/* 2-Column: Full Name & Work Email */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div>
+                    <label
+                      htmlFor="contact-name"
+                      className="block text-xs font-semibold text-[#003439] mb-1.5"
+                    >
+                      Full name <span className="text-[#dc2626]">*</span>
+                    </label>
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3 text-[#557477] pointer-events-none">
+                        <User size={16} aria-hidden="true" />
+                      </span>
+                      <input
+                        id="contact-name"
+                        type="text"
+                        required
+                        disabled={isLoading}
+                        aria-required="true"
+                        aria-invalid={Boolean(fieldErrors.name)}
+                        aria-describedby={fieldErrors.name ? 'contact-name-error' : undefined}
+                        value={form.name}
+                        onChange={(e) => updateField('name', e.target.value)}
+                        placeholder="Your full name"
+                        autoComplete="name"
+                        className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors ${
+                          fieldErrors.name
+                            ? 'border-[#dc2626] focus:border-[#dc2626]'
+                            : 'border-[#cce6e8] focus:border-[#00828e]'
+                        }`}
+                      />
+                    </div>
+                    {fieldErrors.name && (
+                      <p id="contact-name-error" className="mt-1 text-[11px] text-[#dc2626]">
+                        {fieldErrors.name}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="contact-email"
+                      className="block text-xs font-semibold text-[#003439] mb-1.5"
+                    >
+                      Work email <span className="text-[#dc2626]">*</span>
+                    </label>
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3 text-[#557477] pointer-events-none">
+                        <Mail size={16} aria-hidden="true" />
+                      </span>
+                      <input
+                        id="contact-email"
+                        type="email"
+                        required
+                        disabled={isLoading}
+                        aria-required="true"
+                        aria-invalid={Boolean(fieldErrors.email)}
+                        aria-describedby={fieldErrors.email ? 'contact-email-error' : undefined}
+                        value={form.email}
+                        onChange={(e) => updateField('email', e.target.value)}
+                        placeholder="you@institution.co"
+                        autoComplete="email"
+                        className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors ${
+                          fieldErrors.email
+                            ? 'border-[#dc2626] focus:border-[#dc2626]'
+                            : 'border-[#cce6e8] focus:border-[#00828e]'
+                        }`}
+                      />
+                    </div>
+                    {fieldErrors.email && (
+                      <p id="contact-email-error" className="mt-1 text-[11px] text-[#dc2626]">
+                        {fieldErrors.email}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                {fieldErrors.email && (
-                  <p id="contact-email-error" className="mt-1 text-[11px] text-[#dc2626]">
-                    {fieldErrors.email}
-                  </p>
-                )}
-              </div>
-            </div>
 
-            {/* 2-Column: Phone & Category */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <div>
-                <label
-                  htmlFor="contact-phone"
-                  className="block text-xs font-semibold text-[#003439] mb-1.5"
-                >
-                  Phone number <span className="text-[#557477] font-normal">(optional)</span>
-                </label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3 text-[#557477] pointer-events-none">
-                    <Phone size={16} aria-hidden="true" />
-                  </span>
-                  <input
-                    id="contact-phone"
-                    type="tel"
-                    disabled={isLoading}
-                    aria-invalid={Boolean(fieldErrors.phone)}
-                    aria-describedby={fieldErrors.phone ? 'contact-phone-error' : undefined}
-                    value={form.phone || ''}
-                    onChange={(e) => updateField('phone', e.target.value)}
-                    placeholder="+91 98765 43210"
-                    autoComplete="tel"
-                    className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors ${
-                      fieldErrors.phone
-                        ? 'border-[#dc2626] focus:border-[#dc2626]'
-                        : 'border-[#cce6e8] focus:border-[#00828e]'
-                    }`}
-                  />
+                {/* 2-Column: Phone & Category */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div>
+                    <label
+                      htmlFor="contact-phone"
+                      className="block text-xs font-semibold text-[#003439] mb-1.5"
+                    >
+                      Phone number <span className="text-[#557477] font-normal">(optional)</span>
+                    </label>
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3 text-[#557477] pointer-events-none">
+                        <Phone size={16} aria-hidden="true" />
+                      </span>
+                      <input
+                        id="contact-phone"
+                        type="tel"
+                        disabled={isLoading}
+                        aria-invalid={Boolean(fieldErrors.phone)}
+                        aria-describedby={fieldErrors.phone ? 'contact-phone-error' : undefined}
+                        value={form.phone || ''}
+                        onChange={(e) => updateField('phone', e.target.value)}
+                        placeholder="+91 98765 43210"
+                        autoComplete="tel"
+                        className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors ${
+                          fieldErrors.phone
+                            ? 'border-[#dc2626] focus:border-[#dc2626]'
+                            : 'border-[#cce6e8] focus:border-[#00828e]'
+                        }`}
+                      />
+                    </div>
+                    {fieldErrors.phone && (
+                      <p id="contact-phone-error" className="mt-1 text-[11px] text-[#dc2626]">
+                        {fieldErrors.phone}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="contact-category"
+                      className="block text-xs font-semibold text-[#003439] mb-1.5"
+                    >
+                      Inquiry category <span className="text-[#dc2626]">*</span>
+                    </label>
+                    <div className="relative flex items-center">
+                      <select
+                        id="contact-category"
+                        disabled={isLoading}
+                        value={form.category}
+                        onChange={(e) => updateField('category', e.target.value as InquiryCategory)}
+                        className="w-full appearance-none rounded-lg border border-[#cce6e8] bg-white py-2.5 px-3 text-xs text-[#001a1c] outline-none focus:border-[#00828e] transition-colors cursor-pointer"
+                      >
+                        <option value="institutional">Institutional Access &amp; Licensing</option>
+                        <option value="general">General Academy Inquiry</option>
+                        <option value="partnership">Content &amp; Faculty Partnership</option>
+                        <option value="support">Technical &amp; Session Support</option>
+                      </select>
+                      <span className="pointer-events-none absolute right-3 text-[#557477]">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                {fieldErrors.phone && (
-                  <p id="contact-phone-error" className="mt-1 text-[11px] text-[#dc2626]">
-                    {fieldErrors.phone}
-                  </p>
-                )}
-              </div>
 
-              <div>
-                <label
-                  htmlFor="contact-category"
-                  className="block text-xs font-semibold text-[#003439] mb-1.5"
-                >
-                  Inquiry category <span className="text-[#dc2626]">*</span>
-                </label>
-                <div className="relative flex items-center">
-                  <select
-                    id="contact-category"
-                    disabled={isLoading}
-                    value={form.category}
-                    onChange={(e) => updateField('category', e.target.value as InquiryCategory)}
-                    className="w-full appearance-none rounded-lg border border-[#cce6e8] bg-white py-2.5 px-3 text-xs text-[#001a1c] outline-none focus:border-[#00828e] transition-colors cursor-pointer"
+                {/* Organization Field */}
+                <div>
+                  <label
+                    htmlFor="contact-org"
+                    className="block text-xs font-semibold text-[#003439] mb-1.5"
                   >
-                    <option value="institutional">Institutional Access &amp; Licensing</option>
-                    <option value="general">General Academy Inquiry</option>
-                    <option value="partnership">Content &amp; Faculty Partnership</option>
-                    <option value="support">Technical &amp; Session Support</option>
-                  </select>
-                  <span className="pointer-events-none absolute right-3 text-[#557477]">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="6 9 12 15 18 9" />
-                    </svg>
-                  </span>
+                    Organization / Institute name{' '}
+                    {form.category === 'institutional' ? (
+                      <span className="text-[#dc2626]">*</span>
+                    ) : (
+                      <span className="text-[#557477] font-normal">(optional)</span>
+                    )}
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="absolute left-3 text-[#557477] pointer-events-none">
+                      <Building2 size={16} aria-hidden="true" />
+                    </span>
+                    <input
+                      id="contact-org"
+                      type="text"
+                      disabled={isLoading}
+                      aria-invalid={Boolean(fieldErrors.organization)}
+                      aria-describedby={fieldErrors.organization ? 'contact-org-error' : undefined}
+                      value={form.organization || ''}
+                      onChange={(e) => updateField('organization', e.target.value)}
+                      placeholder="e.g. Apex IAS Academy / Delhi Coaching Institute"
+                      className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors ${
+                        fieldErrors.organization
+                          ? 'border-[#dc2626] focus:border-[#dc2626]'
+                          : 'border-[#cce6e8] focus:border-[#00828e]'
+                      }`}
+                    />
+                  </div>
+                  {fieldErrors.organization && (
+                    <p id="contact-org-error" className="mt-1 text-[11px] text-[#dc2626]">
+                      {fieldErrors.organization}
+                    </p>
+                  )}
                 </div>
-              </div>
-            </div>
 
-            {/* Organization Field */}
-            <div>
-              <label
-                htmlFor="contact-org"
-                className="block text-xs font-semibold text-[#003439] mb-1.5"
-              >
-                Organization / Institute name{' '}
-                {form.category === 'institutional' ? (
-                  <span className="text-[#dc2626]">*</span>
-                ) : (
-                  <span className="text-[#557477] font-normal">(optional)</span>
+                {/* Message Field */}
+                <div>
+                  <label
+                    htmlFor="contact-message"
+                    className="block text-xs font-semibold text-[#003439] mb-1.5"
+                  >
+                    Message &amp; requirements <span className="text-[#dc2626]">*</span>
+                  </label>
+                  <div className="relative flex">
+                    <span className="absolute left-3 top-3 text-[#557477] pointer-events-none">
+                      <MessageSquare size={16} aria-hidden="true" />
+                    </span>
+                    <textarea
+                      id="contact-message"
+                      rows={3}
+                      required
+                      disabled={isLoading}
+                      aria-required="true"
+                      aria-invalid={Boolean(fieldErrors.message)}
+                      aria-describedby={fieldErrors.message ? 'contact-msg-error' : undefined}
+                      value={form.message}
+                      onChange={(e) => updateField('message', e.target.value)}
+                      placeholder="Tell us about your student batches, target examinations, or inquiry details."
+                      className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors resize-y ${
+                        fieldErrors.message
+                          ? 'border-[#dc2626] focus:border-[#dc2626]'
+                          : 'border-[#cce6e8] focus:border-[#00828e]'
+                      }`}
+                    />
+                  </div>
+                  {fieldErrors.message && (
+                    <p id="contact-msg-error" className="mt-1 text-[11px] text-[#dc2626]">
+                      {fieldErrors.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* DPDP Consent */}
+                <div>
+                  <label className="flex items-start gap-2.5 text-[11.5px] text-[#557477] leading-relaxed cursor-pointer select-none">
+                    <input
+                      id="contact-consent"
+                      type="checkbox"
+                      disabled={isLoading}
+                      checked={form.consent}
+                      onChange={(e) => updateField('consent', e.target.checked)}
+                      className="mt-0.5 size-3.5 rounded border-[#cce6e8] text-[#00828e] focus:ring-[#00828e] cursor-pointer"
+                    />
+                    <span>
+                      I agree to the Terms of Service and Privacy Policy, and consent to Heftin Academy contacting me regarding my inquiry.
+                    </span>
+                  </label>
+                  {fieldErrors.consent && (
+                    <p className="mt-1 text-[11px] text-[#dc2626]">
+                      {fieldErrors.consent}
+                    </p>
+                  )}
+                </div>
+
+                {/* Error Banner */}
+                {errorMessage && (
+                  <div
+                    role="alert"
+                    className="rounded-lg bg-[#001a1c] p-3 text-xs text-white"
+                  >
+                    {errorMessage}
+                  </div>
                 )}
-              </label>
-              <div className="relative flex items-center">
-                <span className="absolute left-3 text-[#557477] pointer-events-none">
-                  <Building2 size={16} aria-hidden="true" />
-                </span>
-                <input
-                  id="contact-org"
-                  type="text"
+
+                {/* Submit Button */}
+                <button
+                  id="contactSubmitBtn"
+                  type="submit"
                   disabled={isLoading}
-                  aria-invalid={Boolean(fieldErrors.organization)}
-                  aria-describedby={fieldErrors.organization ? 'contact-org-error' : undefined}
-                  value={form.organization || ''}
-                  onChange={(e) => updateField('organization', e.target.value)}
-                  placeholder="e.g. Apex IAS Academy / Delhi Coaching Institute"
-                  className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors ${
-                    fieldErrors.organization
-                      ? 'border-[#dc2626] focus:border-[#dc2626]'
-                      : 'border-[#cce6e8] focus:border-[#00828e]'
-                  }`}
-                />
-              </div>
-              {fieldErrors.organization && (
-                <p id="contact-org-error" className="mt-1 text-[11px] text-[#dc2626]">
-                  {fieldErrors.organization}
-                </p>
-              )}
-            </div>
-
-            {/* Message Field */}
-            <div>
-              <label
-                htmlFor="contact-message"
-                className="block text-xs font-semibold text-[#003439] mb-1.5"
-              >
-                Message &amp; requirements <span className="text-[#dc2626]">*</span>
-              </label>
-              <div className="relative flex">
-                <span className="absolute left-3 top-3 text-[#557477] pointer-events-none">
-                  <MessageSquare size={16} aria-hidden="true" />
-                </span>
-                <textarea
-                  id="contact-message"
-                  rows={3}
-                  required
-                  disabled={isLoading}
-                  aria-required="true"
-                  aria-invalid={Boolean(fieldErrors.message)}
-                  aria-describedby={fieldErrors.message ? 'contact-msg-error' : undefined}
-                  value={form.message}
-                  onChange={(e) => updateField('message', e.target.value)}
-                  placeholder="Tell us about your student batches, target examinations, or inquiry details."
-                  className={`w-full rounded-lg border bg-white py-2.5 pl-9 pr-3 text-xs text-[#001a1c] placeholder-[#557477]/60 outline-none transition-colors resize-y ${
-                    fieldErrors.message
-                      ? 'border-[#dc2626] focus:border-[#dc2626]'
-                      : 'border-[#cce6e8] focus:border-[#00828e]'
-                  }`}
-                />
-              </div>
-              {fieldErrors.message && (
-                <p id="contact-msg-error" className="mt-1 text-[11px] text-[#dc2626]">
-                  {fieldErrors.message}
-                </p>
-              )}
-            </div>
-
-            {/* DPDP Consent */}
-            <div>
-              <label className="flex items-start gap-2.5 text-[11.5px] text-[#557477] leading-relaxed cursor-pointer select-none">
-                <input
-                  id="contact-consent"
-                  type="checkbox"
-                  disabled={isLoading}
-                  checked={form.consent}
-                  onChange={(e) => updateField('consent', e.target.checked)}
-                  className="mt-0.5 size-3.5 rounded border-[#cce6e8] text-[#00828e] focus:ring-[#00828e] cursor-pointer"
-                />
-                <span>
-                  I agree to the Terms of Service and Privacy Policy, and consent to Heftin Academy contacting me regarding my inquiry.
-                </span>
-              </label>
-              {fieldErrors.consent && (
-                <p className="mt-1 text-[11px] text-[#dc2626]">
-                  {fieldErrors.consent}
-                </p>
-              )}
-            </div>
-
-            {/* Error Banner */}
-            {errorMessage && (
-              <div
-                role="alert"
-                className="rounded-lg bg-[#001a1c] p-3 text-xs text-white"
-              >
-                {errorMessage}
-              </div>
-            )}
-
-            {/* Submit Button */}
-            <button
-              id="contactSubmitBtn"
-              type="submit"
-              disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#00828e] py-3 px-4 text-xs font-semibold text-white hover:bg-[#006f79] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed transition-all cursor-pointer shadow-sm"
-            >
-              {isLoading ? (
-                <>
-                  <span className="size-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Sending inquiry...</span>
-                </>
-              ) : (
-                <span>Submit inquiry to partnerships &rarr;</span>
-              )}
-            </button>
-          </form>
+                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#00828e] py-3 px-4 text-xs font-semibold text-white hover:bg-[#006f79] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed transition-all cursor-pointer shadow-sm"
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="size-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Sending inquiry...</span>
+                    </>
+                  ) : (
+                    <span>Submit inquiry to partnerships &rarr;</span>
+                  )}
+                </button>
+              </form>
+            </>
+          )}
         </div>
       </main>
 
@@ -689,91 +732,6 @@ export function ContactPage() {
           <p>&copy; 2026 Heftin Academy. All rights reserved.</p>
         </div>
       </footer>
-
-      {/* 4. Thank You Pop-up Message Modal */}
-      {showSuccessPopup && submissionDetails && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="success-popup-title"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-sm animate-fade-in"
-          onClick={closeSuccessPopup}
-        >
-          <div
-            className="relative w-full max-w-md rounded-2xl bg-white p-7 sm:p-8 shadow-2xl border border-[#cce6e8] text-center font-sans transition-all"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close 'X' Button */}
-            <button
-              type="button"
-              onClick={closeSuccessPopup}
-              aria-label="Close message"
-              className="absolute top-4 right-4 grid size-8 place-items-center rounded-full text-[#557477] hover:text-[#003439] hover:bg-[#cce6e8]/40 transition-colors cursor-pointer"
-            >
-              <X size={18} aria-hidden="true" />
-            </button>
-
-            {/* Checkmark Icon */}
-            <div className="mx-auto mb-4 grid size-14 place-items-center rounded-full bg-[#00828e]/10 text-[#00828e]">
-              <CheckCircle2 size={32} aria-hidden="true" />
-            </div>
-
-            {/* Heading */}
-            <h2
-              id="success-popup-title"
-              className="text-2xl font-bold tracking-tight text-[#003439] font-serif"
-            >
-              Thank you for contacting us!
-            </h2>
-
-            {/* Friendly Copy */}
-            <p className="mt-2 text-xs text-[#557477] leading-relaxed">
-              We have received your message. Our team will review your inquiry and get in touch with you shortly.
-            </p>
-
-            {/* Official Confirmation Details */}
-            <div className="my-6 rounded-xl border border-[#cce6e8] bg-[#f4fbfb] p-4 text-left text-xs space-y-2.5">
-              {submissionDetails.inquiry_id && (
-                <div className="flex justify-between items-center">
-                  <span className="text-[#557477]">Inquiry Reference:</span>
-                  <strong className="font-mono text-[#00828e] font-semibold">
-                    {submissionDetails.inquiry_id}
-                  </strong>
-                </div>
-              )}
-              <div className="flex justify-between items-center">
-                <span className="text-[#557477]">Contact Person:</span>
-                <strong className="text-[#003439]">{submissionDetails.name}</strong>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[#557477]">Notification Email:</span>
-                <strong className="text-[#003439]">{submissionDetails.email}</strong>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[#557477]">Response SLA:</span>
-                <strong className="text-[#00828e]">Within 1 business day</strong>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
-              <button
-                type="button"
-                onClick={closeSuccessPopup}
-                className="flex-1 rounded-lg border border-[#cce6e8] bg-white py-2.5 px-4 text-xs font-semibold text-[#00828e] hover:bg-[#cce6e8]/20 transition-colors cursor-pointer"
-              >
-                Done
-              </button>
-              <Link
-                to={ROUTES.HOME}
-                className="flex-1 rounded-lg bg-[#00828e] py-2.5 px-4 text-xs font-semibold text-white hover:bg-[#006f79] text-center transition-colors"
-              >
-                Return to Home &rarr;
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
