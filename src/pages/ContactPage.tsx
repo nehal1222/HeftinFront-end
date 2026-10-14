@@ -49,7 +49,6 @@ export function ContactPage() {
   const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({})
   const [ariaStatus, setAriaStatus] = useState('')
 
-  // Sync category & capture URL marketing UTM parameters on mount
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search)
@@ -71,8 +70,8 @@ export function ContactPage() {
         ...(term ? { utm_term: term } : {}),
         ...(content ? { utm_content: content } : {}),
       }))
-    } catch {
-      // Safe fallback
+    } catch (_err) {
+      void _err
     }
   }, [])
 
@@ -91,7 +90,6 @@ export function ContactPage() {
   function validateClientSide(): ContactFieldErrors {
     const errors: ContactFieldErrors = {}
 
-    // Name validation
     const trimmedName = form.name.trim()
     if (!trimmedName) {
       errors.name = 'Please enter your full name.'
@@ -101,7 +99,6 @@ export function ContactPage() {
       errors.name = 'Full name cannot exceed 100 characters.'
     }
 
-    // Email validation
     const trimmedEmail = form.email.trim()
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!trimmedEmail) {
@@ -112,7 +109,6 @@ export function ContactPage() {
       errors.email = 'Email cannot exceed 255 characters.'
     }
 
-    // Phone validation (optional)
     const trimmedPhone = form.phone?.trim()
     if (trimmedPhone) {
       const phoneRegex = /^[+]?[0-9\s\-()]{7,20}$/
@@ -121,12 +117,10 @@ export function ContactPage() {
       }
     }
 
-    // Organization validation for institutional inquiries
     if (form.category === 'institutional' && !form.organization?.trim()) {
       errors.organization = 'Please provide your institution or organization name.'
     }
 
-    // Message validation
     const trimmedMessage = form.message.trim()
     if (!trimmedMessage) {
       errors.message = 'Please enter your message or requirements.'
@@ -136,7 +130,6 @@ export function ContactPage() {
       errors.message = 'Message cannot exceed 2000 characters.'
     }
 
-    // Consent validation
     if (!form.consent) {
       errors.consent = 'You must consent to be contacted to submit this inquiry.'
     }
@@ -149,7 +142,6 @@ export function ContactPage() {
     setErrorMessage('')
     setFieldErrors({})
 
-    // Bot Honeypot Mitigation: silently reject automated bots
     if (form.honeypot && form.honeypot.trim() !== '') {
       setIsLoading(true)
       setTimeout(() => {
@@ -210,12 +202,10 @@ export function ContactPage() {
 
   return (
     <div className="landing-page-root" style={{ background: 'var(--cream, #f7faf9)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Screen reader status announcer */}
       <div role="status" aria-live="polite" className="sr-only">
         {ariaStatus}
       </div>
 
-      {/* 1. Header / Navbar */}
       <nav className="navbar" style={{ position: 'sticky', top: 0, zIndex: 40 }}>
         <div className="navbar-inner">
           <Link to={ROUTES.HOME} className="brand">
@@ -298,7 +288,6 @@ export function ContactPage() {
         </div>
       </nav>
 
-      {/* 2. Main Contact Form Section */}
       <main className="flex-1 flex items-center justify-center py-12 sm:py-16 px-4">
         <div className="w-full max-w-xl rounded-2xl bg-white p-6 sm:p-10 shadow-lg border border-[#cce6e8] text-[#003439] font-sans">
           <div className="mb-6">
@@ -311,22 +300,20 @@ export function ContactPage() {
           </div>
 
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
-                {/* Invisible Bot Honeypot */}
-                <div className="sr-only" aria-hidden="true">
-                  <label htmlFor="contact-hp">Leave this field blank</label>
-                  <input
-                    id="contact-hp"
-                    type="text"
-                    name="organization_website_url"
-                    tabIndex={-1}
-                    autoComplete="off"
-                    value={form.honeypot || ''}
-                    onChange={(e) => updateField('honeypot', e.target.value)}
-                  />
-                </div>
+            <div className="sr-only" aria-hidden="true">
+              <label htmlFor="contact-hp">Leave this field blank</label>
+              <input
+                id="contact-hp"
+                type="text"
+                name="organization_website_url"
+                tabIndex={-1}
+                autoComplete="off"
+                value={form.honeypot || ''}
+                onChange={(e) => updateField('honeypot', e.target.value)}
+              />
+            </div>
 
-                {/* 2-Column: Full Name & Work Email */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
                     <label
                       htmlFor="contact-name"
@@ -402,7 +389,6 @@ export function ContactPage() {
                   </div>
                 </div>
 
-                {/* 2-Column: Phone & Category */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
                     <label
@@ -468,7 +454,6 @@ export function ContactPage() {
                   </div>
                 </div>
 
-                {/* Organization Field */}
                 <div>
                   <label
                     htmlFor="contact-org"
@@ -508,7 +493,6 @@ export function ContactPage() {
                   )}
                 </div>
 
-                {/* Message Field */}
                 <div>
                   <label
                     htmlFor="contact-message"
@@ -545,7 +529,6 @@ export function ContactPage() {
                   )}
                 </div>
 
-                {/* DPDP Consent */}
                 <div>
                   <label className="flex items-start gap-2.5 text-[11.5px] text-[#557477] leading-relaxed cursor-pointer select-none">
                     <input
@@ -567,7 +550,6 @@ export function ContactPage() {
                   )}
                 </div>
 
-                {/* Error Banner */}
                 {errorMessage && (
                   <div
                     role="alert"
@@ -577,7 +559,6 @@ export function ContactPage() {
                   </div>
                 )}
 
-                {/* Submit Button */}
                 <button
                   id="contactSubmitBtn"
                   type="submit"
@@ -597,7 +578,6 @@ export function ContactPage() {
         </div>
       </main>
 
-      {/* 3. Site Footer */}
       <footer className="site-footer">
         <div className="footer-inner">
           <div className="footer-brand">
@@ -656,7 +636,6 @@ export function ContactPage() {
         </div>
       </footer>
 
-      {/* 4. Thank You Pop-up Message Modal with Blurred Background */}
       {showSuccessPopup && submissionDetails && (
         <div
           role="dialog"
@@ -669,7 +648,6 @@ export function ContactPage() {
             className="relative w-full max-w-md rounded-2xl bg-white p-7 sm:p-8 shadow-2xl border border-[#cce6e8] text-center font-sans transition-all"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close 'X' Button */}
             <button
               type="button"
               onClick={closeSuccessPopup}
@@ -679,12 +657,10 @@ export function ContactPage() {
               <X size={18} aria-hidden="true" />
             </button>
 
-            {/* Checkmark Icon */}
             <div className="mx-auto mb-4 grid size-14 place-items-center rounded-full bg-[#00828e]/10 text-[#00828e]">
               <CheckCircle2 size={32} aria-hidden="true" />
             </div>
 
-            {/* Heading */}
             <h2
               id="success-popup-title"
               className="text-2xl font-bold tracking-tight text-[#003439] font-serif"
@@ -692,12 +668,10 @@ export function ContactPage() {
               Thank you for contacting us!
             </h2>
 
-            {/* Friendly Copy */}
             <p className="mt-2 text-xs text-[#557477] leading-relaxed">
               We have received your message. Our team will review your inquiry and get in touch with you shortly.
             </p>
 
-            {/* Inquiry Reference (if returned by server) */}
             {submissionDetails.inquiry_id && (
               <div className="my-5 rounded-xl border border-[#cce6e8] bg-[#f4fbfb] p-3 text-xs text-center">
                 <span className="text-[#557477]">Inquiry Reference:</span>{' '}
@@ -707,7 +681,6 @@ export function ContactPage() {
               </div>
             )}
 
-            {/* Actions */}
             <div className={`flex flex-col sm:flex-row gap-2.5 ${submissionDetails.inquiry_id ? 'pt-1' : 'pt-5'}`}>
               <button
                 type="button"

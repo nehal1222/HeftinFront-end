@@ -50,7 +50,6 @@ export function ContactModal({
   const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({})
   const [ariaStatus, setAriaStatus] = useState('')
 
-  // Sync category & capture UTM parameters when modal opens
   useEffect(() => {
     if (!isOpen) return
 
@@ -74,12 +73,11 @@ export function ContactModal({
         ...(term ? { utm_term: term } : {}),
         ...(content ? { utm_content: content } : {}),
       }))
-    } catch {
-      // Safe fallback
+    } catch (_err) {
+      void _err
     }
   }, [isOpen, initialCategory])
 
-  // Escape key listener & body scroll lock
   useEffect(() => {
     if (!isOpen) return
 
@@ -116,7 +114,6 @@ export function ContactModal({
   function validateClientSide(): ContactFieldErrors {
     const errors: ContactFieldErrors = {}
 
-    // Name validation
     const trimmedName = form.name.trim()
     if (!trimmedName) {
       errors.name = 'Please enter your full name.'
@@ -126,7 +123,6 @@ export function ContactModal({
       errors.name = 'Full name cannot exceed 100 characters.'
     }
 
-    // Email validation
     const trimmedEmail = form.email.trim()
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!trimmedEmail) {
@@ -137,7 +133,6 @@ export function ContactModal({
       errors.email = 'Email cannot exceed 255 characters.'
     }
 
-    // Phone validation (optional)
     const trimmedPhone = form.phone?.trim()
     if (trimmedPhone) {
       const phoneRegex = /^[+]?[0-9\s\-()]{7,20}$/
@@ -146,12 +141,10 @@ export function ContactModal({
       }
     }
 
-    // Organization validation for institutional inquiries
     if (form.category === 'institutional' && !form.organization?.trim()) {
       errors.organization = 'Please provide your institution or organization name.'
     }
 
-    // Message validation
     const trimmedMessage = form.message.trim()
     if (!trimmedMessage) {
       errors.message = 'Please enter your message or requirements.'
@@ -161,7 +154,6 @@ export function ContactModal({
       errors.message = 'Message cannot exceed 2000 characters.'
     }
 
-    // Consent validation
     if (!form.consent) {
       errors.consent = 'You must consent to be contacted to submit this inquiry.'
     }
@@ -174,7 +166,6 @@ export function ContactModal({
     setErrorMessage('')
     setFieldErrors({})
 
-    // Bot Honeypot Mitigation: silently reject automated bots
     if (form.honeypot && form.honeypot.trim() !== '') {
       setIsLoading(true)
       setTimeout(() => {
@@ -240,17 +231,14 @@ export function ContactModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/65 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
     >
-      {/* Accessible live status announcer */}
       <div role="status" aria-live="polite" className="sr-only">
         {ariaStatus}
       </div>
 
-      {/* Modal Dialog Card */}
       <div
         className="relative w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-2xl bg-white p-6 sm:p-8 shadow-2xl border border-[#cce6e8] text-[#003439] font-sans transition-all"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
@@ -260,7 +248,6 @@ export function ContactModal({
           <X size={20} aria-hidden="true" />
         </button>
 
-        {/* Brand Header */}
         <div className="mb-4 flex items-center gap-2.5">
           <img
             src="/images/logo.jpeg"
@@ -273,9 +260,6 @@ export function ContactModal({
         </div>
 
         {response ? (
-          /* =========================================
-             SUCCESS VIEW (Zero redundant subtitle copy)
-             ========================================= */
           <div className="py-4 text-center">
             <div className="mx-auto mb-4 grid size-12 place-items-center rounded-full bg-[#00828e]/10 text-[#00828e]">
               <CheckCircle2 size={26} aria-hidden="true" />
@@ -288,7 +272,6 @@ export function ContactModal({
               Inquiry received
             </h2>
 
-            {/* Official Confirmation Card */}
             <div className="my-6 rounded-xl border border-[#cce6e8] bg-[#f4fbfb] p-4 text-left text-xs space-y-2.5">
               {response.inquiry_id && (
                 <div className="flex justify-between items-center">
@@ -312,7 +295,6 @@ export function ContactModal({
               </div>
             </div>
 
-            {/* Modal Actions */}
             <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
               <button
                 type="button"
@@ -331,9 +313,6 @@ export function ContactModal({
             </div>
           </div>
         ) : (
-          /* =========================================
-             FORM VIEW
-             ========================================= */
           <>
             <div className="mb-6">
               <h2
@@ -348,7 +327,6 @@ export function ContactModal({
             </div>
 
             <form onSubmit={handleSubmit} noValidate className="space-y-4">
-              {/* Invisible Bot Honeypot */}
               <div className="sr-only" aria-hidden="true">
                 <label htmlFor="modal-contact-hp">Leave this field blank</label>
                 <input
@@ -362,7 +340,6 @@ export function ContactModal({
                 />
               </div>
 
-              {/* 2-Column: Full Name & Work Email */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
                   <label
@@ -439,7 +416,6 @@ export function ContactModal({
                 </div>
               </div>
 
-              {/* 2-Column: Phone & Category */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
                   <label
@@ -505,7 +481,6 @@ export function ContactModal({
                 </div>
               </div>
 
-              {/* Organization Field */}
               <div>
                 <label
                   htmlFor="modal-contact-org"
@@ -545,7 +520,6 @@ export function ContactModal({
                 )}
               </div>
 
-              {/* Message Field */}
               <div>
                 <label
                   htmlFor="modal-contact-message"
@@ -582,7 +556,6 @@ export function ContactModal({
                 )}
               </div>
 
-              {/* DPDP Consent */}
               <div>
                 <label className="flex items-start gap-2.5 text-[11.5px] text-[#557477] leading-relaxed cursor-pointer select-none">
                   <input
@@ -604,7 +577,6 @@ export function ContactModal({
                 )}
               </div>
 
-              {/* Error Banner */}
               {errorMessage && (
                 <div
                   role="alert"
@@ -614,7 +586,6 @@ export function ContactModal({
                 </div>
               )}
 
-              {/* Submit Button */}
               <button
                 id="modalContactSubmitBtn"
                 type="submit"

@@ -9,9 +9,7 @@ export interface ContactInquiry {
   subject?: string
   message: string
   consent: boolean
-  /** Hidden honeypot field for bot mitigation. Must remain empty. */
   honeypot?: string
-  /** Marketing attribution parameters captured from URL */
   utm_source?: string
   utm_medium?: string
   utm_campaign?: string

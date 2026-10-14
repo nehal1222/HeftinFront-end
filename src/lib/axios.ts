@@ -37,7 +37,6 @@ let refreshRequest: Promise<string> | null = null
 api.interceptors.request.use((config) => {
   const customConfig = config as InternalAxiosRequestConfig & { skipAuth?: boolean }
 
-  // If request explicitly opts out of auth (e.g. public inquiry, lead form), skip attaching Bearer token
   if (customConfig.skipAuth) {
     if (config.headers && config.headers.Authorization) {
       delete config.headers.Authorization
