@@ -6,7 +6,6 @@ import '@/landing.css'
 
 const SIGNUP_ROUTE = (ROUTES as Record<string, string>).SIGNUP || '/signup'
 const REQUEST_ACCESS_ROUTE = (ROUTES as Record<string, string>).REQUEST_ACCESS || '/request-access'
-const CONTACT_ROUTE = (ROUTES as Record<string, string>).CONTACT || '/contact'
 const WORKSPACE_ROUTE = (ROUTES as Record<string, string>).WORKSPACE || ROUTES.DASHBOARD || '/dashboard'
 
 export function HomePage() {
@@ -101,7 +100,11 @@ export function HomePage() {
               <li><Link to={REQUEST_ACCESS_ROUTE} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>For Institutes</Link></li>
               <li><a href="#about" style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>About</a></li>
               <li><a href="#product" style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>Product</a></li>
-              <li><Link to={CONTACT_ROUTE} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>Contact</Link></li>
+              <li>
+                <Link to={ROUTES.CONTACT} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  Contact
+                </Link>
+              </li>
             </ul>
             <div className="nav-actions-inner" style={{ whiteSpace: 'nowrap' }}>
               <Link to={REQUEST_ACCESS_ROUTE} className="go-premium" style={{ whiteSpace: 'nowrap' }}>Go Premium</Link>
@@ -487,7 +490,9 @@ export function HomePage() {
               <span className="brand-name">Heftin Academy</span>
             </Link>
             <p>Every mock test brings you closer to rank one.</p>
-            <p className="footer-contact">Contact: <a href="mailto:hello@example.com">hello@example.com</a></p>
+            <p className="footer-contact">
+              Contact: <a href="mailto:hello@heftin.com">hello@heftin.com</a>
+            </p>
           </div>
 
           <div className="footer-col">
@@ -507,7 +512,9 @@ export function HomePage() {
               <li><Link to={REQUEST_ACCESS_ROUTE}>For Institutes</Link></li>
               <li><Link to={REQUEST_ACCESS_ROUTE}>Activate Invite / Onboarding</Link></li>
               <li><Link to={ROUTES.HOME}>Careers</Link></li>
-              <li><Link to={CONTACT_ROUTE}>Contact</Link></li>
+              <li>
+                <Link to={ROUTES.CONTACT}>Contact Us</Link>
+              </li>
             </ul>
           </div>
 

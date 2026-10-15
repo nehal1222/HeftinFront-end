@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { CheckCircle2, GraduationCap } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@/lib/constants'
+import { getErrorMessage, getFieldErrors } from '@/lib/axios'
 import { b2bService } from '@/services/b2b.service'
 
 type FormState = {
@@ -25,19 +26,40 @@ const initialState: FormState = {
 export function OnboardingRequestPage() {
   const [form, setForm] = useState<FormState>(initialState)
   const [submitted, setSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   function updateField<K extends keyof FormState>(field: K, value: FormState[K]) {
     setForm((current) => ({ ...current, [field]: value }))
+    if (errorMessage) setErrorMessage('')
+    if (fieldErrors[field]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev }
+        delete next[field]
+        return next
+      })
+    }
   }
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setIsLoading(true)
+    setErrorMessage('')
+    setFieldErrors({})
+
     try {
       await b2bService.requestOnboarding(form)
-    } catch {
-      // Handled gracefully
+      setSubmitted(true)
+    } catch (err) {
+      const fieldErrMap = getFieldErrors(err)
+      if (Object.keys(fieldErrMap).length > 0) {
+        setFieldErrors(fieldErrMap)
+      }
+      setErrorMessage(getErrorMessage(err, 'Unable to submit onboarding request. Please try again.'))
+    } finally {
+      setIsLoading(false)
     }
-    setSubmitted(true)
   }
 
   return (
@@ -164,11 +186,18 @@ export function OnboardingRequestPage() {
                 </div>
               </div>
 
+              {errorMessage && (
+                <div role="alert" className="rounded-control bg-error-soft/30 border border-error/20 p-3 text-caption text-error">
+                  {errorMessage}
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="mt-2 w-full rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors"
+                disabled={isLoading}
+                className="mt-2 w-full rounded-control bg-primary py-2.5 text-body-sm font-semibold text-primary-foreground hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Submit Request
+                {isLoading ? 'Submitting Request...' : 'Submit Request'}
               </button>
             </form>
           )}
