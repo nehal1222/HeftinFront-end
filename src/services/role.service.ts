@@ -254,7 +254,8 @@ export const roleService = {
       memoryRoles = [created, ...memoryRoles]
       return created
     } catch (error) {
-      if (!api.defaults.baseURL || (error as { response?: { status?: number } })?.response?.status === 404) {
+      const status = (error as { response?: { status?: number } })?.response?.status
+      if (!api.defaults.baseURL || !status || status === 404) {
         const ceiling = await this.getOrganizationCeiling()
         const ceilingCodes = new Set(ceiling.map((r) => r.code))
         const invalidCodes = payload.rights.filter((c) => !ceilingCodes.has(c))
@@ -300,7 +301,8 @@ export const roleService = {
       memoryRoles = memoryRoles.map((r) => (r.id === id ? updated : r))
       return updated
     } catch (error) {
-      if (!api.defaults.baseURL || (error as { response?: { status?: number } })?.response?.status === 404) {
+      const status = (error as { response?: { status?: number } })?.response?.status
+      if (!api.defaults.baseURL || !status || status === 404) {
         if (payload.rights) {
           const ceiling = await this.getOrganizationCeiling()
           const ceilingCodes = new Set(ceiling.map((r) => r.code))
@@ -345,7 +347,8 @@ export const roleService = {
       await api.delete(`/roles/${id}`)
       memoryRoles = memoryRoles.filter((r) => r.id !== id)
     } catch (error) {
-      if (!api.defaults.baseURL || (error as { response?: { status?: number } })?.response?.status === 404) {
+      const status = (error as { response?: { status?: number } })?.response?.status
+      if (!api.defaults.baseURL || !status || status === 404) {
         const target = memoryRoles.find((r) => r.id === id)
         if (target?.is_system) {
           const customError = new Error('right_denied: System roles cannot be deleted.')
