@@ -142,6 +142,10 @@ export function RoleModal({
       if (Object.keys(mapped).length > 0) {
         setFieldErrors(mapped)
       }
+      const dialogElement = (event.target as HTMLElement).closest('[role="dialog"]')
+      if (dialogElement) {
+        dialogElement.scrollTo({ top: 0, behavior: 'smooth' })
+      }
     } finally {
       setIsSubmitting(false)
     }
