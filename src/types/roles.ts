@@ -37,3 +37,11 @@ export type OrganizationCeilingResponse = {
   organization_name?: string
   rights: RightItem[] | string[]
 }
+
+export type RoleTemplate = {
+  id: string
+  title: string
+  name: string
+  description: string
+  recommendedRights: string[]
+}

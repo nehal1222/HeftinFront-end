@@ -6,7 +6,62 @@ import { Dialog } from '@/components/ui/Dialog'
 import { Input } from '@/components/ui/Input'
 import { getErrorMessage, getFieldErrors } from '@/lib/axios'
 import { roleService } from '@/services/role.service'
-import type { RightItem, Role } from '@/types/roles'
+import type { RightItem, Role, RoleTemplate } from '@/types/roles'
+
+const ROLE_TEMPLATES: RoleTemplate[] = [
+  {
+    id: 'faculty',
+    title: 'Faculty',
+    name: 'Faculty',
+    description: 'Academic faculty member responsible for curriculum preparation, evaluations, and student mentoring',
+    recommendedRights: [
+      'exams.view',
+      'exams.create',
+      'evaluations.review',
+      'evaluations.assign',
+      'batches.view',
+      'study_material.view',
+      'study_material.manage',
+    ],
+  },
+  {
+    id: 'hod',
+    title: 'HOD',
+    name: 'Head of Department (HOD)',
+    description: 'Department head overseeing academic departments, faculty evaluations, and exam publishing',
+    recommendedRights: [
+      'exams.view',
+      'exams.create',
+      'exams.edit',
+      'exams.publish',
+      'evaluations.review',
+      'evaluations.assign',
+      'batches.view',
+      'batches.manage',
+      'performance.view',
+      'performance.export',
+    ],
+  },
+  {
+    id: 'teacher',
+    title: 'Teacher',
+    name: 'Teacher',
+    description: 'Classroom educator managing academic cohorts, coursework, and evaluations',
+    recommendedRights: [
+      'exams.view',
+      'evaluations.review',
+      'batches.view',
+      'study_material.view',
+    ],
+  },
+  {
+    id: 'custom',
+    title: 'Custom',
+    name: '',
+    description: '',
+    recommendedRights: [],
+  },
+]
 
 type RoleModalProps = {
   open: boolean
@@ -26,6 +81,7 @@ export function RoleModal({
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [selectedRights, setSelectedRights] = useState<string[]>([])
+  const [activeTemplateId, setActiveTemplateId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -40,6 +96,7 @@ export function RoleModal({
     if (open) {
       setError(null)
       setFieldErrors({})
+      setActiveTemplateId(null)
       if (role) {
         setName(role.name)
         setDescription(role.description || '')
@@ -52,6 +109,21 @@ export function RoleModal({
       }
     }
   }, [open, role, ceilingCodeSet])
+
+  function handleApplyTemplate(template: RoleTemplate) {
+    setActiveTemplateId(template.id)
+    setName(template.name)
+    setDescription(template.description)
+    if (template.recommendedRights.length === 0) {
+      setSelectedRights([])
+    } else {
+      const allowedRights = template.recommendedRights.filter((code) =>
+        ceilingCodeSet.has(code),
+      )
+      setSelectedRights(allowedRights)
+    }
+    setFieldErrors((prev) => ({ ...prev, name: '' }))
+  }
 
   const groupedCeilingRights = useMemo(() => {
     const map = new Map<string, RightItem[]>()
@@ -158,6 +230,33 @@ export function RoleModal({
         )}
 
         <div className="space-y-4">
+          {!isEdit && (
+            <div>
+              <span className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
+                Role templates
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {ROLE_TEMPLATES.map((tmpl) => {
+                  const isActive = activeTemplateId === tmpl.id
+                  return (
+                    <button
+                      key={tmpl.id}
+                      type="button"
+                      onClick={() => handleApplyTemplate(tmpl)}
+                      className={`rounded-full px-3 py-1 text-xs font-medium border transition-colors ${
+                        isActive
+                          ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+                          : 'border-border bg-surface hover:bg-surface-elevated text-foreground'
+                      }`}
+                    >
+                      {tmpl.title}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
           <div>
             <label htmlFor="role-name" className="block text-sm font-medium text-foreground">
               Role name <span className="text-danger">*</span>
@@ -166,7 +265,10 @@ export function RoleModal({
               id="role-name"
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value)
+                setActiveTemplateId(null)
+              }}
               placeholder="e.g. Senior Evaluator, Exam Admin, or Batch Mentor"
               className="mt-1"
               required
