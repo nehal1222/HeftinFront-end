@@ -595,6 +595,67 @@ button {
   text-align: left;
 }
 
+.login-role-group {
+  margin-top: 18px;
+  margin-bottom: 6px;
+}
+
+.login-role-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-foreground-strong, #001a1c);
+  margin-bottom: 8px;
+}
+
+.login-role-select {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.login-role-option {
+  cursor: pointer;
+  position: relative;
+}
+
+.login-role-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.login-role-option span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border, #cce6e8);
+  border-radius: 9px;
+  padding: 10px 8px;
+  background: var(--color-surface-elevated, #fff);
+  color: var(--color-foreground, #003439);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+
+.login-role-option:hover span {
+  border-color: var(--color-primary, #00828e);
+}
+
+.login-role-option input:checked + span {
+  border-color: var(--color-primary, #00828e);
+  background: rgba(0, 130, 142, 0.1);
+  color: var(--color-primary-shade-4, #003439);
+}
+
+.login-role-option input:focus-visible + span {
+  box-shadow: 0 0 0 3px rgba(0, 130, 142, 0.15);
+}
+
 .login-role-header {
   display: flex;
   align-items: center;

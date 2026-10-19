@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -8,12 +8,29 @@ import { getErrorMessage, getFieldErrors } from '@/lib/axios'
 import { useAuth } from '@/contexts/useAuth'
 
 type AccountType = 'organization' | 'individual'
+type LoginRole = 'student' | 'individual' | 'faculty' | 'org_admin' | 'super_admin'
+
+const LOGIN_ROLES: { value: LoginRole; label: string }[] = [
+  { value: 'student', label: 'Student' },
+  { value: 'individual', label: 'Individual' },
+  { value: 'faculty', label: 'Faculty' },
+  { value: 'org_admin', label: 'Organization Admin' },
+  { value: 'super_admin', label: 'Heftin Super Admin' },
+]
 
 export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
+  const [searchParams] = useSearchParams()
   const { login: authenticate } = useAuth()
   const [accountType, setAccountType] = useState<AccountType>('organization')
+  const roleParam = searchParams.get('role') as LoginRole | null
+  const [selectedRole, setSelectedRole] = useState<LoginRole>(() => {
+    if (roleParam && LOGIN_ROLES.some((r) => r.value === roleParam)) {
+      return roleParam
+    }
+    return 'student'
+  })
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -49,6 +66,8 @@ export function LoginPage() {
       if (typeof response.access_token !== 'string' || !response.access_token.trim()) {
         throw new Error('Sign-in failed because the server did not return an access token.')
       }
+
+      localStorage.setItem('heftinRole', selectedRole)
 
       const params = new URLSearchParams(location.search)
       const returnTo = params.get('returnTo') ?? params.get('from')
@@ -163,6 +182,24 @@ export function LoginPage() {
                 <span className="login-checkbox" aria-hidden="true" />
                 <span>Remember me</span>
               </label>
+
+              <div className="login-role-group">
+                <span className="login-role-label">Sign in as</span>
+                <div className="login-role-select" role="radiogroup" aria-label="Choose your role">
+                  {LOGIN_ROLES.map((r) => (
+                    <label key={r.value} className="login-role-option">
+                      <input
+                        type="radio"
+                        name="login-role"
+                        value={r.value}
+                        checked={selectedRole === r.value}
+                        onChange={() => setSelectedRole(r.value)}
+                      />
+                      <span>{r.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
 
               <Button className="login-submit" disabled={isSubmitting} type="submit">
                 <span>{isSubmitting ? 'Signing in...' : 'Sign in'}</span>
