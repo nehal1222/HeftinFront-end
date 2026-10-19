@@ -1,4 +1,4 @@
-export type RoleType = 'dynamic' | 'extra_admin' | 'system'
+export type RoleType = 'org_admin' | 'dynamic' | 'student'
 
 export type RightItem = {
   code: string
@@ -22,7 +22,7 @@ export type Role = {
 export type CreateRolePayload = {
   name: string
   description?: string
-  role_type: 'dynamic' | 'extra_admin'
+  role_type?: 'dynamic'
   rights: string[]
 }
 

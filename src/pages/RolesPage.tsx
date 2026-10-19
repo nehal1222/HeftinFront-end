@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { Plus, Search, RefreshCw } from 'lucide-react'
+import { Plus, Search, RefreshCw, AlertTriangle } from 'lucide-react'
 import { AppLayout } from '@/layouts/AppLayout'
 import { AppNavigation } from '@/navigation/AppNavigation'
 import { Button } from '@/components/ui/Button'
@@ -19,7 +19,7 @@ export function RolesPage() {
   const [roles, setRoles] = useState<Role[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [pageError, setPageError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'all' | 'dynamic' | 'extra_admin' | 'system'>('all')
+  const [activeTab, setActiveTab] = useState<'all' | 'dynamic' | 'system'>('all')
   const [searchQuery, setSearchQuery] = useState('')
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -54,9 +54,8 @@ export function RolesPage() {
     return roles.filter((role) => {
       const matchesTab =
         activeTab === 'all' ||
-        (activeTab === 'dynamic' && role.role_type === 'dynamic' && !role.is_system) ||
-        (activeTab === 'extra_admin' && role.role_type === 'extra_admin' && !role.is_system) ||
-        (activeTab === 'system' && (role.role_type === 'system' || role.is_system))
+        (activeTab === 'dynamic' && role.role_type === 'dynamic') ||
+        (activeTab === 'system' && (role.role_type === 'org_admin' || role.role_type === 'student' || role.is_system))
 
       const matchesQuery =
         !query ||
@@ -104,6 +103,8 @@ export function RolesPage() {
     }
   }
 
+  const isCeilingEmpty = !isLoading && !pageError && ceilingRights.length === 0
+
   return (
     <AppLayout nav={<AppNavigation />}>
       <div className="mx-auto max-w-6xl space-y-6">
@@ -113,7 +114,7 @@ export function RolesPage() {
               Roles & Rights
             </h1>
             <p className="mt-1 text-sm text-muted">
-              Configure dynamic roles and extra administrators. Roles can only select from the granted organization ceiling.
+              Configure dynamic roles. Roles can only select from the granted organization ceiling.
             </p>
           </div>
 
@@ -132,6 +133,7 @@ export function RolesPage() {
               variant="primary"
               size="md"
               onClick={handleOpenCreate}
+              disabled={isLoading || isCeilingEmpty}
             >
               <Plus size={16} className="mr-1.5" />
               Create Role
@@ -141,7 +143,27 @@ export function RolesPage() {
 
         {pageError && (
           <Alert variant="error" title="Error Loading Roles">
-            {pageError}
+            <div className="flex items-center justify-between gap-4">
+              <span>{pageError}</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => void loadData()}
+              >
+                Retry
+              </Button>
+            </div>
+          </Alert>
+        )}
+
+        {isCeilingEmpty && (
+          <Alert variant="warning" title="No Organization Ceiling Granted">
+            <div className="flex items-start gap-2">
+              <AlertTriangle size={16} className="mt-0.5 shrink-0" />
+              <span>
+                This organization does not currently have any rights granted in its ceiling. Dynamic roles cannot be created or assigned rights until a ceiling is granted by the platform administrator.
+              </span>
+            </div>
           </Alert>
         )}
 
@@ -179,19 +201,7 @@ export function RolesPage() {
                   : 'text-muted hover:text-foreground'
               }`}
             >
-              Dynamic roles ({roles.filter((r) => r.role_type === 'dynamic' && !r.is_system).length})
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('extra_admin')}
-              className={`rounded px-3 py-1.5 text-xs font-semibold transition-colors ${
-                activeTab === 'extra_admin'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted hover:text-foreground'
-              }`}
-            >
-              Extra admins ({roles.filter((r) => r.role_type === 'extra_admin' && !r.is_system).length})
+              Dynamic roles ({roles.filter((r) => r.role_type === 'dynamic').length})
             </button>
 
             <button
@@ -203,7 +213,7 @@ export function RolesPage() {
                   : 'text-muted hover:text-foreground'
               }`}
             >
-              System roles ({roles.filter((r) => r.role_type === 'system' || r.is_system).length})
+              System roles ({roles.filter((r) => r.role_type === 'org_admin' || r.role_type === 'student' || r.is_system).length})
             </button>
           </div>
 

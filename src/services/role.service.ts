@@ -95,95 +95,6 @@ const RIGHT_METADATA_MAP: Record<string, { label: string; module: string; descri
   },
 }
 
-const DEFAULT_CEILING_CODES = [
-  'exams.view',
-  'exams.create',
-  'exams.edit',
-  'exams.publish',
-  'evaluations.review',
-  'evaluations.assign',
-  'users.view',
-  'users.create',
-  'users.edit',
-  'roles.view',
-  'roles.manage',
-  'batches.view',
-  'batches.manage',
-  'study_material.view',
-  'study_material.manage',
-  'performance.view',
-  'performance.export',
-]
-
-const INITIAL_ROLES: Role[] = [
-  {
-    id: 'role-org-admin',
-    name: 'Organization Admin',
-    description: 'Full administrative rights granted across the organization ceiling',
-    role_type: 'system',
-    rights: [...DEFAULT_CEILING_CODES],
-    is_system: true,
-    users_count: 1,
-    created_at: '2026-09-01T00:00:00.000Z',
-    updated_at: '2026-09-01T00:00:00.000Z',
-  },
-  {
-    id: 'role-exam-coordinator',
-    name: 'Exam Coordinator',
-    description: 'Delegated extra admin for exam scheduling, blueprints, and evaluation assignments',
-    role_type: 'extra_admin',
-    rights: [
-      'exams.view',
-      'exams.create',
-      'exams.edit',
-      'exams.publish',
-      'evaluations.review',
-      'evaluations.assign',
-      'batches.view',
-    ],
-    is_system: false,
-    users_count: 2,
-    created_at: '2026-09-10T09:30:00.000Z',
-    updated_at: '2026-09-15T14:20:00.000Z',
-  },
-  {
-    id: 'role-senior-faculty',
-    name: 'Senior Faculty',
-    description: 'Academic evaluator with access to questions, study notes, and batch analytics',
-    role_type: 'dynamic',
-    rights: [
-      'exams.view',
-      'exams.create',
-      'evaluations.review',
-      'batches.view',
-      'study_material.view',
-      'study_material.manage',
-      'performance.view',
-    ],
-    is_system: false,
-    users_count: 5,
-    created_at: '2026-09-12T11:00:00.000Z',
-    updated_at: '2026-09-18T16:45:00.000Z',
-  },
-  {
-    id: 'role-student',
-    name: 'Student Learner',
-    description: 'Default student role with learner access to tests, materials, and reports',
-    role_type: 'system',
-    rights: [
-      'exams.view',
-      'study_material.view',
-      'performance.view',
-    ],
-    is_system: true,
-    users_count: 120,
-    created_at: '2026-09-01T00:00:00.000Z',
-    updated_at: '2026-09-01T00:00:00.000Z',
-  },
-]
-
-let memoryRoles: Role[] = [...INITIAL_ROLES]
-
 function formatRightItem(item: string | Partial<RightItem>): RightItem {
   if (typeof item === 'string') {
     const meta = RIGHT_METADATA_MAP[item]
@@ -212,160 +123,44 @@ function formatRightItem(item: string | Partial<RightItem>): RightItem {
 
 export const roleService = {
   async getOrganizationCeiling(): Promise<RightItem[]> {
-    try {
-      const { data } = await api.get<OrganizationCeilingResponse | { data: OrganizationCeilingResponse } | string[] | { rights: string[] }>('/organization/rights')
-      const payload = (data && 'data' in data && typeof data.data === 'object' && data.data !== null) ? data.data : data
+    const { data } = await api.get<OrganizationCeilingResponse | { data: OrganizationCeilingResponse } | string[] | { rights: string[] }>('/organization/rights')
+    const payload = (data && typeof data === 'object' && 'data' in data && data.data !== null) ? data.data : data
 
-      let rawRights: Array<string | Partial<RightItem>> = []
-      if (Array.isArray(payload)) {
-        rawRights = payload
-      } else if (payload && typeof payload === 'object' && 'rights' in payload && Array.isArray(payload.rights)) {
-        rawRights = payload.rights
-      }
-
-      if (rawRights.length > 0) {
-        return rawRights.map(formatRightItem)
-      }
-      return DEFAULT_CEILING_CODES.map((code) => formatRightItem(code))
-    } catch {
-      return DEFAULT_CEILING_CODES.map((code) => formatRightItem(code))
+    let rawRights: Array<string | Partial<RightItem>> = []
+    if (Array.isArray(payload)) {
+      rawRights = payload
+    } else if (payload && typeof payload === 'object' && 'rights' in payload && Array.isArray(payload.rights)) {
+      rawRights = payload.rights
     }
+
+    return rawRights.map(formatRightItem)
   },
 
   async getRoles(): Promise<Role[]> {
-    try {
-      const { data } = await api.get<Role[] | { data: Role[] }>('/roles')
-      const rolesList = Array.isArray(data) ? data : data?.data
-      if (Array.isArray(rolesList) && rolesList.length > 0) {
-        return rolesList
-      }
-      return [...memoryRoles]
-    } catch {
-      return [...memoryRoles]
-    }
+    const { data } = await api.get<Role[] | { data: Role[] }>('/roles')
+    const rolesList = Array.isArray(data) ? data : data?.data
+    return Array.isArray(rolesList) ? rolesList : []
   },
 
   async createRole(payload: CreateRolePayload): Promise<Role> {
-    try {
-      const { data } = await api.post<Role | { data: Role }>('/roles', payload)
-      const created = (data && 'data' in data && typeof data.data === 'object' && data.data !== null && 'id' in data.data)
-        ? (data.data as Role)
-        : (data as Role)
-      memoryRoles = [created, ...memoryRoles]
-      return created
-    } catch (error) {
-      const status = (error as { response?: { status?: number } })?.response?.status
-      if (!api.defaults.baseURL || !status || status === 404) {
-        const ceiling = await this.getOrganizationCeiling()
-        const ceilingCodes = new Set(ceiling.map((r) => r.code))
-        const invalidCodes = payload.rights.filter((c) => !ceilingCodes.has(c))
-
-        if (invalidCodes.length > 0) {
-          const customError = new Error(`right_denied: Code '${invalidCodes[0]}' is outside the organization ceiling.`)
-          Object.assign(customError, {
-            response: {
-              status: 422,
-              data: {
-                message: `right_denied: Code '${invalidCodes[0]}' is not permitted by the organization rights ceiling.`,
-                detail: `right_denied: Cannot attach '${invalidCodes[0]}'. It violates the organization rights ceiling.`,
-              },
-            },
-          })
-          throw customError
-        }
-
-        const newRole: Role = {
-          id: `role-${Date.now()}`,
-          name: payload.name.trim(),
-          description: payload.description?.trim(),
-          role_type: payload.role_type,
-          rights: [...payload.rights],
-          is_system: false,
-          users_count: 0,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        }
-        memoryRoles = [newRole, ...memoryRoles]
-        return newRole
-      }
-      throw error
+    const body: CreateRolePayload = {
+      ...payload,
+      role_type: 'dynamic',
     }
+    const { data } = await api.post<Role | { data: Role }>('/roles', body)
+    return (data && typeof data === 'object' && 'data' in data && data.data !== null && 'id' in data.data)
+      ? (data.data as Role)
+      : (data as Role)
   },
 
   async updateRole(id: string, payload: UpdateRolePayload): Promise<Role> {
-    try {
-      const { data } = await api.put<Role | { data: Role }>(`/roles/${id}`, payload)
-      const updated = (data && 'data' in data && typeof data.data === 'object' && data.data !== null && 'id' in data.data)
-        ? (data.data as Role)
-        : (data as Role)
-      memoryRoles = memoryRoles.map((r) => (r.id === id ? updated : r))
-      return updated
-    } catch (error) {
-      const status = (error as { response?: { status?: number } })?.response?.status
-      if (!api.defaults.baseURL || !status || status === 404) {
-        if (payload.rights) {
-          const ceiling = await this.getOrganizationCeiling()
-          const ceilingCodes = new Set(ceiling.map((r) => r.code))
-          const invalidCodes = payload.rights.filter((c) => !ceilingCodes.has(c))
-
-          if (invalidCodes.length > 0) {
-            const customError = new Error(`right_denied: Code '${invalidCodes[0]}' is outside the organization ceiling.`)
-            Object.assign(customError, {
-              response: {
-                status: 422,
-                data: {
-                  message: `right_denied: Code '${invalidCodes[0]}' is not permitted by the organization rights ceiling.`,
-                  detail: `right_denied: Cannot attach '${invalidCodes[0]}'. It violates the organization rights ceiling.`,
-                },
-              },
-            })
-            throw customError
-          }
-        }
-
-        const target = memoryRoles.find((r) => r.id === id)
-        if (!target) {
-          throw new Error('Role not found')
-        }
-
-        const updatedRole: Role = {
-          ...target,
-          name: payload.name !== undefined ? payload.name.trim() : target.name,
-          description: payload.description !== undefined ? payload.description?.trim() : target.description,
-          rights: payload.rights ? [...payload.rights] : target.rights,
-          updated_at: new Date().toISOString(),
-        }
-        memoryRoles = memoryRoles.map((r) => (r.id === id ? updatedRole : r))
-        return updatedRole
-      }
-      throw error
-    }
+    const { data } = await api.put<Role | { data: Role }>(`/roles/${id}`, payload)
+    return (data && typeof data === 'object' && 'data' in data && data.data !== null && 'id' in data.data)
+      ? (data.data as Role)
+      : (data as Role)
   },
 
   async deleteRole(id: string): Promise<void> {
-    try {
-      await api.delete(`/roles/${id}`)
-      memoryRoles = memoryRoles.filter((r) => r.id !== id)
-    } catch (error) {
-      const status = (error as { response?: { status?: number } })?.response?.status
-      if (!api.defaults.baseURL || !status || status === 404) {
-        const target = memoryRoles.find((r) => r.id === id)
-        if (target?.is_system) {
-          const customError = new Error('right_denied: System roles cannot be deleted.')
-          Object.assign(customError, {
-            response: {
-              status: 403,
-              data: {
-                message: 'right_denied: System roles are fixed and cannot be removed.',
-              },
-            },
-          })
-          throw customError
-        }
-        memoryRoles = memoryRoles.filter((r) => r.id !== id)
-        return
-      }
-      throw error
-    }
+    await api.delete(`/roles/${id}`)
   },
 }

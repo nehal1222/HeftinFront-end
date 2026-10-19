@@ -17,20 +17,21 @@ type RolesTableProps = {
   onDelete: (role: Role) => void
 }
 
-function getRoleTypeBadge(roleType: Role['role_type'], isSystem?: boolean) {
-  if (isSystem || roleType === 'system') {
+function getRoleTypeBadge(roleType: Role['role_type']) {
+  if (roleType === 'org_admin') {
     return (
       <span className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-800">
         <Lock size={11} />
-        System Role
+        Org Admin (System)
       </span>
     )
   }
 
-  if (roleType === 'extra_admin') {
+  if (roleType === 'student') {
     return (
-      <span className="inline-flex items-center rounded-full bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700">
-        Extra Admin
+      <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800">
+        <Lock size={11} />
+        Student (System)
       </span>
     )
   }
@@ -53,7 +54,7 @@ export function RolesTable({
   if (roles.length === 0) {
     return (
       <div className="rounded-card border border-border bg-surface p-8 text-center">
-        <p className="text-sm font-medium text-foreground">No roles found matching criteria.</p>
+        <p className="text-sm font-medium text-foreground">No organization roles found.</p>
         <p className="mt-1 text-xs text-muted">Create a new dynamic role or adjust filters.</p>
       </div>
     )
@@ -73,10 +74,13 @@ export function RolesTable({
         </TableHeader>
         <TableBody>
           {roles.map((role) => {
-            const validCount = role.rights.filter((r) =>
-              ceilingRights.some((cr) => cr.code === r),
-            ).length
-            const isSystemRole = Boolean(role.is_system || role.role_type === 'system')
+            const isOrgAdmin = role.role_type === 'org_admin'
+            const validCount = isOrgAdmin
+              ? totalCeiling
+              : (role.rights || []).filter((r) =>
+                  ceilingRights.some((cr) => cr.code === r),
+                ).length
+            const isSystemRole = Boolean(role.is_system || role.role_type === 'org_admin' || role.role_type === 'student')
 
             return (
               <TableRow key={role.id}>
@@ -94,19 +98,19 @@ export function RolesTable({
                 </TableCell>
 
                 <TableCell>
-                  {getRoleTypeBadge(role.role_type, role.is_system)}
+                  {getRoleTypeBadge(role.role_type)}
                 </TableCell>
 
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-xs text-foreground">
-                      {validCount} / {totalCeiling}
+                      {isOrgAdmin ? 'Full Ceiling' : `${validCount} / ${totalCeiling}`}
                     </span>
                     <div className="h-1.5 w-16 rounded-full bg-border overflow-hidden">
                       <div
                         className="h-full bg-primary"
                         style={{
-                          width: `${totalCeiling > 0 ? (validCount / totalCeiling) * 100 : 0}%`,
+                          width: `${isOrgAdmin ? 100 : totalCeiling > 0 ? (validCount / totalCeiling) * 100 : 0}%`,
                         }}
                       />
                     </div>
