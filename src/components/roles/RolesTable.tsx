@@ -17,8 +17,8 @@ type RolesTableProps = {
   onDelete: (role: Role) => void
 }
 
-function getRoleTypeBadge(roleType: Role['role_type']) {
-  if (roleType === 'org_admin') {
+function getRoleBadge(role: Role) {
+  if (role.role_type === 'org_admin') {
     return (
       <span className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-800">
         <Lock size={11} />
@@ -27,11 +27,45 @@ function getRoleTypeBadge(roleType: Role['role_type']) {
     )
   }
 
-  if (roleType === 'student') {
+  if (role.role_type === 'student') {
     return (
       <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800">
         <Lock size={11} />
         Student (System)
+      </span>
+    )
+  }
+
+  const name = role.name.toLowerCase()
+
+  if (name.includes('faculty')) {
+    return (
+      <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-800 border border-emerald-200">
+        Faculty
+      </span>
+    )
+  }
+
+  if (name.includes('hod') || name.includes('head of department')) {
+    return (
+      <span className="inline-flex items-center rounded-full bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-800 border border-purple-200">
+        HOD
+      </span>
+    )
+  }
+
+  if (name.includes('teacher')) {
+    return (
+      <span className="inline-flex items-center rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-800 border border-teal-200">
+        Teacher
+      </span>
+    )
+  }
+
+  if (name.includes('exam admin')) {
+    return (
+      <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-800 border border-blue-200">
+        Exam Admin
       </span>
     )
   }
@@ -98,7 +132,7 @@ export function RolesTable({
                 </TableCell>
 
                 <TableCell>
-                  {getRoleTypeBadge(role.role_type)}
+                  {getRoleBadge(role)}
                 </TableCell>
 
                 <TableCell>

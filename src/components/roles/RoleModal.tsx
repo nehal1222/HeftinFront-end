@@ -55,6 +55,22 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     ],
   },
   {
+    id: 'exam_admin',
+    title: 'Exam Admin',
+    name: 'Exam Admin',
+    description: 'Extra administrator overseeing exam blueprints, publishing, and evaluation assignments',
+    recommendedRights: [
+      'exams.view',
+      'exams.create',
+      'exams.edit',
+      'exams.publish',
+      'evaluations.review',
+      'evaluations.assign',
+      'batches.view',
+      'performance.view',
+    ],
+  },
+  {
     id: 'custom',
     title: 'Custom',
     name: '',
