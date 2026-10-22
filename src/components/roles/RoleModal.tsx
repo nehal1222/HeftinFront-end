@@ -17,8 +17,6 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     description: 'Academic faculty member responsible for curriculum preparation, evaluations, and student mentoring',
     recommendedRights: [
       'exams.view',
-      'exams.create',
-      'evaluations.review',
       'evaluations.assign',
       'batches.view',
       'study_material.view',
@@ -32,10 +30,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     description: 'Department head overseeing academic departments, faculty evaluations, and exam publishing',
     recommendedRights: [
       'exams.view',
-      'exams.create',
       'exams.edit',
       'exams.publish',
-      'evaluations.review',
       'evaluations.assign',
       'batches.view',
       'batches.manage',
@@ -50,7 +46,6 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     description: 'Classroom educator managing academic cohorts, coursework, and evaluations',
     recommendedRights: [
       'exams.view',
-      'evaluations.review',
       'batches.view',
       'study_material.view',
     ],
@@ -62,10 +57,8 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     description: 'Extra administrator overseeing exam blueprints, publishing, and evaluation assignments',
     recommendedRights: [
       'exams.view',
-      'exams.create',
       'exams.edit',
       'exams.publish',
-      'evaluations.review',
       'evaluations.assign',
       'batches.view',
       'performance.view',

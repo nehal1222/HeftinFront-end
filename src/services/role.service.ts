@@ -13,11 +13,6 @@ const RIGHT_METADATA_MAP: Record<string, { label: string; module: string; descri
     module: 'Exams',
     description: 'Browse, search, and view scheduled exams and question papers',
   },
-  'exams.create': {
-    label: 'Create Exams',
-    module: 'Exams',
-    description: 'Create new exam configurations, blueprints, and question items',
-  },
   'exams.edit': {
     label: 'Edit Exams',
     module: 'Exams',
@@ -27,11 +22,6 @@ const RIGHT_METADATA_MAP: Record<string, { label: string; module: string; descri
     label: 'Publish Exams',
     module: 'Exams',
     description: 'Publish finalized exams to candidate batches',
-  },
-  'evaluations.review': {
-    label: 'Review Evaluations',
-    module: 'Evaluations',
-    description: 'Inspect preliminary evaluations, scoring criteria, and answer keys',
   },
   'evaluations.assign': {
     label: 'Assign Evaluators',
@@ -121,6 +111,14 @@ function formatRightItem(item: string | Partial<RightItem>): RightItem {
   }
 }
 
+const EXCLUDED_RIGHT_CODES = new Set([
+  'exams.create',
+  'exam.create',
+  'evaluations.review',
+  'exam.review',
+  'exams.review',
+])
+
 export const roleService = {
   async getOrganizationCeiling(): Promise<RightItem[]> {
     const { data } = await api.get<OrganizationCeilingResponse | { data: OrganizationCeilingResponse } | string[] | { rights: string[] }>('/organization/rights')
@@ -133,7 +131,7 @@ export const roleService = {
       rawRights = payload.rights
     }
 
-    return rawRights.map(formatRightItem)
+    return rawRights.map(formatRightItem).filter((item) => !EXCLUDED_RIGHT_CODES.has(item.code))
   },
 
   async getRoles(): Promise<Role[]> {
