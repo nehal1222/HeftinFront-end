@@ -62,13 +62,6 @@ function getRoleBadge(role: Role) {
     )
   }
 
-  if (name.includes('exam admin')) {
-    return (
-      <span className="inline-flex items-center rounded-full border border-sky-200/80 bg-sky-50 px-2.5 py-0.5 text-xs font-semibold text-sky-800">
-        Exam Admin
-      </span>
-    )
-  }
 
   return (
     <span className="inline-flex items-center rounded-full border border-primary-tint-4/60 bg-primary-soft/40 px-2.5 py-0.5 text-xs font-semibold text-primary-dark">

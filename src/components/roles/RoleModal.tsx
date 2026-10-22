@@ -49,19 +49,6 @@ const ROLE_TEMPLATES: RoleTemplate[] = [
     ],
   },
   {
-    id: 'exam_admin',
-    title: 'Exam Admin',
-    name: 'Exam Admin',
-    description: 'Extra administrator overseeing batch cohorts, materials, and learner performance',
-    recommendedRights: [
-      'batches.view',
-      'batches.manage',
-      'study_material.view',
-      'performance.view',
-      'performance.export',
-    ],
-  },
-  {
     id: 'custom',
     title: 'Custom',
     name: '',
@@ -289,7 +276,7 @@ export function RoleModal({
                 setName(e.target.value)
                 setActiveTemplateId(null)
               }}
-              placeholder="e.g. Senior Evaluator, Exam Admin, or Batch Mentor"
+              placeholder="e.g. Department Head, Course Coordinator, or Batch Mentor"
               className="mt-1"
               required
             />
