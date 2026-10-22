@@ -8,26 +8,6 @@ import type {
 } from '@/types/roles'
 
 const RIGHT_METADATA_MAP: Record<string, { label: string; module: string; description: string }> = {
-  'exams.view': {
-    label: 'View Exams',
-    module: 'Exams',
-    description: 'Browse, search, and view scheduled exams and question papers',
-  },
-  'exams.edit': {
-    label: 'Edit Exams',
-    module: 'Exams',
-    description: 'Modify draft exams, sections, and question weightings',
-  },
-  'exams.publish': {
-    label: 'Publish Exams',
-    module: 'Exams',
-    description: 'Publish finalized exams to candidate batches',
-  },
-  'evaluations.assign': {
-    label: 'Assign Evaluators',
-    module: 'Evaluations',
-    description: 'Distribute candidate response copies to faculty evaluators',
-  },
   'users.view': {
     label: 'View Users',
     module: 'Users',
@@ -111,13 +91,14 @@ function formatRightItem(item: string | Partial<RightItem>): RightItem {
   }
 }
 
-const EXCLUDED_RIGHT_CODES = new Set([
-  'exams.create',
-  'exam.create',
-  'evaluations.review',
-  'exam.review',
-  'exams.review',
-])
+function isPermittedCeilingRight(code: string): boolean {
+  return (
+    !code.startsWith('exams.') &&
+    !code.startsWith('exam.') &&
+    !code.startsWith('evaluations.') &&
+    !code.startsWith('evaluation.')
+  )
+}
 
 export const roleService = {
   async getOrganizationCeiling(): Promise<RightItem[]> {
@@ -131,7 +112,7 @@ export const roleService = {
       rawRights = payload.rights
     }
 
-    return rawRights.map(formatRightItem).filter((item) => !EXCLUDED_RIGHT_CODES.has(item.code))
+    return rawRights.map(formatRightItem).filter((item) => isPermittedCeilingRight(item.code))
   },
 
   async getRoles(): Promise<Role[]> {
