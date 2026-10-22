@@ -422,9 +422,6 @@ export function RoleModal({
                                     {item.label}
                                   </span>
                                 </div>
-                                <span className="block font-mono text-[10px] text-muted">
-                                  {item.code}
-                                </span>
                                 {item.description && (
                                   <p className="mt-1 line-clamp-2 text-[11px] text-muted">
                                     {item.description}
