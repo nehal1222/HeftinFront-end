@@ -343,9 +343,9 @@ export function RoleModal({
           </div>
 
           {ceilingRights.length === 0 ? (
-            <div className="mt-4 rounded-control border border-yellow-200 bg-yellow-50 p-4 text-xs text-yellow-900">
+            <Alert variant="warning" className="mt-4 text-xs">
               No organization rights ceiling is currently active for this account. Roles cannot be granted rights outside the organization ceiling.
-            </div>
+            </Alert>
           ) : (
             <div className="mt-4 space-y-4">
               {groupedCeilingRights.map(([moduleName, items]) => {

@@ -180,7 +180,7 @@ export function RolesTable({
                           variant="ghost"
                           size="sm"
                           onClick={() => onDelete(role)}
-                          className="h-8 px-2 text-danger hover:bg-red-50 hover:text-danger"
+                          className="h-8 px-2 text-danger hover:bg-danger/10 hover:text-danger"
                         >
                           <Trash2 size={13} className="mr-1" />
                           Delete
