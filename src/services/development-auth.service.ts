@@ -60,13 +60,11 @@ function buildAccounts(): DevelopmentAccount[] {
             must_change_password: false,
             roles: ['organization_admin'],
             rights: [
-              'exams.view',
               'study_material.view',
               'performance.view',
               'users.view',
               'roles.view',
               'batches.view',
-              'evaluations.review',
             ],
             current_organization: organization,
           },
@@ -85,7 +83,6 @@ function buildAccounts(): DevelopmentAccount[] {
             must_change_password: false,
             roles: ['student'],
             rights: [
-              'exams.view',
               'study_material.view',
               'performance.view',
             ],
