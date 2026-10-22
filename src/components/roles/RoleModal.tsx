@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, type FormEvent } from 'react'
+import { Search } from 'lucide-react'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { Checkbox } from '@/components/ui/Checkbox'
@@ -98,6 +99,7 @@ export function RoleModal({
   const [description, setDescription] = useState('')
   const [selectedRights, setSelectedRights] = useState<string[]>([])
   const [activeTemplateId, setActiveTemplateId] = useState<string | null>(null)
+  const [rightsFilterQuery, setRightsFilterQuery] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -113,6 +115,7 @@ export function RoleModal({
       setError(null)
       setFieldErrors({})
       setActiveTemplateId(null)
+      setRightsFilterQuery('')
       if (role) {
         setName(role.name)
         setDescription(role.description || '')
@@ -141,15 +144,26 @@ export function RoleModal({
     setFieldErrors((prev) => ({ ...prev, name: '' }))
   }
 
+  const filteredCeilingRights = useMemo(() => {
+    const query = rightsFilterQuery.trim().toLowerCase()
+    if (!query) return ceilingRights
+    return ceilingRights.filter(
+      (item) =>
+        item.label.toLowerCase().includes(query) ||
+        item.code.toLowerCase().includes(query) ||
+        item.module.toLowerCase().includes(query),
+    )
+  }, [ceilingRights, rightsFilterQuery])
+
   const groupedCeilingRights = useMemo(() => {
     const map = new Map<string, RightItem[]>()
-    ceilingRights.forEach((item) => {
+    filteredCeilingRights.forEach((item) => {
       const list = map.get(item.module) || []
       list.push(item)
       map.set(item.module, list)
     })
     return Array.from(map.entries())
-  }, [ceilingRights])
+  }, [filteredCeilingRights])
 
   function handleToggleRight(code: string) {
     if (!ceilingCodeSet.has(code)) {
@@ -236,7 +250,7 @@ export function RoleModal({
       open={open}
       onClose={onClose}
       title={isEdit ? 'Edit Role' : 'Create Dynamic Role'}
-      className="max-h-[90vh] max-w-2xl overflow-y-auto"
+      className="max-h-[92vh] max-w-2xl overflow-y-auto"
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         {error && (
@@ -248,8 +262,8 @@ export function RoleModal({
         <div className="space-y-4">
           {!isEdit && (
             <div>
-              <span className="block text-xs font-semibold uppercase tracking-wider text-muted mb-2">
-                Role templates
+              <span className="mb-2 block text-xs font-semibold uppercase tracking-wider text-muted">
+                Role Templates
               </span>
               <div className="flex flex-wrap gap-2">
                 {ROLE_TEMPLATES.map((tmpl) => {
@@ -259,10 +273,10 @@ export function RoleModal({
                       key={tmpl.id}
                       type="button"
                       onClick={() => handleApplyTemplate(tmpl)}
-                      className={`rounded-full px-3 py-1 text-xs font-medium border transition-colors ${
+                      className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
                         isActive
-                          ? 'border-primary bg-primary text-primary-foreground shadow-sm'
-                          : 'border-border bg-surface hover:bg-surface-elevated text-foreground'
+                          ? 'border border-primary bg-primary text-primary-foreground shadow-xs'
+                          : 'border border-border/80 bg-surface text-foreground hover:border-primary-tint-4/80 hover:bg-surface-elevated'
                       }`}
                     >
                       {tmpl.title}
@@ -274,8 +288,8 @@ export function RoleModal({
           )}
 
           <div>
-            <label htmlFor="role-name" className="block text-sm font-medium text-foreground">
-              Role name <span className="text-danger">*</span>
+            <label htmlFor="role-name" className="block text-xs font-semibold text-foreground">
+              Role Name <span className="text-danger">*</span>
             </label>
             <Input
               id="role-name"
@@ -295,7 +309,7 @@ export function RoleModal({
           </div>
 
           <div>
-            <label htmlFor="role-description" className="block text-sm font-medium text-foreground">
+            <label htmlFor="role-description" className="block text-xs font-semibold text-foreground">
               Description
             </label>
             <Input
@@ -309,10 +323,10 @@ export function RoleModal({
           </div>
         </div>
 
-        <div className="rounded-card border border-border bg-surface-elevated p-4">
+        <div className="rounded-card border border-border/80 bg-surface-elevated p-4 shadow-xs">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-foreground-strong">
+              <h3 className="text-sm font-semibold tracking-tight text-foreground-strong">
                 Organization Ceiling Rights
               </h3>
               <p className="text-xs text-muted">
@@ -327,6 +341,7 @@ export function RoleModal({
                   variant="outline"
                   size="sm"
                   onClick={handleSelectAllCeiling}
+                  className="h-7 text-xs font-medium"
                 >
                   Select all
                 </Button>
@@ -335,6 +350,7 @@ export function RoleModal({
                   variant="outline"
                   size="sm"
                   onClick={handleClearAll}
+                  className="h-7 text-xs font-medium"
                 >
                   Clear all
                 </Button>
@@ -347,75 +363,110 @@ export function RoleModal({
               No organization rights ceiling is currently active for this account. Roles cannot be granted rights outside the organization ceiling.
             </Alert>
           ) : (
-            <div className="mt-4 space-y-4">
-              {groupedCeilingRights.map(([moduleName, items]) => {
-                const allModuleSelected = items.every((i) => selectedRights.includes(i.code))
-                const someModuleSelected = items.some((i) => selectedRights.includes(i.code))
+            <div className="mt-4 space-y-3">
+              {ceilingRights.length > 6 && (
+                <div className="relative">
+                  <Search
+                    size={14}
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted"
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Filter ceiling rights..."
+                    value={rightsFilterQuery}
+                    onChange={(e) => setRightsFilterQuery(e.target.value)}
+                    className="h-8 pl-8 text-xs"
+                  />
+                </div>
+              )}
 
-                return (
-                  <div key={moduleName} className="rounded-control border border-border bg-surface p-3">
-                    <div className="flex items-center justify-between border-b border-border pb-2">
-                      <span className="text-xs font-bold uppercase tracking-wider text-muted">
-                        {moduleName}
-                      </span>
+              {groupedCeilingRights.length === 0 ? (
+                <div className="py-6 text-center text-xs text-muted">
+                  No rights match your search filter.
+                </div>
+              ) : (
+                groupedCeilingRights.map(([moduleName, items]) => {
+                  const allModuleSelected = items.every((i) => selectedRights.includes(i.code))
+                  const someModuleSelected = items.some((i) => selectedRights.includes(i.code))
+                  const selectedCount = items.filter((i) => selectedRights.includes(i.code)).length
 
-                      <button
-                        type="button"
-                        onClick={() =>
-                          allModuleSelected
-                            ? handleDeselectAllInModule(items)
-                            : handleSelectAllInModule(items)
-                        }
-                        className="text-xs font-medium text-primary hover:underline"
-                      >
-                        {allModuleSelected ? 'Deselect all' : someModuleSelected ? 'Select remaining' : 'Select all'}
-                      </button>
-                    </div>
+                  return (
+                    <div
+                      key={moduleName}
+                      className="rounded-control border border-border/70 bg-surface/50 p-3 transition-colors"
+                    >
+                      <div className="flex items-center justify-between border-b border-border/60 pb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold uppercase tracking-wider text-muted">
+                            {moduleName}
+                          </span>
+                          <span className="rounded-full bg-surface-elevated px-2 py-0.5 text-[10px] font-semibold text-muted border border-border/60">
+                            {selectedCount} of {items.length}
+                          </span>
+                        </div>
 
-                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                      {items.map((item) => {
-                        const isChecked = selectedRights.includes(item.code)
-                        return (
-                          <label
-                            key={item.code}
-                            className={`flex cursor-pointer items-start gap-2.5 rounded-control border p-2.5 transition-colors ${
-                              isChecked
-                                ? 'border-primary-tint-4 bg-primary-soft/50'
-                                : 'border-border bg-surface-elevated hover:bg-surface'
-                            }`}
-                          >
-                            <Checkbox
-                              checked={isChecked}
-                              onChange={() => handleToggleRight(item.code)}
-                              className="mt-0.5"
-                            />
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold text-foreground-strong">
-                                  {item.label}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            allModuleSelected
+                              ? handleDeselectAllInModule(items)
+                              : handleSelectAllInModule(items)
+                          }
+                          className="text-xs font-semibold text-primary hover:underline"
+                        >
+                          {allModuleSelected
+                            ? 'Deselect all'
+                            : someModuleSelected
+                              ? 'Select remaining'
+                              : 'Select all'}
+                        </button>
+                      </div>
+
+                      <div className="mt-2.5 grid gap-2 sm:grid-cols-2">
+                        {items.map((item) => {
+                          const isChecked = selectedRights.includes(item.code)
+                          return (
+                            <label
+                              key={item.code}
+                              className={`flex cursor-pointer items-start gap-2.5 rounded-control border p-2.5 transition-all ${
+                                isChecked
+                                  ? 'border-primary-tint-4/80 bg-primary-soft/30 shadow-2xs'
+                                  : 'border-border/60 bg-surface-elevated hover:border-primary-tint-4/50 hover:bg-surface/60'
+                              }`}
+                            >
+                              <Checkbox
+                                checked={isChecked}
+                                onChange={() => handleToggleRight(item.code)}
+                                className="mt-0.5 shrink-0"
+                              />
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs font-semibold text-foreground-strong">
+                                    {item.label}
+                                  </span>
+                                </div>
+                                <span className="block font-mono text-[10px] text-muted">
+                                  {item.code}
                                 </span>
+                                {item.description && (
+                                  <p className="mt-1 line-clamp-2 text-[11px] text-muted">
+                                    {item.description}
+                                  </p>
+                                )}
                               </div>
-                              <span className="block font-mono text-[10px] text-muted">
-                                {item.code}
-                              </span>
-                              {item.description && (
-                                <p className="mt-1 line-clamp-2 text-[11px] text-muted">
-                                  {item.description}
-                                </p>
-                              )}
-                            </div>
-                          </label>
-                        )
-                      })}
+                            </label>
+                          )
+                        })}
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
+                  )
+                })
+              )}
             </div>
           )}
         </div>
 
-        <div className="flex justify-end gap-3 pt-2">
+        <div className="flex justify-end gap-2.5 pt-2">
           <Button
             type="button"
             variant="outline"

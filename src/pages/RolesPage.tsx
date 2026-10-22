@@ -109,12 +109,12 @@ export function RolesPage() {
     <AppLayout nav={<AppNavigation />}>
       <div className="mx-auto max-w-6xl space-y-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
+          <div className="space-y-1">
             <h1 className="text-2xl font-bold tracking-tight text-foreground-strong">
               Roles & Rights
             </h1>
-            <p className="mt-1 text-sm text-muted">
-              Configure dynamic roles. Roles can only select from the granted organization ceiling.
+            <p className="text-xs text-muted">
+              Configure dynamic roles and delegate permissions strictly within the organization ceiling.
             </p>
           </div>
 
@@ -125,6 +125,7 @@ export function RolesPage() {
               onClick={() => void loadData()}
               disabled={isLoading}
               title="Refresh roles"
+              className="h-9 w-9 p-0"
             >
               <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
             </Button>
@@ -135,7 +136,7 @@ export function RolesPage() {
               onClick={handleOpenCreate}
               disabled={isLoading || isCeilingEmpty}
             >
-              <Plus size={16} className="mr-1.5" />
+              <Plus size={15} className="mr-1.5 shrink-0" />
               Create Role
             </Button>
           </div>
@@ -179,41 +180,68 @@ export function RolesPage() {
         />
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-1.5 rounded-control border border-border bg-surface p-1">
+          <div className="flex flex-wrap items-center gap-1 rounded-control border border-border/80 bg-surface/70 p-1">
             <button
               type="button"
               onClick={() => setActiveTab('all')}
-              className={`rounded px-3 py-1.5 text-xs font-semibold transition-colors ${
+              className={`flex items-center gap-1.5 rounded px-3 py-1.5 text-xs font-semibold transition-all ${
                 activeTab === 'all'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  ? 'bg-primary text-primary-foreground shadow-xs'
                   : 'text-muted hover:text-foreground'
               }`}
             >
-              All roles ({roles.length})
+              <span>All roles</span>
+              <span
+                className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
+                  activeTab === 'all'
+                    ? 'bg-primary-shade-1 text-primary-foreground'
+                    : 'bg-border/60 text-muted'
+                }`}
+              >
+                {roles.length}
+              </span>
             </button>
 
             <button
               type="button"
               onClick={() => setActiveTab('dynamic')}
-              className={`rounded px-3 py-1.5 text-xs font-semibold transition-colors ${
+              className={`flex items-center gap-1.5 rounded px-3 py-1.5 text-xs font-semibold transition-all ${
                 activeTab === 'dynamic'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  ? 'bg-primary text-primary-foreground shadow-xs'
                   : 'text-muted hover:text-foreground'
               }`}
             >
-              Dynamic roles ({roles.filter((r) => r.role_type === 'dynamic').length})
+              <span>Dynamic roles</span>
+              <span
+                className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
+                  activeTab === 'dynamic'
+                    ? 'bg-primary-shade-1 text-primary-foreground'
+                    : 'bg-border/60 text-muted'
+                }`}
+              >
+                {roles.filter((r) => r.role_type === 'dynamic').length}
+              </span>
             </button>
 
             <button
               type="button"
               onClick={() => setActiveTab('system')}
-              className={`rounded px-3 py-1.5 text-xs font-semibold transition-colors ${
+              className={`flex items-center gap-1.5 rounded px-3 py-1.5 text-xs font-semibold transition-all ${
                 activeTab === 'system'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  ? 'bg-primary text-primary-foreground shadow-xs'
                   : 'text-muted hover:text-foreground'
               }`}
             >
-              System roles ({roles.filter((r) => r.role_type === 'org_admin' || r.role_type === 'student' || r.is_system).length})
+              <span>System roles</span>
+              <span
+                className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
+                  activeTab === 'system'
+                    ? 'bg-primary-shade-1 text-primary-foreground'
+                    : 'bg-border/60 text-muted'
+                }`}
+              >
+                {roles.filter((r) => r.role_type === 'org_admin' || r.role_type === 'student' || r.is_system).length}
+              </span>
             </button>
           </div>
 
@@ -227,15 +255,15 @@ export function RolesPage() {
               placeholder="Search roles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 h-9"
+              className="h-9 pl-9 text-xs"
             />
           </div>
         </div>
 
         {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Spinner size="md" className="mr-2 text-primary" />
-            <span className="text-sm text-muted">Loading roles and ceiling...</span>
+          <div className="flex items-center justify-center rounded-card border border-border/80 bg-surface-elevated py-16 shadow-xs">
+            <Spinner size="md" className="mr-2.5 text-primary" />
+            <span className="text-xs font-medium text-muted">Loading organization roles and ceiling...</span>
           </div>
         ) : (
           <RolesTable
