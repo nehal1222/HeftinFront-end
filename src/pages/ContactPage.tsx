@@ -288,7 +288,10 @@ export function ContactPage() {
         </div>
       </nav>
 
-      <main className="flex-1 flex items-center justify-center py-12 sm:py-16 px-4">
+      <main
+        className="flex-1 flex items-center justify-center px-4"
+        style={{ paddingTop: 'clamp(130px, 12vw, 160px)', paddingBottom: '72px' }}
+      >
         <div className="w-full max-w-xl rounded-2xl bg-white p-6 sm:p-10 shadow-lg border border-[#cce6e8] text-[#003439] font-sans">
           <div className="mb-6">
             <h1 className="text-2xl font-bold tracking-tight text-[#003439] font-serif">
