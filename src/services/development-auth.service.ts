@@ -47,49 +47,115 @@ function buildAccounts(): DevelopmentAccount[] {
     name: 'Heftin Academy Test Organization',
   }
   const accounts: Array<DevelopmentAccount | null> = [
-    import.meta.env.VITE_TEST_ADMIN_LOGIN && import.meta.env.VITE_TEST_ADMIN_PASSWORD
-      ? {
-          login: import.meta.env.VITE_TEST_ADMIN_LOGIN,
-          password: import.meta.env.VITE_TEST_ADMIN_PASSWORD,
-          user: {
-            id: 'dev-org-admin',
-            email: import.meta.env.VITE_TEST_ADMIN_LOGIN,
-            mobile: null,
-            full_name: 'Admin Demo',
-            status: 'active',
-            must_change_password: false,
-            roles: ['organization_admin'],
-            rights: [
-              'study_material.view',
-              'performance.view',
-              'users.view',
-              'roles.view',
-              'batches.view',
-            ],
-            current_organization: organization,
-          },
-        }
-      : null,
-    import.meta.env.VITE_TEST_STUDENT_LOGIN && import.meta.env.VITE_TEST_STUDENT_PASSWORD
-      ? {
-          login: import.meta.env.VITE_TEST_STUDENT_LOGIN,
-          password: import.meta.env.VITE_TEST_STUDENT_PASSWORD,
-          user: {
-            id: 'dev-student',
-            email: import.meta.env.VITE_TEST_STUDENT_LOGIN,
-            mobile: null,
-            full_name: 'Student Demo',
-            status: 'active',
-            must_change_password: false,
-            roles: ['student'],
-            rights: [
-              'study_material.view',
-              'performance.view',
-            ],
-            current_organization: organization,
-          },
-        }
-      : null,
+    {
+      login: import.meta.env.VITE_TEST_ADMIN_LOGIN || 'admin@example.com',
+      password: import.meta.env.VITE_TEST_ADMIN_PASSWORD || 'password123',
+      user: {
+        id: 'dev-org-admin',
+        email: import.meta.env.VITE_TEST_ADMIN_LOGIN || 'admin@example.com',
+        mobile: null,
+        full_name: 'Admin Demo',
+        status: 'active',
+        must_change_password: false,
+        roles: ['organization_admin'],
+        rights: [
+          'study_material.view',
+          'performance.view',
+          'users.view',
+          'roles.view',
+          'batches.view',
+          'evaluations.review',
+          'exams.view',
+        ],
+        current_organization: organization,
+      },
+    },
+    {
+      login: import.meta.env.VITE_TEST_STUDENT_LOGIN || 'student@example.com',
+      password: import.meta.env.VITE_TEST_STUDENT_PASSWORD || 'password123',
+      user: {
+        id: 'dev-student',
+        email: import.meta.env.VITE_TEST_STUDENT_LOGIN || 'student@example.com',
+        mobile: null,
+        full_name: 'Student Demo',
+        status: 'active',
+        must_change_password: false,
+        roles: ['student'],
+        rights: [
+          'study_material.view',
+          'performance.view',
+          'exams.view',
+        ],
+        current_organization: organization,
+      },
+    },
+    {
+      login: 'faculty@example.com',
+      password: 'password123',
+      user: {
+        id: 'dev-faculty',
+        email: 'faculty@example.com',
+        mobile: null,
+        full_name: 'Faculty Evaluator Demo',
+        status: 'active',
+        must_change_password: false,
+        roles: ['faculty'],
+        rights: [
+          'study_material.view',
+          'performance.view',
+          'batches.view',
+          'evaluations.review',
+          'exams.view',
+        ],
+        current_organization: organization,
+      },
+    },
+    {
+      login: 'superadmin@heftin.com',
+      password: 'password123',
+      user: {
+        id: 'dev-super-admin',
+        email: 'superadmin@heftin.com',
+        mobile: null,
+        full_name: 'Super Admin Demo',
+        status: 'active',
+        must_change_password: false,
+        roles: ['super_admin'],
+        rights: [
+          'platform.view',
+          'roles.view',
+          'users.view',
+          'study_material.view',
+          'performance.view',
+          'exams.view',
+          'batches.view',
+          'evaluations.review',
+        ],
+        current_organization: {
+          id: 'heftin-hq',
+          name: 'Heftin Academy HQ',
+        },
+      },
+    },
+    {
+      login: 'individual@example.com',
+      password: 'password123',
+      user: {
+        id: 'dev-individual',
+        email: 'individual@example.com',
+        mobile: null,
+        full_name: 'Individual Learner Demo',
+        status: 'active',
+        must_change_password: false,
+        roles: ['individual'],
+        rights: [
+          'study_material.view',
+          'performance.view',
+          'exams.view',
+        ],
+        current_organization: null,
+      },
+    },
   ]
 
   return accounts.filter((account): account is DevelopmentAccount => account !== null)
