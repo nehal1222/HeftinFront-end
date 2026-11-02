@@ -278,8 +278,11 @@ export function ContactPage() {
                   <Link to={ROUTES.LOGIN} className="login" style={{ whiteSpace: 'nowrap' }}>
                     Login
                   </Link>
-                  <Link to={SIGNUP_ROUTE} className="start-button" style={{ whiteSpace: 'nowrap' }}>
+                  <Link to={SIGNUP_ROUTE} className="login" style={{ whiteSpace: 'nowrap' }}>
                     Sign Up
+                  </Link>
+                  <Link to={SIGNUP_ROUTE} className="start-button" style={{ whiteSpace: 'nowrap' }}>
+                    Get Started
                   </Link>
                 </>
               )}

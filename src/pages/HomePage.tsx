@@ -628,8 +628,11 @@ export function HomePage() {
                   <Link to={ROUTES.LOGIN} className="login">
                     Login
                   </Link>
-                  <Link to={SIGNUP_ROUTE} className="start-button">
+                  <Link to={SIGNUP_ROUTE} className="login">
                     Sign Up
+                  </Link>
+                  <Link to={SIGNUP_ROUTE} className="start-button">
+                    Get Started
                   </Link>
                 </>
               )}
