@@ -611,7 +611,7 @@ export function HomePage() {
                 <a href="#faq">FAQ</a>
               </li>
               <li>
-                <Link to={ROUTES.Contact}>Contact</Link>
+                <Link to={ROUTES.CONTACT}>Contact</Link>
               </li>
             </ul>
 
