@@ -206,7 +206,7 @@ export function ContactPage() {
         {ariaStatus}
       </div>
 
-      <nav className="navbar" style={{ position: 'sticky', top: 0, zIndex: 40 }}>
+      <nav className="navbar">
         <div className="navbar-inner">
           <Link to={ROUTES.HOME} className="brand">
             <img src="/images/logo.jpeg" alt="Heftin Academy" className="brand-logo" />
@@ -223,7 +223,7 @@ export function ContactPage() {
             <span></span><span></span><span></span>
           </button>
 
-          <div className={`navbar-collapse ${isMobileMenuOpen ? 'is-open' : ''}`} id="navCollapse">
+          <div className={`navbar-collapse ${isMobileMenuOpen ? 'open is-open' : ''}`} id="navCollapse">
             <ul>
               <li>
                 <Link to={`${ROUTES.HOME}#exams`} style={{ whiteSpace: 'nowrap' }} onClick={() => setIsMobileMenuOpen(false)}>
@@ -255,7 +255,7 @@ export function ContactPage() {
                 </Link>
               </li>
             </ul>
-            <div className="nav-actions-inner" style={{ whiteSpace: 'nowrap' }}>
+            <div className="nav-actions-inner" onClick={() => setIsMobileMenuOpen(false)}>
               <Link to={REQUEST_ACCESS_ROUTE} className="go-premium" style={{ whiteSpace: 'nowrap' }}>
                 Go Premium
               </Link>
@@ -295,7 +295,7 @@ export function ContactPage() {
         className="flex-1 flex items-center justify-center px-4"
         style={{ paddingTop: 'clamp(130px, 12vw, 160px)', paddingBottom: '72px' }}
       >
-        <div className="w-full max-w-xl rounded-2xl bg-white p-6 sm:p-10 shadow-lg border border-[#cce6e8] text-[#003439] font-sans">
+        <div className="w-full max-w-xl md:max-w-2xl rounded-2xl bg-white p-6 sm:p-10 md:p-12 shadow-lg border border-[#cce6e8] text-[#003439] font-sans">
           <div className="mb-6">
             <h1 className="text-2xl font-bold tracking-tight text-[#003439] font-serif">
               Get in touch

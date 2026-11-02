@@ -590,7 +590,7 @@ export function HomePage() {
             <span />
           </button>
 
-          <div className={`navbar-collapse ${isMobileMenuOpen ? 'open' : ''}`}>
+          <div className={`navbar-collapse ${isMobileMenuOpen ? 'open is-open' : ''}`}>
             <ul onClick={() => setIsMobileMenuOpen(false)}>
               <li>
                 <a href="#explore">Arena</a>
@@ -615,7 +615,7 @@ export function HomePage() {
               </li>
             </ul>
 
-            <div className="nav-actions-inner">
+            <div className="nav-actions-inner" onClick={() => setIsMobileMenuOpen(false)}>
               {user ? (
                 <Link to={WORKSPACE_ROUTE} className="start-button">
                   Open Workspace

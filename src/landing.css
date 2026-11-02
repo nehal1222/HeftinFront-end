@@ -4090,72 +4090,12 @@ header h1 {
     box-shadow: 0 12px 25px -4px rgba(0, 130, 142, 0.6) !important;
 }
 
-.nav-toggle span {
-    background: #ffffff !important;
+.nav-toggle {
+    display: none;
 }
 
-@media (max-width: 1060px) {
-    .nav-toggle {
-        display: flex !important;
-    }
-
-    .navbar {
-        top: 10px !important;
-        padding: 0 14px !important;
-        margin-bottom: -64px !important;
-    }
-
-    .navbar-inner {
-        border-radius: 26px !important;
-        padding: 10px 18px !important;
-    }
-
-    .navbar-collapse {
-        position: absolute !important;
-        top: calc(100% + 10px) !important;
-        left: 14px !important;
-        right: 14px !important;
-        background: rgba(4, 34, 42, 0.96) !important;
-        backdrop-filter: blur(24px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-        border: 1px solid rgba(255, 255, 255, 0.16) !important;
-        border-radius: 24px !important;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75) !important;
-        max-height: 0 !important;
-        overflow: hidden !important;
-        padding: 0 20px !important;
-        transition: max-height 0.35s ease, padding 0.35s ease !important;
-    }
-
-    .navbar-collapse.open {
-        max-height: 520px !important;
-        padding: 18px 20px 24px !important;
-    }
-
-    .navbar-collapse ul {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 2px !important;
-    }
-
-    .navbar-collapse ul a {
-        padding: 12px 0 !important;
-        font-size: 13.5px !important;
-        color: rgba(255, 255, 255, 0.9) !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-    }
-
-    .navbar-collapse .nav-actions-inner {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        margin-top: 16px !important;
-        gap: 10px !important;
-    }
-
-    .navbar-collapse .nav-actions-inner a {
-        text-align: center !important;
-        padding: 12px 0 !important;
-    }
+.nav-toggle span {
+    background: var(--primary-teal) !important;
 }
 
 /* ========== Pure Primary Teal & White (No Dark Teals) ========== */
@@ -4165,7 +4105,7 @@ header h1 {
     --primary-teal-light: #99cdd2;
     --primary-teal-soft: rgba(0, 130, 142, 0.08);
     --primary-teal-border: rgba(0, 130, 142, 0.22);
-    
+
     --pure-white: #ffffff;
     --light-mist: #f4f9f9;
     --neutral-ink: #0f172a;
@@ -4203,7 +4143,7 @@ body,
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    padding: 0 24px !important;
+    padding: 0 16px !important;
     margin-bottom: -76px !important;
 }
 
@@ -4211,15 +4151,16 @@ body,
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    gap: 24px !important;
+    gap: 28px !important;
     background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(20px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1.5px solid rgba(0, 130, 142, 0.22) !important;
     border-radius: 9999px !important;
     box-shadow: 0 16px 36px -10px rgba(0, 130, 142, 0.15), 0 1px 0 rgba(255, 255, 255, 0.95) inset !important;
-    padding: 10px 28px !important;
-    max-width: 1300px !important;
+    padding: 12px 36px !important;
+    width: calc(100% - 16px) !important;
+    max-width: 1540px !important;
     margin: 0 auto !important;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
@@ -6105,11 +6046,11 @@ body,
     left: 50% !important;
     width: 4px !important;
     transform: translateX(-50%) !important;
-    background: linear-gradient(180deg, 
-        rgba(0, 130, 142, 0.2) 0%, 
-        var(--primary-teal) 25%, 
-        #00e5ff 50%, 
-        var(--primary-teal) 75%, 
+    background: linear-gradient(180deg,
+        rgba(0, 130, 142, 0.2) 0%,
+        var(--primary-teal) 25%,
+        #00e5ff 50%,
+        var(--primary-teal) 75%,
         rgba(0, 130, 142, 0.2) 100%
     ) !important;
     background-size: 100% 300% !important;
@@ -6446,7 +6387,7 @@ body,
 
 /* 1. Tactical Blueprint Backdrop */
 .process {
-    background: 
+    background:
         radial-gradient(1200px 700px at 50% 0%, rgba(0, 130, 142, 0.09) 0%, transparent 70%),
         radial-gradient(rgba(0, 130, 142, 0.12) 1.2px, transparent 1.2px),
         #ffffff !important;
@@ -6676,5 +6617,1016 @@ body,
         bottom: 12px !important;
         right: 12px !important;
         padding: 6px 12px !important;
+    }
+}
+
+/* ==========================================================================
+   COMPLETE MOBILE OPTIMIZATION & RESPONSIVENESS SUITE
+   ========================================================================== */
+
+/* 1. Global Viewport & Mobile Scroll Protection */
+html,
+body,
+#root,
+.landing-page-root {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+}
+
+/* Ensure images and media never overflow container */
+.landing-page-root img,
+.landing-page-root video,
+.landing-page-root svg {
+    max-width: 100%;
+}
+
+/* 2. Responsive Navbar: Seamless Breakpoint at 1120px */
+@media (max-width: 1120px) {
+    .navbar {
+        top: 10px !important;
+        padding: 0 10px !important;
+        margin-bottom: -62px !important;
+        width: 100% !important;
+    }
+
+    .navbar-inner {
+        width: calc(100% - 8px) !important;
+        max-width: 100% !important;
+        padding: 10px 18px !important;
+        gap: 14px !important;
+        border-radius: 9999px !important;
+        position: relative !important;
+    }
+
+    .brand-name {
+        font-size: 13.5px !important;
+        letter-spacing: 0.05em !important;
+    }
+
+    .brand-logo {
+        width: 30px !important;
+        height: 30px !important;
+    }
+
+    .nav-toggle {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 5px !important;
+        width: 38px !important;
+        height: 38px !important;
+        border-radius: 10px !important;
+        background: rgba(0, 130, 142, 0.08) !important;
+        border: 1px solid rgba(0, 130, 142, 0.2) !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        z-index: 1050 !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .nav-toggle:hover {
+        background: rgba(0, 130, 142, 0.14) !important;
+        border-color: var(--primary-teal) !important;
+    }
+
+    .nav-toggle span {
+        display: block !important;
+        width: 18px !important;
+        height: 2px !important;
+        border-radius: 2px !important;
+        background: var(--primary-teal) !important;
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
+    }
+
+    .nav-toggle.is-open span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg) !important;
+    }
+
+    .nav-toggle.is-open span:nth-child(2) {
+        opacity: 0 !important;
+    }
+
+    .nav-toggle.is-open span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg) !important;
+    }
+
+    /* Mobile Dropdown Panel */
+    .navbar-collapse {
+        position: absolute !important;
+        top: calc(100% + 10px) !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        backdrop-filter: blur(28px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+        border: 1.5px solid rgba(0, 130, 142, 0.22) !important;
+        border-radius: 24px !important;
+        box-shadow: 0 24px 60px -8px rgba(0, 72, 78, 0.25), 0 1px 0 rgba(255, 255, 255, 1) inset !important;
+        max-height: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        overflow: hidden !important;
+        padding: 0 18px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        transition: max-height 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease, padding 0.28s ease !important;
+        z-index: 1040 !important;
+    }
+
+    .navbar-collapse.open,
+    .navbar-collapse.is-open {
+        max-height: 85vh !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 20px 20px 24px !important;
+    }
+
+    .navbar-collapse ul {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 3px !important;
+        list-style: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    .navbar-collapse ul a,
+    .navbar-collapse ul button.nav-link-btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 11px 14px !important;
+        font-size: 13.5px !important;
+        font-weight: 700 !important;
+        color: #1e293b !important;
+        border-radius: 12px !important;
+        border: none !important;
+        background: transparent !important;
+        text-transform: capitalize !important;
+        letter-spacing: 0.02em !important;
+        transition: all 0.2s ease !important;
+        text-align: left !important;
+        width: 100% !important;
+    }
+
+    .navbar-collapse ul a:hover,
+    .navbar-collapse ul button.nav-link-btn:hover {
+        background: rgba(0, 130, 142, 0.08) !important;
+        color: var(--primary-teal) !important;
+        padding-left: 18px !important;
+    }
+
+    .navbar-collapse .nav-actions-inner {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+        margin-top: 16px !important;
+        padding-top: 16px !important;
+        border-top: 1px solid rgba(0, 130, 142, 0.16) !important;
+        width: 100% !important;
+    }
+
+    .navbar-collapse .nav-actions-inner .go-premium {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 10px 16px !important;
+        background: rgba(0, 130, 142, 0.08) !important;
+        border: 1px solid rgba(0, 130, 142, 0.25) !important;
+        border-radius: 12px !important;
+        color: var(--primary-teal) !important;
+        font-weight: 800 !important;
+        font-size: 13px !important;
+        text-align: center !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .navbar-collapse .nav-actions-inner .go-premium:hover {
+        background: rgba(0, 130, 142, 0.15) !important;
+        border-color: var(--primary-teal) !important;
+    }
+
+    .navbar-collapse .nav-actions-inner .login {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 10px 16px !important;
+        color: #334155 !important;
+        font-weight: 700 !important;
+        font-size: 13.5px !important;
+        border-radius: 12px !important;
+        transition: all 0.2s ease !important;
+        text-align: center !important;
+    }
+
+    .navbar-collapse .nav-actions-inner .login:hover {
+        background: rgba(0, 130, 142, 0.06) !important;
+        color: var(--primary-teal) !important;
+    }
+
+    .navbar-collapse .nav-actions-inner .start-button {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        padding: 12px 20px !important;
+        background: var(--primary-teal) !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        font-size: 14px !important;
+        border-radius: 12px !important;
+        box-shadow: 0 8px 20px rgba(0, 130, 142, 0.35) !important;
+        text-align: center !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .navbar-collapse .nav-actions-inner .start-button:hover {
+        background: var(--primary-teal-hover) !important;
+        transform: translateY(-1px) !important;
+    }
+}
+
+/* 3. Section 01 Timeline (Formula / Mission Architecture) on Mobile */
+@media (max-width: 991px) {
+    .process {
+        padding: 90px 0 !important;
+    }
+
+    .timeline-alt-track {
+        margin-top: 50px !important;
+    }
+
+    .timeline-alt-track::before {
+        left: 24px !important;
+        transform: none !important;
+        width: 3px !important;
+    }
+
+    .timeline-alt-track::after {
+        display: none !important;
+    }
+
+    .timeline-alt-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+        padding-left: 60px !important;
+        margin-bottom: 48px !important;
+        position: relative !important;
+    }
+
+    .timeline-node-center {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        margin: 0 !important;
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 14px !important;
+    }
+
+    .timeline-col-left,
+    .timeline-col-right {
+        width: 100% !important;
+    }
+
+    .timeline-col-left::after,
+    .timeline-col-right::after {
+        display: none !important;
+    }
+
+    .timeline-card-content {
+        padding: 24px 20px !important;
+        border-radius: 20px !important;
+    }
+
+    .timeline-media-frame {
+        height: 220px !important;
+        border-radius: 18px !important;
+    }
+
+    .timeline-hud-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .timeline-floating-hud {
+        bottom: 12px !important;
+        right: 12px !important;
+        padding: 6px 12px !important;
+    }
+}
+
+/* 4. Hero Section Scaling for Mobile Phones (< 768px) */
+@media (max-width: 767px) {
+    .hero {
+        padding: 110px 0 60px !important;
+    }
+
+    .hero-inner {
+        padding: 0 16px !important;
+    }
+
+    .hero h1 {
+        font-size: clamp(28px, 6.5vw, 42px) !important;
+        line-height: 1.18 !important;
+    }
+
+    .hero p {
+        font-size: clamp(14px, 3.2vw, 16px) !important;
+        padding: 0 !important;
+        margin: 16px auto 0 !important;
+        max-width: 100% !important;
+    }
+
+    .hero-actions {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        max-width: 320px !important;
+        margin: 28px auto 0 !important;
+        gap: 12px !important;
+    }
+
+    .hero .start-button,
+    .hero .go-premium {
+        width: 100% !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 13px 20px !important;
+    }
+
+    .hero-stats {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+        margin-top: 36px !important;
+        max-width: 440px !important;
+        width: 100% !important;
+    }
+
+    .hero-stat {
+        padding: 16px 14px !important;
+        border-radius: 16px !important;
+        text-align: center !important;
+    }
+
+    .hero-stat strong {
+        font-size: 24px !important;
+    }
+
+    .hero-stat span {
+        font-size: 11.5px !important;
+    }
+
+    /* Headings Graceful Scaling */
+    .split-heading-bold {
+        font-size: clamp(26px, 6vw, 38px) !important;
+    }
+
+    .split-heading-lead {
+        font-size: clamp(17px, 3.8vw, 24px) !important;
+    }
+
+    /* Section padding */
+    .hx-sec {
+        padding: 70px 0 !important;
+    }
+
+    .hx-wrap {
+        padding: 0 16px !important;
+    }
+
+    /* Arena Simulation */
+    .hx-arena,
+    .hx-mains {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    .arena-terminal,
+    .terminal-window {
+        border-radius: 16px !important;
+    }
+
+    .terminal-body {
+        padding: 16px 14px !important;
+        font-size: 12px !important;
+    }
+
+    /* Telemetry HUD & Why Section */
+    .why {
+        padding: 80px 0 !important;
+    }
+
+    .why-inner {
+        grid-template-columns: 1fr !important;
+        text-align: center !important;
+        gap: 32px !important;
+    }
+
+    /* Stat Band */
+    .stat-band {
+        padding: 80px 0 !important;
+    }
+
+    .stat-band-split {
+        grid-template-columns: 1fr !important;
+        text-align: center !important;
+        gap: 36px !important;
+    }
+
+    .stat-band-copy .split-heading {
+        justify-content: center !important;
+    }
+
+    .stat-row {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px !important;
+        justify-content: center !important;
+    }
+
+    .stat {
+        border: none !important;
+        padding: 0 !important;
+        text-align: center !important;
+    }
+
+    .stat strong {
+        font-size: 32px !important;
+    }
+
+    /* Candidate Voices Mosaic */
+    .hx-mosaic {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 14px !important;
+    }
+
+    .hx-mosaic figure {
+        height: 200px !important;
+    }
+
+    /* Company Innovations & Comparison Box */
+    .hx-roles {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+
+    .hx-innov-box {
+        padding: 18px 14px !important;
+        border-radius: 18px !important;
+    }
+
+    .hx-innov-head {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+
+    .hx-innov-tabs {
+        display: flex !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        width: 100% !important;
+        gap: 6px !important;
+        padding-bottom: 6px !important;
+        scrollbar-width: none !important;
+    }
+
+    .hx-innov-tabs::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .hx-innov-pill {
+        align-self: flex-start !important;
+    }
+
+    .hx-innov-body {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+
+    .hx-innov-col {
+        padding: 20px 16px !important;
+    }
+
+    /* Testimonial & FAQ */
+    .testimonial {
+        padding: 70px 16px !important;
+    }
+
+    .quote {
+        font-size: clamp(16px, 3.8vw, 20px) !important;
+    }
+
+    .hx-faq-item button {
+        padding: 16px 14px !important;
+        font-size: 14px !important;
+    }
+
+    /* Footer */
+    .site-footer {
+        padding: 70px 0 28px !important;
+    }
+
+    .footer-inner {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 32px 20px !important;
+        padding: 0 16px !important;
+    }
+
+    .footer-brand {
+        grid-column: 1 / -1 !important;
+    }
+}
+
+/* 5. Mobile Small Screens (Smartphones < 480px) */
+@media (max-width: 480px) {
+    .navbar {
+        top: 8px !important;
+        padding: 0 8px !important;
+    }
+
+    .navbar-inner {
+        padding: 8px 14px !important;
+    }
+
+    .brand-name {
+        font-size: 12.5px !important;
+    }
+
+    .brand-logo {
+        width: 26px !important;
+        height: 26px !important;
+    }
+
+    .hero-stats {
+        grid-template-columns: 1fr !important;
+    }
+
+    .stat-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    .footer-inner {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+    }
+
+    .footer-bottom {
+        flex-direction: column !important;
+        gap: 10px !important;
+        text-align: center !important;
+    }
+
+    .timeline-alt-row {
+        padding-left: 54px !important;
+    }
+
+    .timeline-node-center {
+        width: 42px !important;
+        height: 42px !important;
+        font-size: 13px !important;
+    }
+
+    .timeline-alt-track::before {
+        left: 21px !important;
+    }
+}
+
+
+/* ==========================================================================
+   DEDICATED IPAD & TABLET OPTIMIZATION SUITE (768px - 1024px / 1120px)
+   (Covers iPad Mini, iPad 10.2", iPad Air, iPad Pro 11" & 12.9" Portrait)
+   ========================================================================== */
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* Touch target comfort & smooth touch response */
+    input, button, a, select, textarea {
+        touch-action: manipulation;
+    }
+
+    /* 1. Floating Frosted Glass Pill Navbar on iPad */
+    .navbar {
+        top: 14px !important;
+        padding: 0 16px !important;
+        margin-bottom: -70px !important;
+        width: 100% !important;
+    }
+
+    .navbar-inner {
+        width: calc(100% - 24px) !important;
+        max-width: 940px !important;
+        padding: 12px 26px !important;
+        gap: 20px !important;
+        border-radius: 9999px !important;
+        position: relative !important;
+    }
+
+    .brand-name {
+        font-size: 14.5px !important;
+        letter-spacing: 0.06em !important;
+    }
+
+    .brand-logo {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    .nav-toggle {
+        display: flex !important;
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 12px !important;
+        background: rgba(0, 130, 142, 0.08) !important;
+        border: 1px solid rgba(0, 130, 142, 0.22) !important;
+    }
+
+    /* Tablet Dropdown Sheet: Centered, 2-Column Links, 4-Column Action Cluster */
+    .navbar-collapse.open,
+    .navbar-collapse.is-open {
+        position: absolute !important;
+        top: calc(100% + 12px) !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: calc(100% - 24px) !important;
+        max-width: 680px !important;
+        max-height: none !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        padding: 24px 28px !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        backdrop-filter: blur(28px) saturate(180%) !important;
+        border: 1.5px solid rgba(0, 130, 142, 0.22) !important;
+        border-radius: 24px !important;
+        box-shadow: 0 25px 60px -8px rgba(0, 72, 78, 0.25) !important;
+    }
+
+    .navbar-collapse ul {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px 16px !important;
+        width: 100% !important;
+    }
+
+    .navbar-collapse ul a,
+    .navbar-collapse ul button.nav-link-btn {
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        border-radius: 12px !important;
+    }
+
+    .navbar-collapse .nav-actions-inner {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 10px !important;
+        width: 100% !important;
+        margin-top: 18px !important;
+        padding-top: 18px !important;
+        border-top: 1px solid rgba(0, 130, 142, 0.16) !important;
+    }
+
+    .navbar-collapse .nav-actions-inner .go-premium,
+    .navbar-collapse .nav-actions-inner .login,
+    .navbar-collapse .nav-actions-inner .start-button {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 11px 12px !important;
+        font-size: 13.5px !important;
+        border-radius: 12px !important;
+        white-space: nowrap !important;
+    }
+
+    /* 2. Hero Section on iPad */
+    .hero {
+        padding: 140px 0 90px !important;
+    }
+
+    .hero-inner {
+        max-width: 880px !important;
+        padding: 0 32px !important;
+        text-align: center !important;
+    }
+
+    .hero h1 {
+        font-size: 44px !important;
+        line-height: 1.16 !important;
+        max-width: 760px !important;
+        margin: 0 auto !important;
+    }
+
+    .hero p {
+        font-size: 17px !important;
+        max-width: 640px !important;
+        margin: 20px auto 0 !important;
+        line-height: 1.6 !important;
+    }
+
+    .hero-actions {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 16px !important;
+        width: auto !important;
+        max-width: none !important;
+        margin: 34px auto 0 !important;
+    }
+
+    .hero .start-button,
+    .hero .go-premium {
+        width: auto !important;
+        min-width: 190px !important;
+        padding: 14px 28px !important;
+        font-size: 14.5px !important;
+    }
+
+    .hero-stats {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 14px !important;
+        max-width: 820px !important;
+        margin: 44px auto 0 !important;
+        width: 100% !important;
+    }
+
+    .hero-stat {
+        padding: 18px 16px !important;
+        border-radius: 18px !important;
+        text-align: center !important;
+    }
+
+    .hero-stat strong {
+        font-size: 26px !important;
+    }
+
+    .hero-stat span {
+        font-size: 12.5px !important;
+    }
+
+    /* 3. Section 01 Alternating Formula Timeline on iPad */
+    .process {
+        padding: 110px 0 !important;
+    }
+
+    .timeline-alt-track {
+        margin-top: 64px !important;
+    }
+
+    .timeline-alt-track::before {
+        left: 28px !important;
+        transform: none !important;
+        width: 4px !important;
+    }
+
+    .timeline-alt-track::after {
+        display: none !important;
+    }
+
+    .timeline-node-center {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 56px !important;
+        height: 56px !important;
+        font-size: 16px !important;
+    }
+
+    .timeline-alt-row {
+        display: flex !important;
+        flex-direction: column !important;
+        padding-left: 84px !important;
+        gap: 24px !important;
+        margin-bottom: 64px !important;
+        position: relative !important;
+    }
+
+    .timeline-col-left,
+    .timeline-col-right {
+        width: 100% !important;
+    }
+
+    .timeline-card-content {
+        padding: 32px 28px !important;
+        border-radius: 22px !important;
+    }
+
+    .timeline-media-frame {
+        height: 290px !important;
+        border-radius: 20px !important;
+    }
+
+    .timeline-floating-hud {
+        bottom: 16px !important;
+        right: 16px !important;
+        padding: 8px 16px !important;
+    }
+
+    /* 4. Section 02 Exam Hall Arena on iPad */
+    .hx-arena {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+        max-width: 840px !important;
+        margin: 0 auto !important;
+    }
+
+    .terminal-window {
+        border-radius: 20px !important;
+    }
+
+    .terminal-body {
+        padding: 22px 20px !important;
+        font-size: 13px !important;
+    }
+
+    .hx-arena-side {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px !important;
+    }
+
+    /* 5. Section 03 Telemetry Advantage on iPad */
+    .why {
+        padding: 100px 0 !important;
+    }
+
+    .why-inner {
+        grid-template-columns: 1fr !important;
+        text-align: center !important;
+        gap: 36px !important;
+        max-width: 840px !important;
+        margin: 0 auto !important;
+    }
+
+    .why-copy p {
+        max-width: 620px !important;
+        margin: 16px auto 0 !important;
+    }
+
+    .why-copy .split-heading {
+        justify-content: center !important;
+    }
+
+    .hero-visual {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        gap: 16px !important;
+        margin-top: 28px !important;
+    }
+
+    .dashboard-card {
+        position: static !important;
+        transform: none !important;
+        width: 235px !important;
+        padding: 26px 20px !important;
+    }
+
+    /* 6. Section 05 Pacing Roadmap on iPad */
+    .hx-phases {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 20px !important;
+        max-width: 840px !important;
+        margin: 48px auto 0 !important;
+    }
+
+    .hx-phase {
+        padding: 28px 24px !important;
+        border-radius: 20px !important;
+    }
+
+    .hx-phase-big {
+        font-size: 38px !important;
+    }
+
+    /* 7. Section 06 Stat-Band on iPad */
+    .stat-band {
+        padding: 100px 0 !important;
+    }
+
+    .stat-band-split {
+        grid-template-columns: 1fr !important;
+        text-align: center !important;
+        gap: 40px !important;
+        max-width: 820px !important;
+        margin: 0 auto !important;
+    }
+
+    .stat-band-copy .split-heading {
+        justify-content: center !important;
+    }
+
+    .stat-row {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 20px !important;
+        max-width: 760px !important;
+        margin: 0 auto !important;
+    }
+
+    .stat strong {
+        font-size: 38px !important;
+    }
+
+    .dashboard-mock {
+        max-width: 620px !important;
+        margin: 0 auto !important;
+    }
+
+    /* 8. Section 07 Candidate Voices Mosaic on iPad */
+    .hx-mosaic {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-rows: auto !important;
+        gap: 20px !important;
+        max-width: 840px !important;
+        margin: 48px auto 0 !important;
+    }
+
+    .hx-mosaic .m1 {
+        grid-column: 1 / 3 !important;
+        height: 260px !important;
+    }
+
+    .hx-mosaic .m2,
+    .hx-mosaic .m3,
+    .hx-mosaic .m4,
+    .hx-mosaic .m5 {
+        height: 220px !important;
+    }
+
+    /* 9. Section 08 Company Innovations Comparison on iPad */
+    .hx-roles {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 16px !important;
+        max-width: 860px !important;
+        margin: 48px auto 0 !important;
+    }
+
+    .hx-innov-box {
+        max-width: 860px !important;
+        margin: 40px auto 0 !important;
+        padding: 28px 24px !important;
+        border-radius: 22px !important;
+    }
+
+    .hx-innov-body {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 20px !important;
+    }
+
+    .hx-innov-col {
+        padding: 24px 20px !important;
+    }
+
+    /* 10. Testimonial & FAQ on iPad */
+    .testimonial {
+        padding: 90px 24px !important;
+        max-width: 800px !important;
+        margin: 0 auto !important;
+    }
+
+    .quote {
+        font-size: 24px !important;
+        max-width: 680px !important;
+        margin: 0 auto !important;
+    }
+
+    .hx-faq-list {
+        max-width: 780px !important;
+        margin: 0 auto !important;
+    }
+
+    /* 11. Footer on iPad */
+    .site-footer {
+        padding: 80px 0 36px !important;
+    }
+
+    .footer-inner {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 32px 24px !important;
+        max-width: 900px !important;
+        margin: 0 auto !important;
+        padding: 0 24px !important;
+    }
+
+    .footer-brand {
+        grid-column: 1 / 2 !important;
     }
 }
