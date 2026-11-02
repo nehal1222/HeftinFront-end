@@ -1388,9 +1388,6 @@ export function HomePage() {
               ))}
             </div>
 
-            <p className="hx-faq-more">
-              Still have a question? <Link to={ROUTES.CONTACT}>Contact our team</Link>
-            </p>
           </div>
         </section>
       </main>
@@ -1431,6 +1428,9 @@ export function HomePage() {
               </li>
               <li>
                 <Link to={REQUEST_ACCESS_ROUTE}>Request Access</Link>
+              </li>
+              <li>
+                <Link to={ROUTES.CONTACT}>Contact</Link>
               </li>
             </ul>
           </div>
