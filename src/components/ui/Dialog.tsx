@@ -116,8 +116,9 @@ export function Dialog({
         aria-labelledby={title ? titleId : undefined}
         aria-label={!title ? 'Dialog' : undefined}
         className={cn(
-          'relative z-10 w-full max-w-lg rounded-lg',
-          'border border-border bg-card p-6 shadow-lg',
+          'relative z-10 w-full max-w-lg rounded-xl',
+          'border border-border bg-card p-4 sm:p-6 shadow-xl',
+          'max-h-[90vh] flex flex-col overflow-y-auto',
           className,
         )}
       >
