@@ -279,7 +279,7 @@ export function ContactPage() {
                     Login
                   </Link>
                   <Link to={SIGNUP_ROUTE} className="start-button" style={{ whiteSpace: 'nowrap' }}>
-                    Get Started
+                    Sign Up
                   </Link>
                 </>
               )}

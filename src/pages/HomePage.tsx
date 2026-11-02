@@ -629,7 +629,7 @@ export function HomePage() {
                     Login
                   </Link>
                   <Link to={SIGNUP_ROUTE} className="start-button">
-                    Get Started
+                    Sign Up
                   </Link>
                 </>
               )}
