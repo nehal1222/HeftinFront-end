@@ -610,6 +610,9 @@ export function HomePage() {
               <li>
                 <a href="#faq">FAQ</a>
               </li>
+              <li>
+                <Link to={ROUTES.CONTACT}>Contact</Link>
+              </li>
             </ul>
 
             <div className="nav-actions-inner">
@@ -1428,9 +1431,6 @@ export function HomePage() {
               </li>
               <li>
                 <Link to={REQUEST_ACCESS_ROUTE}>Request Access</Link>
-              </li>
-              <li>
-                <Link to={ROUTES.CONTACT}>Contact</Link>
               </li>
             </ul>
           </div>
