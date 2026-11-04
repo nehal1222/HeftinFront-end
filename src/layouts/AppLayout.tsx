@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 import { AppNavigation } from '@/navigation/AppNavigation'
 import { ROUTES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
@@ -143,7 +144,9 @@ export function AppLayout({
             className,
           )}
         >
-          {children}
+          <ErrorBoundary fallbackTitle="This workspace view encountered an error">
+            {children}
+          </ErrorBoundary>
         </main>
       </div>
     </div>
