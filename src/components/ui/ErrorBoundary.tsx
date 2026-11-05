@@ -28,10 +28,6 @@ export class ErrorBoundary extends Component<Props, State> {
     console.error('Uncaught error caught by ErrorBoundary:', error, errorInfo)
   }
 
-  private handleReset = () => {
-    this.setState({ hasError: false, error: null })
-  }
-
   private handleReload = () => {
     window.location.reload()
   }
