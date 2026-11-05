@@ -494,6 +494,10 @@ function CounterNumber({
 export function HomePage() {
   const { user } = useAuth()
 
+  if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('test_error') === 'true') {
+    throw new Error('Simulated test error: Global ErrorBoundary caught this error on the landing page!')
+  }
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [simulationExam, setSimulationExam] = useState<'upsc' | 'ssc' | 'banking'>('upsc')
