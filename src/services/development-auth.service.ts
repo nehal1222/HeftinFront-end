@@ -22,6 +22,7 @@ const IS_FIREBASE_DEVELOPMENT_BUILD =
 const IS_TEST_AUTH_BUILD =
   import.meta.env.VITE_ENABLE_TEST_AUTH === 'true' &&
   (IS_LOCAL_DEVELOPMENT_BUILD || IS_FIREBASE_DEVELOPMENT_BUILD)
+const LEADS_VIEW_RIGHT = import.meta.env.VITE_LEADS_VIEW_RIGHT?.trim()
 
 function isEnabled() {
   if (!IS_TEST_AUTH_BUILD) return false
@@ -59,13 +60,14 @@ function buildAccounts(): DevelopmentAccount[] {
         must_change_password: false,
         roles: ['organization_admin'],
         rights: [
+          'exams.view',
           'study_material.view',
           'performance.view',
           'users.view',
           'roles.view',
           'batches.view',
           'evaluations.review',
-          'exams.view',
+          ...(LEADS_VIEW_RIGHT ? [LEADS_VIEW_RIGHT] : []),
         ],
         current_organization: organization,
       },
