@@ -14,26 +14,13 @@ import {
   setStoredUser,
   setTokens,
 } from '@/lib/storage'
-import type { AuthMeResponse, AuthUser, LoginRequest, RightCode } from '@/types/auth'
+import { normalizeSessionUser } from '@/lib/auth-envelope'
+import type { AuthUser, LoginRequest, RightCode } from '@/types/auth'
 import { AuthContext } from '@/contexts/auth-context'
 import { hasRight as userHasRight } from '@/lib/rights'
 
 type AuthProviderProps = {
   children: ReactNode
-}
-
-function normalizeUser(me: AuthMeResponse, fallback?: AuthUser | null): AuthUser {
-  return {
-    id: me.id ?? fallback?.id ?? '',
-    email: me.email ?? fallback?.email ?? '',
-    mobile: me.mobile ?? fallback?.mobile ?? null,
-    full_name: me.full_name ?? me.name ?? fallback?.full_name ?? me.email,
-    status: me.status ?? fallback?.status ?? 'active',
-    must_change_password: me.must_change_password ?? fallback?.must_change_password ?? false,
-    roles: me.roles,
-    rights: me.rights,
-    current_organization: me.current_organization ?? null,
-  }
 }
 
 function assertAccessToken(accessToken: unknown): asserts accessToken is string {
@@ -42,13 +29,12 @@ function assertAccessToken(accessToken: unknown): asserts accessToken is string 
   }
 }
 
-function assertAuthMe(me: AuthMeResponse) {
+function assertAuthMe(user: AuthUser) {
   if (
-    !me ||
-    typeof me.id !== 'string' ||
-    typeof me.email !== 'string' ||
-    !Array.isArray(me.roles) ||
-    !Array.isArray(me.rights)
+    !user ||
+    typeof user.id !== 'string' ||
+    typeof user.email !== 'string' ||
+    !Array.isArray(user.rights)
   ) {
     throw new Error('Sign-in failed because the account profile is incomplete.')
   }
@@ -77,7 +63,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const me = await authService.getMe()
       assertAuthMe(me)
-      const sessionUser = normalizeUser(me, storedUser)
+      const sessionUser = normalizeSessionUser(me, storedUser)
       setStoredUser(sessionUser, isPersistentSession())
       setUser(sessionUser)
     } catch {
@@ -113,7 +99,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const me = await authService.getMe()
       assertAuthMe(me)
-      const sessionUser = normalizeUser(me)
+      const sessionUser = normalizeSessionUser(me, response.user)
 
       setStoredUser(sessionUser, rememberMe)
       setUser(sessionUser)

@@ -1,9 +1,12 @@
 import api from '@/lib/axios'
 import { clearAuthStorage, getAccessToken } from '@/lib/storage'
 import { developmentAuthService } from '@/services/development-auth.service'
+import {
+  normalizeAuthTokenResponse,
+  normalizeSessionUser,
+} from '@/lib/auth-envelope'
 import type {
   AuthTokenResponse,
-  AuthMeResponse,
   ForgotPasswordRequest,
   LoginRequest,
   RefreshRequest,
@@ -12,22 +15,18 @@ import type {
 } from '@/types/auth'
 
 export const authService = {
-  async login(payload: LoginRequest) {
+  async login(payload: LoginRequest): Promise<AuthTokenResponse> {
     const developmentResponse = developmentAuthService.login(payload)
-    if (developmentResponse) return developmentResponse
+    if (developmentResponse) return normalizeAuthTokenResponse(developmentResponse)
     if (developmentAuthService.isEnabled()) {
       throw new Error('The test email or password is incorrect.')
     }
 
-    const { data } = await api.post<AuthTokenResponse>(
-      '/auth/login',
-      payload,
-    )
-
-    return data
+    const { data } = await api.post('/auth/login', payload)
+    return normalizeAuthTokenResponse(data)
   },
 
-  async refresh(payload: RefreshRequest) {
+  async refresh(payload: RefreshRequest): Promise<RefreshResponse> {
     const developmentResponse = developmentAuthService.refresh(payload.refresh_token)
     if (developmentResponse) return developmentResponse
 
@@ -39,13 +38,13 @@ export const authService = {
     return data
   },
 
-  async logout() {
+  async logout(): Promise<void> {
     const isDevelopmentSession = developmentAuthService.isAccessToken(getAccessToken())
 
     try {
       if (!isDevelopmentSession) await api.post('/auth/logout')
     } catch {
-      // Local logout must still complete when the backend is unavailable.
+      void 0
     } finally {
       clearAuthStorage()
     }
@@ -53,10 +52,10 @@ export const authService = {
 
   async getMe() {
     const developmentUser = developmentAuthService.getMe(getAccessToken())
-    if (developmentUser) return developmentUser
+    if (developmentUser) return normalizeSessionUser(developmentUser)
 
-    const { data } = await api.get<AuthMeResponse>('/auth/me')
-    return data
+    const { data } = await api.get('/auth/me')
+    return normalizeSessionUser(data)
   },
 
   async forgotPassword(payload: ForgotPasswordRequest) {
