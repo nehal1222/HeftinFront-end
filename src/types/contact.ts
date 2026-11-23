@@ -35,3 +35,31 @@ export interface ContactFieldErrors {
   consent?: string
   [key: string]: string | undefined
 }
+
+export interface LeadSummary {
+  id: string
+  name: string
+  email: string
+  phone: string | null
+  organization: string | null
+  status: string
+  created_at: string
+}
+
+export interface LeadDetail extends LeadSummary {
+  category: string
+  message: string
+  notes?: string | null
+  updated_at: string
+}
+
+export interface ContactUpdate {
+  status?: string
+  notes?: string | null
+}
+
+export interface PrivacyNoticeOut {
+  title: string
+  body: string
+  effective_date: string
+}

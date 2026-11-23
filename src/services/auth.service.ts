@@ -7,6 +7,7 @@ import {
 } from '@/lib/auth-envelope'
 import type {
   AuthTokenResponse,
+  ChangePasswordRequest,
   ForgotPasswordRequest,
   LoginRequest,
   RefreshRequest,
@@ -66,5 +67,9 @@ export const authService = {
   async resetPassword(payload: ResetPasswordRequest) {
     const { data } = await api.post<{ message: string }>('/auth/reset-password', payload)
     return data
+  },
+
+  async changePassword(payload: ChangePasswordRequest): Promise<void> {
+    await api.post('/auth/change-password', payload)
   },
 }

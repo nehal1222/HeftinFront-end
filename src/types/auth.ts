@@ -13,6 +13,11 @@ export type ResetPasswordRequest = {
   password_confirmation: string
 }
 
+export type ChangePasswordRequest = {
+  current_password: string
+  new_password: string
+}
+
 export type RightCode = string
 
 export type AuthAccess = {

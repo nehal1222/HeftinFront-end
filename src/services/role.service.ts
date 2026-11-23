@@ -193,14 +193,25 @@ export const roleService = {
       return DEVELOPMENT_CEILING_CODES.map((code) => formatRightItem(code))
     }
 
-    const { data } = await api.get<OrganizationCeilingResponse | { data: OrganizationCeilingResponse } | string[] | { rights: string[] }>('/organization/rights')
-    const payload = (data && typeof data === 'object' && 'data' in data && data.data !== null) ? data.data : data
-
     let rawRights: Array<string | Partial<RightItem>> = []
-    if (Array.isArray(payload)) {
-      rawRights = payload
-    } else if (payload && typeof payload === 'object' && 'rights' in payload && Array.isArray(payload.rights)) {
-      rawRights = payload.rights
+    try {
+      const { data } = await api.get<RightItem[] | { data: RightItem[] } | string[]>('/rights/')
+      const payload = (data && typeof data === 'object' && 'data' in data && data.data !== null) ? data.data : data
+      if (Array.isArray(payload)) {
+        rawRights = payload
+      }
+    } catch {
+      try {
+        const { data } = await api.get<OrganizationCeilingResponse | { data: OrganizationCeilingResponse } | string[] | { rights: string[] }>('/organization/rights')
+        const payload = (data && typeof data === 'object' && 'data' in data && data.data !== null) ? data.data : data
+        if (Array.isArray(payload)) {
+          rawRights = payload
+        } else if (payload && typeof payload === 'object' && 'rights' in payload && Array.isArray(payload.rights)) {
+          rawRights = payload.rights
+        }
+      } catch {
+        rawRights = []
+      }
     }
 
     return rawRights.map(formatRightItem).filter((item) => isPermittedCeilingRight(item.code))
