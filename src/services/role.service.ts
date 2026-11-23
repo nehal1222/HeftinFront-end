@@ -3,7 +3,6 @@ import { getAccessToken } from '@/lib/storage'
 import { developmentAuthService } from '@/services/development-auth.service'
 import type {
   CreateRolePayload,
-  OrganizationCeilingResponse,
   RightItem,
   Role,
   UpdateRolePayload,
@@ -102,80 +101,54 @@ const INITIAL_DEVELOPMENT_ROLES: Role[] = [
   },
   {
     id: 'role-faculty',
-    name: 'Faculty',
-    description: 'Academic faculty member responsible for curriculum preparation, student mentoring, and resources',
+    name: 'Faculty Evaluator',
+    description: 'Academic evaluator responsible for batch assessment and progress review',
     role_type: 'dynamic',
     is_system: false,
-    users_count: 6,
-    rights: [
-      'batches.view',
-      'study_material.view',
-      'study_material.manage',
-      'performance.view',
-    ],
-  },
-  {
-    id: 'role-hod',
-    name: 'Head of Department (HOD)',
-    description: 'Department head overseeing academic departments, learner cohorts, and performance analytics',
-    role_type: 'dynamic',
-    is_system: false,
-    users_count: 2,
-    rights: [
-      'users.view',
-      'batches.view',
-      'batches.manage',
-      'study_material.view',
-      'study_material.manage',
-      'performance.view',
-      'performance.export',
-    ],
-  },
-  {
-    id: 'role-teacher',
-    name: 'Teacher',
-    description: 'Classroom educator managing academic cohorts and study resources',
-    role_type: 'dynamic',
-    is_system: false,
-    users_count: 14,
-    rights: [
-      'batches.view',
-      'study_material.view',
-      'performance.view',
-    ],
+    users_count: 5,
+    rights: ['study_material.view', 'performance.view', 'batches.view'],
   },
 ]
 
 let devRolesStore: Role[] = [...INITIAL_DEVELOPMENT_ROLES]
 
-function formatRightItem(item: string | Partial<RightItem>): RightItem {
-  if (typeof item === 'string') {
-    const meta = RIGHT_METADATA_MAP[item]
-    const parts = item.split('.')
-    const moduleName = meta?.module || (parts[0] ? parts[0].charAt(0).toUpperCase() + parts[0].slice(1) : 'General')
-    const label = meta?.label || item
-    const description = meta?.description || ''
+function formatRightItem(input: string | Partial<RightItem>): RightItem {
+  if (typeof input === 'string') {
+    const meta = RIGHT_METADATA_MAP[input]
+    if (meta) {
+      return {
+        code: input,
+        label: meta.label,
+        module: meta.module,
+        description: meta.description,
+      }
+    }
 
+    const parts = input.split('.')
+    const mod = parts[0] ? parts[0].charAt(0).toUpperCase() + parts[0].slice(1).replace(/_/g, ' ') : 'General'
+    const action = parts[1] ? parts[1].charAt(0).toUpperCase() + parts[1].slice(1).replace(/_/g, ' ') : input
     return {
-      code: item,
-      label,
-      module: moduleName,
-      description,
+      code: input,
+      label: `${action} ${mod}`,
+      module: mod,
+      description: `Permission to ${input.replace('.', ' ')}`,
     }
   }
 
-  const code = item.code || ''
+  const code = input.code || ''
   const meta = RIGHT_METADATA_MAP[code]
   return {
     code,
-    label: item.label || meta?.label || code,
-    module: item.module || meta?.module || 'General',
-    description: item.description || meta?.description || '',
+    label: input.label || meta?.label || code,
+    module: input.module || meta?.module || 'General',
+    description: input.description || meta?.description,
   }
 }
 
 function isPermittedCeilingRight(code: string): boolean {
+  if (!code) return false
   return (
+    !code.startsWith('platform.') &&
     !code.startsWith('exams.') &&
     !code.startsWith('exam.') &&
     !code.startsWith('evaluations.') &&
@@ -187,34 +160,110 @@ function isDevelopmentSession(): boolean {
   return developmentAuthService.isAccessToken(getAccessToken())
 }
 
+function normalizeRole(raw: unknown): Role {
+  if (!raw || typeof raw !== 'object') {
+    return {
+      id: '',
+      name: '',
+      role_type: 'dynamic',
+      rights: [],
+    }
+  }
+
+  const r = raw as Record<string, unknown>
+  const rightsList = new Set<string>()
+
+  if (Array.isArray(r.rights)) {
+    for (const item of r.rights) {
+      if (typeof item === 'string') {
+        rightsList.add(item)
+      } else if (item && typeof item === 'object') {
+        if ('code' in item && typeof item.code === 'string') {
+          rightsList.add(item.code)
+        } else if ('rights' in item && Array.isArray(item.rights)) {
+          for (const sub of item.rights) {
+            if (typeof sub === 'string') rightsList.add(sub)
+            else if (sub && typeof sub === 'object' && 'code' in sub && typeof sub.code === 'string') {
+              rightsList.add(sub.code)
+            }
+          }
+        }
+      }
+    }
+  }
+
+  const roleName = String(r.display_name || r.name || '')
+  const roleType: Role['role_type'] =
+    r.role_type === 'org_admin'
+      ? 'org_admin'
+      : r.role_type === 'student' || r.audience === 'student'
+        ? 'student'
+        : 'dynamic'
+
+  return {
+    id: String(r.id || ''),
+    name: roleName,
+    description: r.description ? String(r.description) : undefined,
+    role_type: roleType,
+    rights: Array.from(rightsList),
+    is_system: Boolean(r.is_system),
+    users_count: typeof r.users_count === 'number'
+      ? r.users_count
+      : typeof r.user_count === 'number'
+        ? r.user_count
+        : 0,
+    created_at: r.created_at ? String(r.created_at) : undefined,
+    updated_at: r.updated_at ? String(r.updated_at) : undefined,
+  }
+}
+
 export const roleService = {
   async getOrganizationCeiling(): Promise<RightItem[]> {
     if (isDevelopmentSession()) {
       return DEVELOPMENT_CEILING_CODES.map((code) => formatRightItem(code))
     }
 
-    let rawRights: Array<string | Partial<RightItem>> = []
+    let rawRights: Array<string | Partial<RightItem> | Record<string, unknown>> = []
     try {
-      const { data } = await api.get<RightItem[] | { data: RightItem[] } | string[]>('/rights/')
+      const { data } = await api.get<unknown>('/rights/')
       const payload = (data && typeof data === 'object' && 'data' in data && data.data !== null) ? data.data : data
       if (Array.isArray(payload)) {
         rawRights = payload
       }
     } catch {
       try {
-        const { data } = await api.get<OrganizationCeilingResponse | { data: OrganizationCeilingResponse } | string[] | { rights: string[] }>('/organization/rights')
+        const { data } = await api.get<unknown>('/organization/rights')
         const payload = (data && typeof data === 'object' && 'data' in data && data.data !== null) ? data.data : data
         if (Array.isArray(payload)) {
           rawRights = payload
-        } else if (payload && typeof payload === 'object' && 'rights' in payload && Array.isArray(payload.rights)) {
-          rawRights = payload.rights
+        } else if (payload && typeof payload === 'object' && 'rights' in payload && Array.isArray((payload as { rights?: unknown }).rights)) {
+          rawRights = (payload as { rights: unknown[] }).rights as Array<string | Partial<RightItem>>
         }
       } catch {
         rawRights = []
       }
     }
 
-    return rawRights.map(formatRightItem).filter((item) => isPermittedCeilingRight(item.code))
+    const mapped = rawRights.map((item) => {
+      if (typeof item === 'string') return formatRightItem(item)
+      if (item && typeof item === 'object') {
+        const obj = item as Record<string, unknown>
+        if (obj.is_platform === true) return null
+        const code = String(obj.code || '')
+        const label = String(obj.display_name || obj.label || code)
+        const module = String(obj.module || (code.includes('.') ? code.split('.')[0] : 'General'))
+        const description = obj.description ? String(obj.description) : undefined
+        return {
+          code,
+          label,
+          module: module.charAt(0).toUpperCase() + module.slice(1),
+          description,
+        }
+      }
+      return null
+    }).filter((item): item is RightItem => item !== null && isPermittedCeilingRight(item.code))
+
+    return mapped
   },
 
   async getRoles(): Promise<Role[]> {
@@ -222,9 +271,9 @@ export const roleService = {
       return [...devRolesStore]
     }
 
-    const { data } = await api.get<Role[] | { data: Role[] }>('/roles')
-    const rolesList = Array.isArray(data) ? data : data?.data
-    return Array.isArray(rolesList) ? rolesList : []
+    const { data } = await api.get<unknown>('/roles/')
+    const rolesList = Array.isArray(data) ? data : (data && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) ? data.data : []
+    return rolesList.map(normalizeRole)
   },
 
   async createRole(payload: CreateRolePayload): Promise<Role> {
@@ -246,15 +295,36 @@ export const roleService = {
       return newRole
     }
 
-    const body: CreateRolePayload = {
-      ...payload,
+    const snakeName = payload.name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '')
+      .slice(0, 50) || `role_${Date.now()}`
+
+    const modulesFromRights: Array<{ module: string; level: string | null; custom_module_id: null }> = []
+    const seenModules = new Set<string>()
+    for (const code of validRights) {
+      const mod = code.split('.')[0]
+      if (mod && !seenModules.has(mod)) {
+        seenModules.add(mod)
+        modulesFromRights.push({ module: mod, level: null, custom_module_id: null })
+      }
+    }
+
+    const body = {
+      name: snakeName,
+      display_name: payload.name.trim(),
+      audience: 'staff',
+      description: payload.description?.trim() || null,
+      modules: modulesFromRights,
       rights: validRights,
       role_type: 'dynamic',
     }
-    const { data } = await api.post<Role | { data: Role }>('/roles', body)
-    return (data && typeof data === 'object' && 'data' in data && data.data !== null && 'id' in data.data)
-      ? (data.data as Role)
-      : (data as Role)
+
+    const { data } = await api.post<unknown>('/roles/', body)
+    const rawResult = (data && typeof data === 'object' && 'data' in data && data.data !== null) ? data.data : data
+    return normalizeRole(rawResult)
   },
 
   async updateRole(id: string, payload: UpdateRolePayload): Promise<Role> {
@@ -276,14 +346,34 @@ export const roleService = {
       return updated
     }
 
-    const body: UpdateRolePayload = {
-      ...payload,
+    const body = {
+      display_name: payload.name?.trim(),
+      name: payload.name?.trim(),
+      description: payload.description !== undefined ? payload.description.trim() || null : undefined,
       rights: validRights,
     }
-    const { data } = await api.put<Role | { data: Role }>(`/roles/${id}`, body)
-    return (data && typeof data === 'object' && 'data' in data && data.data !== null && 'id' in data.data)
-      ? (data.data as Role)
-      : (data as Role)
+
+    const { data } = await api.put<unknown>(`/roles/${id}`, body)
+
+    if (validRights) {
+      const modulesFromRights: Array<{ module: string; level: string | null; custom_module_id: null }> = []
+      const seen = new Set<string>()
+      for (const code of validRights) {
+        const mod = code.split('.')[0]
+        if (mod && !seen.has(mod)) {
+          seen.add(mod)
+          modulesFromRights.push({ module: mod, level: null, custom_module_id: null })
+        }
+      }
+      try {
+        await api.put(`/roles/${id}/modules`, { modules: modulesFromRights })
+      } catch {
+        void 0
+      }
+    }
+
+    const rawResult = (data && typeof data === 'object' && 'data' in data && data.data !== null) ? data.data : data
+    return normalizeRole(rawResult)
   },
 
   async deleteRole(id: string): Promise<void> {

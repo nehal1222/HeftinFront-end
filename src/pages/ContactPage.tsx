@@ -44,6 +44,7 @@ export function ContactPage() {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
   const [submissionDetails, setSubmissionDetails] = useState<{
     inquiry_id?: string
+    message?: string
   } | null>(null)
   const [errorMessage, setErrorMessage] = useState('')
   const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({})
@@ -168,9 +169,10 @@ export function ContactPage() {
       const res = await contactService.submitContact(form)
       setSubmissionDetails({
         inquiry_id: res.inquiry_id,
+        message: res.message,
       })
       setShowSuccessPopup(true)
-      setAriaStatus('Inquiry submitted successfully. Thank you for contacting us!')
+      setAriaStatus(res.message || 'Inquiry submitted successfully. Thank you for contacting us!')
     } catch (err) {
       const serverFieldErrors = getFieldErrors(err)
       if (Object.keys(serverFieldErrors).length > 0) {
@@ -675,7 +677,7 @@ export function ContactPage() {
             </h2>
 
             <p className="mt-2 text-xs text-[#557477] leading-relaxed">
-              We have received your message. Our team will review your inquiry and get in touch with you shortly.
+              {submissionDetails?.message || 'We have received your message. Our team will review your inquiry and get in touch with you shortly.'}
             </p>
 
             {submissionDetails.inquiry_id && (
