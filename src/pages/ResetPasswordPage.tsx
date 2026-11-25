@@ -47,11 +47,14 @@ export function ResetPasswordPage() {
     }
     setIsSubmitting(true)
     try {
-      await authService.resetPassword({ token, password, password_confirmation: confirmation })
+      await authService.resetPassword({ token, new_password: password, password, password_confirmation: confirmation })
       setSuccess(true)
     } catch (requestError) {
       setServerError(getErrorMessage(requestError, 'This reset link is invalid or has expired.'))
       const errors = getFieldErrors(requestError)
+      if (errors.new_password && !errors.password) {
+        errors.password = errors.new_password
+      }
       if (errors.confirmation && !errors.password_confirmation) {
         errors.password_confirmation = errors.confirmation
       }

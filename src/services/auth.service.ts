@@ -1,5 +1,5 @@
 import api from '@/lib/axios'
-import { clearAuthStorage, getAccessToken } from '@/lib/storage'
+import { clearAuthStorage, getAccessToken, getRefreshToken } from '@/lib/storage'
 import { developmentAuthService } from '@/services/development-auth.service'
 import {
   normalizeAuthTokenResponse,
@@ -41,9 +41,12 @@ export const authService = {
 
   async logout(): Promise<void> {
     const isDevelopmentSession = developmentAuthService.isAccessToken(getAccessToken())
+    const refreshToken = getRefreshToken()
 
     try {
-      if (!isDevelopmentSession) await api.post('/auth/logout')
+      if (!isDevelopmentSession && refreshToken) {
+        await api.post('/auth/logout', { refresh_token: refreshToken })
+      }
     } catch {
       void 0
     } finally {
@@ -65,7 +68,11 @@ export const authService = {
   },
 
   async resetPassword(payload: ResetPasswordRequest) {
-    const { data } = await api.post<{ message: string }>('/auth/reset-password', payload)
+    const newPassword = payload.new_password || payload.password || ''
+    const { data } = await api.post<{ message: string }>('/auth/reset-password', {
+      token: payload.token,
+      new_password: newPassword,
+    })
     return data
   },
 

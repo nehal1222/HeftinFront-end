@@ -211,6 +211,9 @@ export function getErrorMessage(error: unknown, fallback = 'Something went wrong
     if (isRecord(body)) {
       return getMessage(body.message) ?? getMessage(body.detail) ?? fallback
     }
+    if (error.code === 'ERR_NETWORK' || !error.response) {
+      return 'Unable to reach backend API. Check your network or backend server.'
+    }
     return fallback
   }
   if (error instanceof Error && error.message) {

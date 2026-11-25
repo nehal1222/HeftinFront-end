@@ -14,21 +14,31 @@ type DevelopmentAccount = {
 
 const ACCESS_TOKEN_PREFIX = 'heftin-dev-access:'
 const REFRESH_TOKEN_PREFIX = 'heftin-dev-refresh:'
-const LOCAL_TEST_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+const LOCAL_TEST_HOSTS = ['localhost', '127.0.0.1', '[::1]', '0.0.0.0']
 const IS_LOCAL_DEVELOPMENT_BUILD = import.meta.env.DEV
 const IS_FIREBASE_DEVELOPMENT_BUILD =
   import.meta.env.MODE === 'firebase-development' &&
   import.meta.env.VITE_DEPLOYMENT_ENV === 'firebase-development'
 const IS_TEST_AUTH_BUILD =
-  import.meta.env.VITE_ENABLE_TEST_AUTH === 'true' &&
-  (IS_LOCAL_DEVELOPMENT_BUILD || IS_FIREBASE_DEVELOPMENT_BUILD)
+  import.meta.env.VITE_ENABLE_TEST_AUTH === 'true' ||
+  (IS_LOCAL_DEVELOPMENT_BUILD && import.meta.env.VITE_ENABLE_TEST_AUTH !== 'false') ||
+  IS_FIREBASE_DEVELOPMENT_BUILD
 const LEADS_VIEW_RIGHT = import.meta.env.VITE_LEADS_VIEW_RIGHT?.trim()
 
 function isEnabled() {
   if (!IS_TEST_AUTH_BUILD) return false
 
   const currentHost = window.location.hostname.toLocaleLowerCase()
-  if (IS_LOCAL_DEVELOPMENT_BUILD && LOCAL_TEST_HOSTS.includes(currentHost)) return true
+  if (
+    IS_LOCAL_DEVELOPMENT_BUILD &&
+    (LOCAL_TEST_HOSTS.includes(currentHost) ||
+      currentHost.startsWith('192.168.') ||
+      currentHost.startsWith('10.') ||
+      currentHost.startsWith('172.') ||
+      currentHost.endsWith('.local'))
+  ) {
+    return true
+  }
 
   const configuredHosts = (import.meta.env.VITE_TEST_AUTH_ALLOWED_HOSTS ?? '')
     .split(',')
@@ -236,10 +246,14 @@ function buildAccounts(): DevelopmentAccount[] {
   return accounts.filter((account): account is DevelopmentAccount => account !== null)
 }
 
-const CONFIGURED_ACCOUNTS = IS_TEST_AUTH_BUILD ? buildAccounts() : []
+let cachedAccounts: DevelopmentAccount[] | null = null
 
 function getAccounts(): DevelopmentAccount[] {
-  return isEnabled() ? CONFIGURED_ACCOUNTS : []
+  if (!isEnabled()) return []
+  if (!cachedAccounts) {
+    cachedAccounts = buildAccounts()
+  }
+  return cachedAccounts
 }
 
 function findAccountByToken(token: string | null | undefined, prefix: string) {

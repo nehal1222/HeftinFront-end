@@ -114,7 +114,7 @@ export function PlatformPage() {
     try {
       const ceiling = await organizationService.getCeiling(org.id)
       setCeilingData(ceiling)
-      setSelectedModules(ceiling.modules)
+      setSelectedModules(ceiling.modules || [])
     } catch (err) {
       setCeilingError(getErrorMessage(err, 'Failed to load ceiling for this organization.'))
     } finally {

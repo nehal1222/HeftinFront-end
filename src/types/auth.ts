@@ -7,10 +7,15 @@ export type ForgotPasswordRequest = {
   email: string
 }
 
+export type LogoutRequest = {
+  refresh_token: string
+}
+
 export type ResetPasswordRequest = {
   token: string
-  password: string
-  password_confirmation: string
+  new_password: string
+  password?: string
+  password_confirmation?: string
 }
 
 export type ChangePasswordRequest = {

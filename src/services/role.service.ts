@@ -272,7 +272,12 @@ export const roleService = {
     }
 
     const { data } = await api.get<unknown>('/roles/')
-    const rolesList = Array.isArray(data) ? data : (data && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) ? data.data : []
+    const raw = (data && typeof data === 'object' && 'data' in data && data.data) ? (data as any).data : data
+    const rolesList = Array.isArray(raw)
+      ? raw
+      : (raw && typeof raw === 'object' && 'items' in raw && Array.isArray((raw as any).items))
+      ? (raw as any).items
+      : []
     return rolesList.map(normalizeRole)
   },
 
@@ -295,12 +300,16 @@ export const roleService = {
       return newRole
     }
 
-    const snakeName = payload.name
+    let snakeName = payload.name
       .toLowerCase()
       .trim()
-      .replace(/[^a-z0-9]+/g, '_')
-      .replace(/^_+|_+$/g, '')
-      .slice(0, 50) || `role_${Date.now()}`
+      .replace(/[^a-z0-9_]+/g, '_')
+      .replace(/^[^a-z]+/, '')
+      .replace(/_+$/, '')
+      .slice(0, 50)
+    if (!snakeName) {
+      snakeName = `role_${Date.now()}`
+    }
 
     const modulesFromRights: Array<{ module: string; level: string | null; custom_module_id: null }> = []
     const seenModules = new Set<string>()
@@ -314,12 +323,11 @@ export const roleService = {
 
     const body = {
       name: snakeName,
-      display_name: payload.name.trim(),
-      audience: 'staff',
+      display_name: payload.display_name?.trim() || payload.name.trim(),
+      audience: payload.audience || 'staff',
       description: payload.description?.trim() || null,
       modules: modulesFromRights,
-      rights: validRights,
-      role_type: 'dynamic',
+      scopes: [],
     }
 
     const { data } = await api.post<unknown>('/roles/', body)
@@ -346,11 +354,10 @@ export const roleService = {
       return updated
     }
 
+    const displayName = (payload.display_name?.trim() || payload.name?.trim()) ?? ''
     const body = {
-      display_name: payload.name?.trim(),
-      name: payload.name?.trim(),
-      description: payload.description !== undefined ? payload.description.trim() || null : undefined,
-      rights: validRights,
+      display_name: displayName,
+      description: payload.description !== undefined ? payload.description?.trim() || null : null,
     }
 
     const { data } = await api.put<unknown>(`/roles/${id}`, body)

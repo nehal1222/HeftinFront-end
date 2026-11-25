@@ -19,16 +19,48 @@ export type Role = {
   updated_at?: string
 }
 
+export type RoleModuleIn = {
+  module: string
+  level?: string | null
+  custom_module_id?: string | null
+}
+
+export type ScopeIn = {
+  scope_type: string
+  scope_id?: string | null
+}
+
+export type RoleCreate = {
+  name: string
+  display_name: string
+  description?: string | null
+  audience: 'staff' | 'student'
+  modules?: RoleModuleIn[]
+  scopes?: ScopeIn[]
+}
+
+export type RoleUpdate = {
+  display_name: string
+  description?: string | null
+}
+
+export type RoleModulesIn = {
+  modules: RoleModuleIn[]
+}
+
 export type CreateRolePayload = {
   name: string
-  description?: string
+  display_name?: string
+  description?: string | null
+  audience?: 'staff' | 'student'
   role_type?: 'dynamic'
   rights: string[]
 }
 
 export type UpdateRolePayload = {
   name?: string
-  description?: string
+  display_name?: string
+  description?: string | null
   rights?: string[]
 }
 

@@ -45,7 +45,7 @@ export const contactService = {
       company_name: company?.trim() || null,
       subject: payload.subject?.trim() || null,
       consent: Boolean(payload.consent),
-      consent_version: payload.consent_version ?? '2026-v1',
+      consent_version: payload.consent_version ?? '2026-10',
       utm_source: payload.utm_source ?? null,
       utm_medium: payload.utm_medium ?? null,
       utm_campaign: payload.utm_campaign ?? null,
@@ -67,9 +67,17 @@ export const contactService = {
   },
 
   async listLeads(params?: Record<string, unknown>): Promise<LeadSummary[]> {
-    const { data } = await api.get<LeadSummary[] | { data: LeadSummary[] }>('/contact/', { params })
-    const list = Array.isArray(data) ? data : data?.data
-    return Array.isArray(list) ? list : []
+    const { data } = await api.get<
+      LeadSummary[] | { total?: number; items?: LeadSummary[]; data?: LeadSummary[] }
+    >('/contact/', { params })
+    const list = Array.isArray(data)
+      ? data
+      : Array.isArray(data?.items)
+      ? data.items
+      : Array.isArray(data?.data)
+      ? data.data
+      : []
+    return list
   },
 
   async getLead(leadId: string): Promise<LeadDetail> {

@@ -28,9 +28,17 @@ export const organizationService = {
       return [...devOrgsStore]
     }
 
-    const { data } = await api.get<OrganizationOut[] | { data: OrganizationOut[] }>('/orgs/')
-    const list = Array.isArray(data) ? data : data?.data
-    return Array.isArray(list) ? list : []
+    const { data } = await api.get<
+      OrganizationOut[] | { total?: number; items?: OrganizationOut[]; data?: OrganizationOut[] }
+    >('/orgs/')
+    const list = Array.isArray(data)
+      ? data
+      : Array.isArray(data?.items)
+      ? data.items
+      : Array.isArray(data?.data)
+      ? data.data
+      : []
+    return list
   },
 
   async getOrg(orgId: string): Promise<OrganizationOut> {
@@ -96,12 +104,26 @@ export const organizationService = {
     if (developmentAuthService.isEnabled()) {
       return {
         revision: 1,
+        subjects: [],
+        capabilities: [],
         modules: ['exams', 'study_material', 'performance', 'users', 'roles', 'batches', 'evaluations'],
       }
     }
 
-    const { data } = await api.get<CeilingOut | { data: CeilingOut }>(`/orgs/${orgId}/modules`)
-    return (data && typeof data === 'object' && 'data' in data) ? (data.data as CeilingOut) : (data as CeilingOut)
+    const { data } = await api.get<any>(`/orgs/${orgId}/modules`)
+    const raw = (data && typeof data === 'object' && 'data' in data && data.data) ? data.data : data
+    const subjects = Array.isArray(raw?.subjects) ? raw.subjects : []
+    const capabilities = Array.isArray(raw?.capabilities) ? raw.capabilities : []
+    const moduleCodes = Array.isArray(raw?.modules)
+      ? raw.modules
+      : [...subjects, ...capabilities].map((m: any) => (typeof m === 'string' ? m : m.code)).filter(Boolean)
+
+    return {
+      revision: typeof raw?.revision === 'number' ? raw.revision : 0,
+      subjects,
+      capabilities,
+      modules: moduleCodes,
+    }
   },
 
   async replaceCeiling(orgId: string, payload: CeilingIn): Promise<CeilingOut> {
@@ -113,11 +135,25 @@ export const organizationService = {
       }
       return {
         revision: payload.expected_revision + 1,
+        subjects: [],
+        capabilities: [],
         modules: payload.modules,
       }
     }
 
-    const { data } = await api.put<CeilingOut | { data: CeilingOut }>(`/orgs/${orgId}/modules`, payload)
-    return (data && typeof data === 'object' && 'data' in data) ? (data.data as CeilingOut) : (data as CeilingOut)
+    const { data } = await api.put<any>(`/orgs/${orgId}/modules`, payload)
+    const raw = (data && typeof data === 'object' && 'data' in data && data.data) ? data.data : data
+    const subjects = Array.isArray(raw?.subjects) ? raw.subjects : []
+    const capabilities = Array.isArray(raw?.capabilities) ? raw.capabilities : []
+    const moduleCodes = Array.isArray(raw?.modules)
+      ? raw.modules
+      : [...subjects, ...capabilities].map((m: any) => (typeof m === 'string' ? m : m.code)).filter(Boolean)
+
+    return {
+      revision: typeof raw?.revision === 'number' ? raw.revision : payload.expected_revision + 1,
+      subjects,
+      capabilities,
+      modules: moduleCodes,
+    }
   },
 }

@@ -166,7 +166,7 @@ export function ContactPage() {
     setAriaStatus('Submitting inquiry...')
 
     try {
-      const res = await contactService.submitContact(form)
+      const res = await contactService.submitContact({ ...form, consent_version: '2026-10' })
       setSubmissionDetails({
         inquiry_id: res.inquiry_id,
         message: res.message,

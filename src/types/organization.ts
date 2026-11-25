@@ -1,3 +1,5 @@
+import type { ModuleOut } from '@/types/catalog'
+
 export type OrgType = 'enterprise' | 'academic' | 'individual' | 'trial' | string
 
 export type ModuleCounts = {
@@ -38,5 +40,7 @@ export type CeilingIn = {
 
 export type CeilingOut = {
   revision: number
+  subjects: ModuleOut[]
+  capabilities: ModuleOut[]
   modules: string[]
 }

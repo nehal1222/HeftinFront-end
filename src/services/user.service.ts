@@ -94,9 +94,19 @@ export const userService = {
       }))
     }
 
-    const { data } = await api.get<UserSummary[] | { data: UserSummary[] }>('/users/', { params })
-    const list = Array.isArray(data) ? data : data?.data
-    return Array.isArray(list) ? list : []
+    const { data } = await api.get<
+      UserSummary[] | { total?: number; items?: UserSummary[]; data?: UserSummary[] }
+    >('/users/', { params })
+
+    const list = Array.isArray(data)
+      ? data
+      : Array.isArray(data?.items)
+      ? data.items
+      : Array.isArray(data?.data)
+      ? data.data
+      : []
+
+    return list
   },
 
   async getUser(id: string): Promise<UserDetail> {
