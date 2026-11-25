@@ -214,6 +214,9 @@ export function getErrorMessage(error: unknown, fallback = 'Something went wrong
     if (error.code === 'ERR_NETWORK' || !error.response) {
       return 'Unable to reach backend API. Check your network or backend server.'
     }
+    if (error.response?.status === 401) {
+      return 'Invalid email or password. Please check your details and try again.'
+    }
     return fallback
   }
   if (error instanceof Error && error.message) {
